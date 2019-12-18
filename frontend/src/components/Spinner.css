@@ -1,0 +1,17 @@
+/* TODO fix */
+@keyframes p-progress-spinner-color {
+    100%,
+    0% {
+        stroke: #2E3035;
+    }
+    40% {
+        stroke: #2E3035;
+    }
+    66% {
+        stroke: #2E3035;
+    }
+    80%,
+    90% {
+        stroke: #2E3035;
+    }
+}

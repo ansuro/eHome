@@ -1,0 +1,54 @@
+.menuItem {
+    display: inline-block;
+    color: white;
+    padding: 15px;
+    width: 100%;
+}
+
+.menuCloseItem {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.menuActionItem {
+    padding: 15px;
+    color: white;
+    cursor: pointer;
+}
+
+.activeMenuItem {
+    background-color: #2E3035;
+}
+
+#sbar {
+    background-color: #41444D;
+    padding: 0;
+    border: none;
+}
+
+#root {
+    height: 100vh;
+}
+
+.centercontainer {
+    height: 100vh;
+    display: flex;
+}
+
+.centeritem {
+    margin: auto;
+}
+
+.container {
+    margin: 5px;
+}
+
+td {
+    vertical-align: top;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}

@@ -1,0 +1,1 @@
+require('./abstractdevice').createDevice('MACDEVICE1');

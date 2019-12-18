@@ -1,0 +1,17 @@
+{
+  "name": "ehome",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "backend": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm start",
+    "start": "concurrently --kill-others -t \"YYYY-MM-DD HH:mm:ss\" -c \"green\" -p \"[{name}-{time}]\" -n \"BACKEND,FRONTEND\" \"npm run backend\" \"npm run frontend\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^4.1.0"
+  }
+}

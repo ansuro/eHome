@@ -1,0 +1,60 @@
+{
+    "version": "2.0.0",
+    "type": "shell",
+    "echoCommand": true,
+    "tasks": [
+        {
+            "label": "Build",
+            "command": "make",
+            "args": [
+                "SMING_ARCH=Esp8266"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Run on host",
+            "dependsOn": [
+                "Build"
+            ],
+            "command": [
+                "make"
+            ],
+            "args": [
+                "run",
+                "HOST_NETWORK_OPTIONS=\"--ifname=6 --gateway=192.168.2.1\""
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Clean",
+            "command": "make",
+            "args": [
+                "clean"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Clean && Build",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Clean",
+                "Build"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Run on device",
+            "command": "make",
+            "args": [
+                "SMING_ARCH=Esp8266",
+                "flash",
+                "COM_PORT=COM5",
+                "COM_SPEED=74880",
+                "COM_SPEED_ESPTOOL=921600",
+                "SPI_SIZE=4M",
+                "ENABLE_GDB=0"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}
