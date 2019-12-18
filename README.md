@@ -2,6 +2,11 @@
 
 An ESP8266-based smarthome system. Copy sming-base and edit MyDevice to configure your device. Alpha state.
 
+Default users
+
+- admin:password
+- user:password
+
 ## TODO
 
 ### general
