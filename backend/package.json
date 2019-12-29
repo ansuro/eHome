@@ -42,6 +42,7 @@
     "cors": "^2.8.5",
     "feathers-nedb": "^5.0.1",
     "helmet": "^3.21.1",
+    "internal-ip": "^5.0.0",
     "mdns-server": "^1.0.8",
     "mosca": "^2.8.3",
     "mqtt": "^3.0.0",

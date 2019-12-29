@@ -1,5 +1,6 @@
 import { Application } from "./declarations";
 import logger from "./logger";
+import { v4 } from "internal-ip";
 
 
 export default async function (app: Application) {
@@ -9,16 +10,15 @@ export default async function (app: Application) {
     noInit: true
   });
 
+  const ip = await v4();
+  // logger.info('%s', ip);
 
-  mdns.on('query', function(query: any) {
-    logger.info('%o', query);
-    // logger.info('query');
+  mdns.on('query', function (query: any) {
     if (query.questions[0] && query.questions[0].name === 'ehome.local') {
-      // mdns.respond(someResponse) // see below
       logger.info('ehome.local');
-      // mdns.respond({
-      //   answers: [{name:'ehome.local', type:'A', data:'192.158.1.5'}]
-      // });
+      mdns.respond({
+        answers: [{ name: 'ehome.local', type: 'A', data: ip }]
+      });
     }
   });
 
