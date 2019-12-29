@@ -5,7 +5,7 @@ DeviceManager::DeviceManager()
 #ifdef MQTT_HOST
     mMqttHost = MQTT_HOST;
 #else
-    mqttHost = "mqtt://ehome.local";
+    mMqttHost = "mqtt://ehome.local";
 #endif
     mMqttClient.setKeepAlive(20);
     mMqttClient.setPingRepeatTime(7);

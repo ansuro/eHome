@@ -20,6 +20,7 @@ import authentication from './authentication';
 import dbinit from './dbinit';
 import deviceinit from './deviceinit';
 import mqttbroker from './mqttbroker';
+import mdns from './mdns';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 const app: Application = express(feathers());
@@ -63,11 +64,6 @@ app.configure(mqttbroker);
 // reset all device status to offline
 app.configure(deviceinit);
 
-app.configure((app) => {
-  app.on('created', c => {
-    console.log('server: created device');
-  });
-
-});
+app.configure(mdns);
 
 export default app;
