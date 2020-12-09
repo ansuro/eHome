@@ -5,6 +5,7 @@ DeviceManager::DeviceManager()
 #ifdef MQTT_HOST
     mMqttHost = MQTT_HOST;
 #else
+// TODO not working.. no built-in mdns query 
     mMqttHost = "mqtt://ehome.local";
 #endif
     mMqttClient.setKeepAlive(20);

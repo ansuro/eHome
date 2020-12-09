@@ -14,6 +14,7 @@ export default async function (app: Application) {
   // logger.info('%s', ip);
 
   mdns.on('query', function (query: any) {
+    logger.info('%o', query);
     if (query.questions[0] && query.questions[0].name === 'ehome.local') {
       logger.info('ehome.local');
       mdns.respond({
