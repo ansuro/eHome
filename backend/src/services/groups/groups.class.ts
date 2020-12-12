@@ -94,7 +94,7 @@ export class Groups extends Service<GroupData> {
   async find(params?: Params) {
     logger.info('Params: %o', params);
 
-    if(!params) // TODO
+    if(!params || !params.user) // TODO
       throw new BadRequest();
 
     const { provider, user, edit } = params;
@@ -104,7 +104,7 @@ export class Groups extends Service<GroupData> {
     }
 
     // return user memberships with devices
-    let groups = await super.find({
+    const groups = await super.find({
       ...params,
       query: {
         $select: ['_id', 'name', 'devices'],
@@ -113,11 +113,11 @@ export class Groups extends Service<GroupData> {
     }) as GroupData[];
 
     const g = groups.map(async g => {
-      g.devices = await this.resolveDevices(g.devices);
+      g.devices = await this.resolveDevices(g.devices) as DeviceData[];
       return g;
     });
     const t = await Promise.all(g);
-// logger.info('t: %o', t);
+    // logger.info('t: %o', t);
     return t;
   }
-};
+}

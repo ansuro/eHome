@@ -3,17 +3,12 @@ import { Toolbar } from 'primereact/toolbar';
 import { Button } from 'primereact/button';
 
 class AppHeader extends Component {
-
     render() {
+
+        const left = <Button icon="pi pi-bars" onClick={() => this.props.toggleMenu(true)} />;
+        
         return (
-            <Toolbar>
-                <div className="p-toolbar-group-left">
-                    <Button icon="pi pi-bars" onClick={() => this.props.toggleMenu(true)} />
-                </div>
-                <div className="p-toolbar-group-right">
-                    {/* <Button icon="pi pi-times" className="p-button-danger" /> */}
-                </div>
-            </Toolbar>
+            <Toolbar left={left} />
         );
     }
 }

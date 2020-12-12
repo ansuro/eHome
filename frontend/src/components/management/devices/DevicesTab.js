@@ -2,7 +2,7 @@ import React from 'react';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Dropdown } from 'primereact/dropdown';
-import { Growl } from 'primereact/growl';
+import { Toast } from 'primereact/toast';
 import { withRouter } from 'react-router';
 import client from '../../../_helpers/fclient';
 
@@ -143,7 +143,7 @@ class DevicesTab extends React.Component {
 
     return (
       <div className="p-grid p-dir-col">
-        <Growl ref={(el) => this.growl = el} />
+        <Toast ref={(el) => this.growl = el} />
         <div className="p-col">
           <Dropdown value={this.state.ddOption} options={ddOptions} onChange={this.onOptionChanged} />
         </div>

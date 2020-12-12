@@ -17,4 +17,4 @@ export default (options = {}): Hook => {
 
     return context;
   };
-}
+};

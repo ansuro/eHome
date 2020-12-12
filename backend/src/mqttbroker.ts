@@ -1,7 +1,7 @@
-import { Application } from "./declarations";
+import { Application } from './declarations';
 
-import { Server, Client } from "mosca";
-import logger from "./logger";
+import { Server, Client } from 'mosca';
+import logger from './logger';
 
 // start MQTT-Broker, set connected-disconnected-status handler
 export default function (app: Application) {

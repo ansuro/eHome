@@ -1,4 +1,4 @@
-import { Application } from "./declarations";
+import { Application } from './declarations';
 
 // set all device status to offline on boot,
 // they set it on mqtt connect

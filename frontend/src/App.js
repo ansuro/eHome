@@ -7,7 +7,7 @@ import 'primeflex/primeflex.css';
 import client, { isAdmin } from './_helpers/fclient';
 import { AppSpinner } from './components/AppSpinner';
 
-import 'primereact/resources/themes/nova-light/theme.css';
+import 'primereact/resources/themes/bootstrap4-dark-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 

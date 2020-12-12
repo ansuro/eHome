@@ -1,6 +1,6 @@
 import { Service, NedbServiceOptions } from 'feathers-nedb';
 import { Application } from '../../declarations';
-import { Params } from '@feathersjs/feathers';
+import { Paginated, Params } from '@feathersjs/feathers';
 import logger from '../../logger';
 
 export interface DeviceData {
@@ -62,13 +62,13 @@ export class Devices extends Service<DeviceData> {
         $limit: 0,
         MAC: mac
       }
-    });
+    }) as Paginated<DeviceData>;
     // logger.info('existsInDB %o', e);
-    const e2 = await super.find({
-      query: {
-        MAC: mac
-      }
-    });
+    // const e2 = await super.find({
+    //   query: {
+    //     MAC: mac
+    //   }
+    // });
     // logger.info('existsInDB2 %o', e2);
     return e.total == 0 ? false : true;
   }
@@ -93,4 +93,4 @@ export class Devices extends Service<DeviceData> {
 
   // }
 
-};
+}

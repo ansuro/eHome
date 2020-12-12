@@ -3,6 +3,7 @@ import { Client, connect, MqttClient } from 'mqtt';
 import { Application, ServiceTypes } from '../../declarations';
 import logger from '../../logger';
 import { BadRequest, Forbidden, NotImplemented } from '@feathersjs/errors';
+import { DeviceData } from '../devices/devices.class';
 
 interface Data {
   MAC: any;
@@ -24,7 +25,7 @@ export class DeviceManager implements ServiceMethods<Data> {
     this.mqttSetup();
   }
 
-  mqttSetup() {
+  mqttSetup(): void {
     const mqttOptions = {
       clientId: this.app.get('MQTT_BACKEND_CLIENT_ID')
     };
@@ -45,7 +46,7 @@ export class DeviceManager implements ServiceMethods<Data> {
     });
 
     this.mqtt.on('message', (topic, message) => {
-      logger.info("message: %o", message.toString());
+      logger.info('message: %o', message.toString());
 
       const msg = message.toString();
 
@@ -64,7 +65,7 @@ export class DeviceManager implements ServiceMethods<Data> {
         logger.info('id: %s', id);
 
         this.app.service('devices').patch(null, {
-          states: m
+          status: m
         }, {
           query: {
             MAC: id
@@ -94,7 +95,7 @@ export class DeviceManager implements ServiceMethods<Data> {
       }).then(d => {
         logger.info('Device online: %o', d);
         // this.deviceService.emit('status', d);
-      }).catch(e => { });
+      }).catch();
     } else {
       // new unconfigured device
       return this.app.service('devices').create({
@@ -122,7 +123,7 @@ export class DeviceManager implements ServiceMethods<Data> {
     }).then(d => {
       logger.info('Device offline: %o', d);
       // this.deviceService.emit('status', d);
-    }).catch(e => { });
+    }).catch();
   }
 
   async find(params?: Params): Promise<Data[] | Paginated<Data>> {
@@ -160,7 +161,7 @@ export class DeviceManager implements ServiceMethods<Data> {
   // TODO return a promise and wait for mqtt response
   async patch(id: NullableId, data: Data, params?: Params): Promise<Data> {
 
-    if (!params)
+    if (!params || !params.user)
       throw new BadRequest();
 
     logger.info('device update: %s => %o Params: %o', id, data, params.user._id);
@@ -171,7 +172,7 @@ export class DeviceManager implements ServiceMethods<Data> {
           $select: ['MAC'],
           $paginate: false
         }
-      });
+      }) as DeviceData[];
       const MAC = dx[0].MAC;
       this.mqtt.publish(MAC, Buffer.from(JSON.stringify(data)));
     } else {
@@ -193,7 +194,7 @@ export class DeviceManager implements ServiceMethods<Data> {
         members: userId,
         devices: deviceId
       }
-    });
+    }) as Paginated<DeviceData>;
 
     logger.info('isPermitted: %o %o total: %o', userId, deviceId, c);
     return c.total > 0;

@@ -5,4 +5,4 @@ export class Log extends Service {
   constructor(options: Partial<NedbServiceOptions>, app: Application) {
     super(options);
   }
-};
+}

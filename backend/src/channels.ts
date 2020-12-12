@@ -63,4 +63,4 @@ export default function(app: Application) {
   //     app.channel(`emails/${data.recipientEmail}`)
   //   ];
   // });
-};
+}

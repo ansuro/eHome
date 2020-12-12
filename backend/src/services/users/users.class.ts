@@ -40,7 +40,7 @@ export class Users extends Service<UserData> {
     //   const d = await Promise.all(p);
     //   return isPage ? { ...rest, data: d } as Paginated<UserData> : d;
     // } else {
-      return super.find(params);
+    return super.find(params);
     // }
   }
 
@@ -52,4 +52,4 @@ export class Users extends Service<UserData> {
       }
     }) as Promise<GroupData[]>;
   }
-};
+}

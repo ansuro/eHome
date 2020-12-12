@@ -1,10 +1,11 @@
-import { Application } from "./declarations";
-import logger from "./logger";
-import { v4 } from "internal-ip";
+import { Application } from './declarations';
+import logger from './logger';
+import { v4 } from 'internal-ip';
 
 
 export default async function (app: Application) {
-  var mdns = require('mdns-server')({
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const mdns = require('mdns-server')({
     reuseAddr: true,
     loopback: true,
     noInit: true

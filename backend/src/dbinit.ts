@@ -1,7 +1,7 @@
-import { Application } from "./declarations";
-import logger from "./logger";
-import { Paginated } from "@feathersjs/feathers";
-import { UserData } from "./services/users/users.class";
+import { Application } from './declarations';
+import logger from './logger';
+import { Paginated } from '@feathersjs/feathers';
+import { UserData } from './services/users/users.class';
 
 
 export default async function (app: Application) {
