@@ -4,8 +4,16 @@
 
 // StateTypes
 //     Switch = 0,
-//     SwitchWithValue = 1,
+//     SwitchWithOptions = 1,
 //     ValueOnly = 2
+
+/*
+    Switch, On/Off { name, value, type = 0 }
+    ValueOnly { name, value, type = 2 }
+
+    SwitchWithOptions { name, value, optionslist, type = 1 }
+
+*/ 
 
 MyDevice::MyDevice()
 {

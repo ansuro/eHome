@@ -1,34 +1,61 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import client from './components/_helpers/fapp';
 
-import io from 'socket.io-client';
-import { AsyncStorage } from '@react-native-community/async-storage';
-import feathers from '@feathersjs/feathers';
-import socketio from '@feathersjs/socketio-client';
-import authentication from '@feathersjs/authentication-client';
+import Home from './components/Home';
+import Login from './components/Login';
 
-const socket = io('http://ehome.local:3030', {
-  transports: ['websocket'],
-  forceNew: true
-});
-const client = feathers();
+class App extends Component {
 
-client.configure(socketio(socket));
-client.configure(authentication({
-  storage: AsyncStorage
-}));
+  constructor(props) {
+    super(props);
 
-export default function App() {
+    this.state = {
+      loggedIn: null
+    };
 
-  
+    this.doLogin = this.doLogin.bind(this);
+  }
 
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+  doLogin() {
+    this.setState({
+      loggedIn: true
+    });
+  }
+
+  componentDidMount() {
+    // eingeloggt? Home : Login
+    // client.authenticate().catch(e => {
+    //   console.log('catch');
+    // });
+
+    client.reAuthenticate().then(() => {
+      // show application page
+      this.doLogin();
+    }).catch(() => {
+      // show login page
+      this.setState({
+        loggedIn: false
+      });
+    });
+  }
+
+  render() {
+    const l = this.state.loggedIn;
+return <Home />;
+    // if (l)
+    //   return <Home />;
+    // else if (!l)
+    //   return <Login onLogin={this.doLogin} />;
+
+
+    // return (
+    //   <View style={styles.container}>
+    //     <Text>Loading</Text>
+    //   </View>
+    // );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -39,3 +66,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+export default App;
