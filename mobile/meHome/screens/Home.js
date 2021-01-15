@@ -1,18 +1,19 @@
 import React, { Component } from "react";
-import { View, Text, FlatList, SafeAreaView, StyleSheet } from "react-native";
+import { Layout, Text, List } from "@ui-kitten/components";
+import { SafeAreaView, StyleSheet } from "react-native";
 
-import client from './_helpers/fapp';
+import client from '../components/_helpers/fapp';
 
-// zwischen Typen unterscheiden, verschieden rendern
+// TODO zwischen Typen unterscheiden, verschieden rendern
 const deviceItem = ({ item }) => {
   console.log(item);
   const { name, value, type } = item;
   return (
-    <View style={styles.item}>
+    <Layout>
       <Text>{name}</Text>
       <Text>{value}</Text>
       {/* <Text>{d.type}</Text> */}
-    </View>
+    </Layout>
   )
 };
 export default class Home extends Component {
@@ -51,27 +52,16 @@ export default class Home extends Component {
 
   render() {
     return (
-      <SafeAreaView style={styles.container}>
-        <Text>HOME</Text>
-        <FlatList
+      <SafeAreaView >
+        {/* <Text>HOME</Text> */}
+        <List
           data={this.state.devices}
           keyExtractor={d => d._id}
           renderItem={deviceItem}
         />
+        
       </SafeAreaView>
     );
   }
 }
 
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  item: {
-
-  }
-});
