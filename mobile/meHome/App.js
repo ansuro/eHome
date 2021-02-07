@@ -2,21 +2,27 @@ import React, { Component } from 'react';
 // import { StyleSheet} from 'react-native';
 
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider } from '@ui-kitten/components';
+import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
+import { EvaIconsPack } from '@ui-kitten/eva-icons';
 
 import Main from './screens/Main';
 
 
-class App extends Component {
+export default class App extends Component {
 
   constructor(props) {
     super(props);
   }
 
   render() {
-    return <ApplicationProvider {...eva} theme={eva.dark}>
-      <Main />
-    </ApplicationProvider>;
+    return (
+      <>
+        <IconRegistry icons={EvaIconsPack} />
+        <ApplicationProvider {...eva} theme={eva.dark}>
+          <Main />
+        </ApplicationProvider>
+      </>
+    );
   }
 }
 
@@ -28,5 +34,3 @@ class App extends Component {
 //     justifyContent: 'center',
 //   },
 // });
-
-export default App;

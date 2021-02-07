@@ -65,7 +65,7 @@ export class DeviceManager implements ServiceMethods<Data> {
         logger.info('id: %s', id);
 
         this.app.service('devices').patch(null, {
-          status: m
+          states: m
         }, {
           query: {
             MAC: id

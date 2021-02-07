@@ -67,10 +67,10 @@ class DevicesTab extends React.Component {
 
   // TODO: on/off only; add values
   statusTemplate(rowData, column) {
-    if (rowData.status === undefined)
+    if (rowData.states === undefined)
       return 'unknown';
 
-    return rowData.status ? 'on' : 'off';
+    return JSON.stringify(rowData.states);// ? 'on' : 'off';
   }
 
   onlineTemplate(rowData, column) {
@@ -164,7 +164,7 @@ class DevicesTab extends React.Component {
           >
             <Column field="name" header="Name"></Column>
             <Column field="MAC" header="MAC"></Column>
-            <Column field="status" header="Status" body={this.statusTemplate}></Column>
+            <Column field="status" header="States" body={this.statusTemplate}></Column>
             <Column field="online" header="Connected" body={this.onlineTemplate} style={{ width: '8em', textAlign: 'center' }}></Column>
           </DataTable>
         </div>

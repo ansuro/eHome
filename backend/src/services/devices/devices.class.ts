@@ -8,7 +8,7 @@ export interface DeviceData {
   name?: string;
   MAC: string;
   online: boolean;
-  status?: string;
+  states?: string;
 }
 
 export class Devices extends Service<DeviceData> {

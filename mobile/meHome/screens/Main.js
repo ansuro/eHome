@@ -28,6 +28,10 @@ export default class Main extends Component {
     componentDidMount() {
         // eingeloggt? Home : Login
 
+        client.on('authenticated', (jwt) => {
+            console.log('login event');
+        });
+
 
         client.reAuthenticate().then(() => {
             // show application page
@@ -48,7 +52,7 @@ export default class Main extends Component {
 
         return (
             <>
-                <TopNav />
+                {/* <TopNav /> */}
                 {l ? <Home /> : <Login onLogin={this.doLogin} />}
             </>
         );

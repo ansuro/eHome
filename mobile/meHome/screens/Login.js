@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-// import { Button, TextInput, StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 
 import { Layout, Button, Input } from "@ui-kitten/components";
 
@@ -26,29 +26,33 @@ export default class Login extends Component {
       password: this.state.password
     }).then(() => {
       // logged in
+      console.log('logged in');
       this.props.onLogin();
     }).catch(e => {
       // login failed
+      console.log('login failed');
     });
   }
 
   render() {
     return (
-      <Layout>
-        <Input label='Username' onChangeText={t => this.setState({ username: t })} />
-        <Input label='Password' secureTextEntry={true} onChangeText={t => this.setState({ password: t })} />
-        <Button onPress={() => this.login()}>Login</Button>
+      <Layout style={styles.container}>
+        <Input style={styles.e} label='Username' onChangeText={t => this.setState({ username: t })} />
+        <Input style={styles.e} label='Password' secureTextEntry={true} onChangeText={t => this.setState({ password: t })} />
+        <Button style={styles.e} onPress={() => this.login()}>Login</Button>
       </Layout>
     );
   }
 }
 
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-// });
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    // backgroundColor: rgb(143, 155, 179),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  e: {
+    width: '95%'
+  }
+});

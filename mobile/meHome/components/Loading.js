@@ -1,6 +1,8 @@
 import React from 'react';
-import { Spinner } from '@ui-kitten/components';
+import { Layout, Spinner } from '@ui-kitten/components';
 
 export const Loading = () => (
-    <Spinner />
+    <Layout level='1' style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <Spinner />
+    </Layout>
 );
