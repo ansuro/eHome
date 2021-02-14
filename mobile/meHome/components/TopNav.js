@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
 
-import { TopNavigation, TopNavigationAction, Icon, Layout, OverflowMenu, MenuItem, Divider } from '@ui-kitten/components';
+import { TopNavigation, TopNavigationAction, Icon, Layout, OverflowMenu, MenuItem, Divider, Button } from '@ui-kitten/components';
 
 import client from './_helpers/fapp';
 
@@ -44,6 +44,7 @@ class TopNav extends Component {
             icon={(props) => <Icon {...props} name='more-vertical' />}
             onPress={() => this.setState({ menuVisible: !this.state.menuVisible })} />
     }
+
 
     // TODO
     onLogout() {

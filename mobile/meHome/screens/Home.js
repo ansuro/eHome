@@ -99,7 +99,7 @@ class Home extends Component {
 
         return (
             <Layout level='1' style={{height: '100%'}}>
-                <TopNav />
+                <TopNav {...this.props} />
                 {e}
             </Layout>
         );

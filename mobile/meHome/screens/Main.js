@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import { observer } from 'mobx-react';
 import { action, isObservable } from 'mobx';
-
+import { NavigationContainer } from '@react-navigation/native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { Drawer, DrawerItem, Layout, Text, IndexPath } from '@ui-kitten/components';
+const { Navigator, Screen } = createDrawerNavigator();
 import client from '../components/_helpers/fapp';
 
 import Home from './Home';
@@ -9,6 +12,16 @@ import Login from './Login';
 import TopNav from '../components/TopNav';
 import { Loading } from '../components/Loading';
 import { appState } from '../components/_helpers/AppStateObserver';
+import Settings from './Settings';
+
+const DrawerContent = ({ navigation, state }) => (
+    <Drawer
+        selectedIndex={new IndexPath(state.index)}
+        onSelect={index => navigation.navigate(state.routeNames[index.row])}>
+        <DrawerItem title='Devices' />
+        <DrawerItem title='Settings' />
+    </Drawer>
+);
 
 class Main extends Component {
 
@@ -44,12 +57,23 @@ class Main extends Component {
         if (l === null)
             return <Loading />;
 
+        if (!l)
+            return <Login />;
+
         return (
-            <>
-                {/* <TopNav /> */}
-                {l ? <Home /> : <Login />}
-            </>
+            <NavigationContainer>
+                <Navigator drawerContent={props => <DrawerContent {...props} />}>
+                    <Screen name='Devices' component={Home} />
+                    <Screen name='Settings' component={Settings} />
+                </Navigator>
+            </NavigationContainer>
         );
+        // return (
+        //     <>
+        //         {/* <TopNav /> */}
+        //         <Home />
+        //     </>
+        // );
     }
 }
 
