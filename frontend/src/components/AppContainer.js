@@ -30,7 +30,7 @@ class AppContainer extends Component {
     const admin = this.props.admin;
 
     return (
-      <div className="p-grid p-nogutter">
+      <div className="p-grid p-nogutter" style={{backgroundColor: '#20262e'}}>
         <div className="p-col-12">
           <AppHeader toggleMenu={this.toggleMenu} />
         </div>
