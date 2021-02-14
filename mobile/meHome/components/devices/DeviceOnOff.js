@@ -1,37 +1,40 @@
 import React, { Component } from "react";
-import { Card, Layout, Spinner, Text, Toggle } from "@ui-kitten/components";
+import { View } from 'react-native';
+import { Text, Toggle } from "@ui-kitten/components";
 
-import client from '../_helpers/fapp';
+import styles from './DeviceCSS';
 
 export default class DeviceOnOff extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            isChanging: false
-        };
-
         this.onSwitchState = this.onSwitchState.bind(this);
     }
 
-    onSwitchState(b) {
-        console.log('OnOff state: ' + b);
+    onSwitchState(value) {
+        const { name } = this.props.st;
+        // console.log('OnOff state: ' + name + ' ' + value);
+        this.props.doUpdate({ name, value });
     }
 
     render() {
-        const { online } = this.props;
+        const { disabled } = this.props;
         const { name, value } = this.props.st;
-        console.log(value);
-        const checked = online && value;
+        // console.log(value);
         return (
-            <Layout style={{flexDirection: 'row', flex: 1}}>
-                <Text>{name}</Text>
-                <Toggle
-                    disabled={!online}
-                    checked={checked}
-                    onChange={b => this.onSwitchState(b)}
-                />
-            </Layout>
+            <View style={styles.container}>
+                <View style={styles.name}>
+                    <Text>{name}</Text>
+                </View>
+                <View style={styles.control}>
+                    <Toggle
+                        disabled={disabled}
+                        checked={value}
+                        onChange={b => this.onSwitchState(b)}
+                    />
+                </View>
+            </View>
         );
     }
 }
+

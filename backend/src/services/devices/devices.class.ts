@@ -1,6 +1,6 @@
 import { Service, NedbServiceOptions } from 'feathers-nedb';
 import { Application } from '../../declarations';
-import { Paginated, Params } from '@feathersjs/feathers';
+import { NullableId, Paginated, Params } from '@feathersjs/feathers';
 import logger from '../../logger';
 
 export interface DeviceData {
@@ -23,6 +23,12 @@ export class Devices extends Service<DeviceData> {
     return super.create(data, params);
   }
 
+  /*
+    devices patchen, alle Gruppenmitgliedschaften finden, über Gruppenchannels updaten
+  */
+  patch(id: NullableId, data: Partial<any>, params?: Params) {
+    return super.patch(id, data, params);
+  }
   // async connect(mac: string) {
   //   // const id = await this.findIdByMAC(mac);
   //   // logger.info('ID: %o', id);

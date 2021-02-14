@@ -174,6 +174,7 @@ export class DeviceManager implements ServiceMethods<Data> {
         }
       }) as DeviceData[];
       const MAC = dx[0].MAC;
+      logger.info('Sending mqtt msg (%s) to %s', JSON.stringify(data), MAC);
       this.mqtt.publish(MAC, Buffer.from(JSON.stringify(data)));
     } else {
       throw new Forbidden();
@@ -188,7 +189,7 @@ export class DeviceManager implements ServiceMethods<Data> {
   }
 
   private async isPermitted(userId: Id, deviceId: NullableId) {
-    const c = await this.app.service('groups').find({
+    const c = await this.app.service('groups')._find({
       query: {
         $limit: 0,
         members: userId,

@@ -1,6 +1,7 @@
 import { HookContext } from '@feathersjs/feathers';
 import { Application } from './declarations';
 import logger from './logger';
+import { GroupData } from './services/groups/groups.class';
 
 export default function(app: Application) {
   if(typeof app.channel !== 'function') {
@@ -38,6 +39,21 @@ export default function(app: Application) {
       // Easily organize users by email and userid for things like messaging
       // app.channel(`emails/${user.email}`).join(connection);
       // app.channel(`userIds/$(user.id}`).join(channel);
+
+
+      app.service('groups')._find({
+        query: {
+          members: user._id,
+          $select: ['_id', 'name'],
+        },
+        paginate: false
+      }).then((gs: any) => {
+        logger.info('user groups: %o', gs);
+        gs.forEach((g: any) => {
+          app.channel(g.name).join(connection);
+          logger.info('User %s joined channel %s', user.username, g.name);
+        });
+      }).catch((e: any) => console.error(e));
     }
   });
 
@@ -63,4 +79,21 @@ export default function(app: Application) {
   //     app.channel(`emails/${data.recipientEmail}`)
   //   ];
   // });
+
+  // publish devices updates to involved groups only
+  app.service('devices').publish('patched', (data: any) => {
+    logger.info('device patch publish: %o', data);
+    return app.service('groups')._find({
+      query: {
+        devices: data._id,
+        $select: ['_id', 'name'],
+      },
+      paginate: false
+    }).then((gs: any) => {
+      logger.info('groups: %o', gs);
+      const gch: any[] = [];
+      gs.map((g: any) => gch.push(g.name));
+      return app.channel(gch);
+    }).catch((e: any) => console.error(e));
+  });
 }

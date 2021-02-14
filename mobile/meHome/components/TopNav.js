@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
+import { StyleSheet } from 'react-native';
 
 import { TopNavigation, TopNavigationAction, Icon, Layout, OverflowMenu, MenuItem, Divider } from '@ui-kitten/components';
 
 import client from './_helpers/fapp';
 
-export default class TopNav extends Component {
+import { appState } from './_helpers/AppStateObserver';
+import { observer } from 'mobx-react';
+
+class TopNav extends Component {
     constructor(props) {
         super(props);
 
@@ -18,17 +22,20 @@ export default class TopNav extends Component {
     }
 
     componentDidMount() {
-        // connect, Verbindungsstatus anzeigen
     }
 
-    renderMenu(props) {
+    renderMenu(props, c) {
+        // console.log('renderMenu');
         return (
-            <OverflowMenu
-                visible={this.state.menuVisible}
-                anchor={(props) => this.renderMenuActions(props)}
-                onBackdropPress={() => this.setState({ menuVisible: !this.state.menuVisible })}>
-                <MenuItem title='Logout' onPress={() => this.onLogout()} />
-            </OverflowMenu>
+            <>
+                {c ? <Icon name='bulb' style={styles.cbulb} /> : <Icon name='bulb-outline' style={styles.dbulb} />}
+                <OverflowMenu
+                    visible={this.state.menuVisible}
+                    anchor={(props) => this.renderMenuActions(props)}
+                    onBackdropPress={() => this.setState({ menuVisible: !this.state.menuVisible })}>
+                    <MenuItem title='Logout' onPress={() => this.onLogout()} />
+                </OverflowMenu>
+            </>
         );
     }
 
@@ -38,20 +45,36 @@ export default class TopNav extends Component {
             onPress={() => this.setState({ menuVisible: !this.state.menuVisible })} />
     }
 
+    // TODO
     onLogout() {
-
+        client.logout();
+        appState.logout();
     }
 
     render() {
-        return (
-            <Layout level='1'>
-                <TopNavigation
-                    title='meHome'
-                    alignment='start'
-                    accessoryRight={(p) => this.renderMenu(p)}
-                />
-                <Divider />
-            </Layout>
-        );
+        const c = appState.connected;
+            return(
+                <Layout level='1'>
+                    <TopNavigation
+                        title='meHome'
+                        alignment='start'
+                        accessoryRight={(p) => this.renderMenu(p, c)}
+                    />
+                    <Divider />
+                </Layout>
+            );
     }
 }
+
+const styles = StyleSheet.create({
+    cbulb: {
+        width: 32,
+        height: 32
+    },
+    dbulb: {
+        width: 32,
+        height: 32
+    }
+});
+
+export default observer(TopNav);

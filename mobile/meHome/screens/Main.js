@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { observer } from 'mobx-react';
+import { action, isObservable } from 'mobx';
 
 import client from '../components/_helpers/fapp';
 
@@ -6,68 +8,49 @@ import Home from './Home';
 import Login from './Login';
 import TopNav from '../components/TopNav';
 import { Loading } from '../components/Loading';
+import { appState } from '../components/_helpers/AppStateObserver';
 
-export default class Main extends Component {
+class Main extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            loggedIn: null
-        };
-
-        this.doLogin = this.doLogin.bind(this);
-
-    }
-
-    doLogin() {
-        this.setState({
-            loggedIn: true
-        });
     }
 
     componentDidMount() {
         // eingeloggt? Home : Login
 
-        client.on('authenticated', (jwt) => {
-            console.log('login event');
-        });
+        // client.on('authenticated', (jwt) => {
+        //     console.log('login event');
+        //     appState.login();
+        //     console.log(appState.loggedIn);
+        // });
 
 
         client.reAuthenticate().then(() => {
             // show application page
-            this.doLogin();
-        }).catch(() => {
+            // this.doLogin();
+            appState.login();
+            console.log(appState.loggedIn);
+        }).catch(action(() => {
             // show login page
-            this.setState({
-                loggedIn: false
-            });
-        });
+            appState.logout();
+            console.log(appState.loggedIn);
+        }));
     }
 
     render() {
-        const l = this.state.loggedIn;
+        const l = appState.loggedIn;
 
-        if(l === null)
-            return <Loading />; 
+        if (l === null)
+            return <Loading />;
 
         return (
             <>
                 {/* <TopNav /> */}
-                {l ? <Home /> : <Login onLogin={this.doLogin} />}
+                {l ? <Home /> : <Login />}
             </>
         );
-
-
-        // if (l)
-        //   return <Home />;
-        // else if (!l)
-        //   return <Login onLogin={this.doLogin} />;
-
-
-        // return (
-        //   <View style={styles.container}>
-        //     <Text>Loading</Text>
-        //   </View>
-        // );
     }
 }
+
+export default observer(Main);

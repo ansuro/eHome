@@ -1,5 +1,8 @@
 import React, { Component } from "react";
+import { View } from 'react-native';
 import { Layout, Text } from "@ui-kitten/components";
+
+import styles from './DeviceCSS';
 
 export default class DeviceValueOnly extends Component {
     constructor(props) {
@@ -9,10 +12,14 @@ export default class DeviceValueOnly extends Component {
     render() {
         const { value, name } = this.props.st;
         return (
-            <Layout level='1'>
-                <Text>{name}</Text>
-                <Text>{value}</Text>
-            </Layout>
+            <View style={styles.container}>
+                <View style={styles.name}>
+                    <Text>{name}</Text>
+                </View>
+                <View>
+                    <Text>{value}</Text>
+                </View>
+            </View>
         );
     }
 }

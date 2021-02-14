@@ -1,20 +1,34 @@
-import { observable, makeObservable, action } from 'mobx';
+import { observable, makeObservable, action, computed } from 'mobx';
 
 import client from './fapp';
 
 export default class DevicesObserver {
     groups = [];
-    selectedGroupIndex = 0;
-    state = 'loading'; // loading v done
+    devices = [];
+
+    selectedGroupIndex = -1;
+    isLoading = true;
 
     constructor() {
         makeObservable(this, {
             groups: observable,
             selectedGroupIndex: observable,
-            state: observable,
+            isLoading: observable,
             init: action,
-            setSelectedGroupIndex: action
+            setSelectedGroupIndex: action,
+            devices: observable
         });
+
+        // nur aktuelle Devices einer Gruppen überprüfen
+        client.service('devices').on('patched', action(d => {
+            console.log('device patched ' + JSON.stringify(d));
+            this.devices.forEach((dx, i) => {
+                if(dx._id === d._id) {
+                    this.devices[i] = d;
+                    console.log(JSON.stringify(d));
+                }
+            });
+        }));
 
         this.init();
     }
@@ -26,27 +40,34 @@ export default class DevicesObserver {
             }
         }).then(action("fetchSuccess", g => {
             this.groups = g;
-            this.state = 'done';
-            console.log(this.state);
+            this.isLoading = false;
+            console.log(g);
         })).catch(action("fetchError", e => {
             console.error(e);
-            this.state = 'done';
+            this.isLoading = false;
         }));
+
+        // // nur aktuelle Devices einer Gruppen überprüfen
+        // client.service('devices').on('patched', action(d => {
+        //     console.log('device patched ' + JSON.stringify(d));
+        //     this.devices.forEach((dx, i) => {
+        //         if(dx._id === d._id) {
+        //             this.devices[i] = d;
+        //             console.log(JSON.stringify(d));
+        //         }
+        //     });
+        // }));
     }
 
-    // get selectedGroupIndex() {
-    //     return this.selectedGroupIndex;
-    // }
-
-    /**
-     * @param {number} i
-     */
-    // set selectedGroupIndex(i) {
-    //     this.selectedGroupIndex = i;
-    // }
-
+    // devices aus group holen und refreshen
     setSelectedGroupIndex(i) {
         this.selectedGroupIndex = i;
         console.log(i);
+        this.devices = this.groups[this.selectedGroupIndex].devices;
+        // TODO devices array neu laden
     }
+
+    // get devices() {
+    //     return this.groups[this.selectedGroupIndex].devices;
+    // }
 }

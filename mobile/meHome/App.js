@@ -5,6 +5,8 @@ import * as eva from '@eva-design/eva';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 
+import { default as mapping } from './mapping.json';
+
 import Main from './screens/Main';
 
 
@@ -18,7 +20,7 @@ export default class App extends Component {
     return (
       <>
         <IconRegistry icons={EvaIconsPack} />
-        <ApplicationProvider {...eva} theme={eva.dark}>
+        <ApplicationProvider {...eva} theme={eva.dark} customMapping={mapping}>
           <Main />
         </ApplicationProvider>
       </>

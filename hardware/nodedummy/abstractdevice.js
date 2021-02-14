@@ -33,10 +33,18 @@ exports.createDevice = function (MAC) {
     if (topic === MAC) {
       const s = JSON.parse(message.toString());
       // TODO array patchen nicht überschreiben
-      status = s.status;
+      // status.filter((s, i) => s.name === status.name).map((s, i) => {
+      //   status[i].value = s.value;
+      // });
+      status.forEach((e, i) => {
+        if(s.name === e.name) {
+          status[i].value = s.value;
+        }
+      });
+      // status = s.status;
       // console.log(`New status: ${status ? 'on' : 'off'}`);
       console.log(status.toString());
-      pubStatus();
+      setTimeout(pubStatus, 5000);
     }
   });
 

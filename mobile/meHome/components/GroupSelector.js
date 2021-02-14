@@ -42,7 +42,7 @@ class GroupSelector extends Component {
         const { groups, selectedGroupIndex } = this.props.store;
         
         const selGrp = groups[selectedGroupIndex];
-        const selGrpName = selGrp == undefined ? 'No groups' : groups[selectedGroupIndex].name;
+        const selGrpName = selGrp == undefined ? 'Select Group' : groups[selectedGroupIndex].name;
 
         return (
             <Layout level='2' style={{ margin: '3px' }}>
