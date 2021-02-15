@@ -29,12 +29,12 @@ class TopNav extends Component {
         return (
             <>
                 {c ? <Icon name='bulb' style={styles.cbulb} /> : <Icon name='bulb-outline' style={styles.dbulb} />}
-                <OverflowMenu
+                {/* <OverflowMenu
                     visible={this.state.menuVisible}
                     anchor={(props) => this.renderMenuActions(props)}
                     onBackdropPress={() => this.setState({ menuVisible: !this.state.menuVisible })}>
                     <MenuItem title='Logout' onPress={() => this.onLogout()} />
-                </OverflowMenu>
+                </OverflowMenu> */}
             </>
         );
     }
@@ -43,6 +43,14 @@ class TopNav extends Component {
         return <TopNavigationAction
             icon={(props) => <Icon {...props} name='more-vertical' />}
             onPress={() => this.setState({ menuVisible: !this.state.menuVisible })} />
+    }
+
+    renderMainMenu() {
+        return <Button 
+                appearance='ghost'
+                accessoryLeft={() => <Icon name='menu' style={styles.cbulb} />}
+                onPress={() => this.props.navigation.openDrawer()}
+            />
     }
 
 
@@ -60,6 +68,7 @@ class TopNav extends Component {
                         title='meHome'
                         alignment='start'
                         accessoryRight={(p) => this.renderMenu(p, c)}
+                        accessoryLeft={() => this.renderMainMenu()}
                     />
                     <Divider />
                 </Layout>

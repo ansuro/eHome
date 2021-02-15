@@ -14,12 +14,24 @@ import { Loading } from '../components/Loading';
 import { appState } from '../components/_helpers/AppStateObserver';
 import Settings from './Settings';
 
+// NOP component for logout
+const Logout = () => {return null;}
+
 const DrawerContent = ({ navigation, state }) => (
     <Drawer
         selectedIndex={new IndexPath(state.index)}
-        onSelect={index => navigation.navigate(state.routeNames[index.row])}>
+        onSelect={index => {
+            console.log(state.routeNames[index.row]);
+            if (state.routeNames[index.row] === 'Logout') {
+                client.logout();
+                appState.logout();
+            } else {
+                navigation.navigate(state.routeNames[index.row])
+            }
+        }}>
         <DrawerItem title='Devices' />
         <DrawerItem title='Settings' />
+        <DrawerItem title='Logout' />
     </Drawer>
 );
 
@@ -31,17 +43,8 @@ class Main extends Component {
 
     componentDidMount() {
         // eingeloggt? Home : Login
-
-        // client.on('authenticated', (jwt) => {
-        //     console.log('login event');
-        //     appState.login();
-        //     console.log(appState.loggedIn);
-        // });
-
-
         client.reAuthenticate().then(() => {
             // show application page
-            // this.doLogin();
             appState.login();
             console.log(appState.loggedIn);
         }).catch(action(() => {
@@ -65,15 +68,10 @@ class Main extends Component {
                 <Navigator drawerContent={props => <DrawerContent {...props} />}>
                     <Screen name='Devices' component={Home} />
                     <Screen name='Settings' component={Settings} />
+                    <Screen name='Logout' component={Logout} />
                 </Navigator>
             </NavigationContainer>
         );
-        // return (
-        //     <>
-        //         {/* <TopNav /> */}
-        //         <Home />
-        //     </>
-        // );
     }
 }
 
