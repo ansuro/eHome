@@ -65,12 +65,12 @@ class DeviceList extends Component {
     // )
 
     renderDevice({ item }) {
-        console.log(item);
-        console.log(isObservable(item));
-        const { name, states, online, _id } = item;
-        console.log(isObservable(online));
+        // console.log(item);
+        // console.log(isObservable(item));
+        // const { name, states, online, _id } = item;
+        // console.log(isObservable(online));
         // let stateElements;// = states.length === 0 ? 'No states' : '';
-        console.log(isObservable(states));
+        // console.log(isObservable(states));
 
         return (
             <Device item={item} />
@@ -106,7 +106,8 @@ class DeviceList extends Component {
             return <Loading />;
         }
         const { devices } = this.props.store;
-        console.log(isObservable(devices));
+        // console.log(isObservable(devices));
+        // console.log(devices);
 
         return (
             <Layout level='1' style={{ flex: 1 }}>

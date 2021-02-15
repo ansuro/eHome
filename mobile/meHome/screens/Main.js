@@ -46,11 +46,11 @@ class Main extends Component {
         client.reAuthenticate().then(() => {
             // show application page
             appState.login();
-            console.log(appState.loggedIn);
+            // console.log(appState.loggedIn);
         }).catch(action(() => {
             // show login page
             appState.logout();
-            console.log(appState.loggedIn);
+            // console.log(appState.loggedIn);
         }));
     }
 

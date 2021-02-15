@@ -14,21 +14,9 @@ export default class DevicesObserver {
             groups: observable,
             selectedGroupIndex: observable,
             isLoading: observable,
-            init: action,
             setSelectedGroupIndex: action,
             devices: observable
         });
-
-        // nur aktuelle Devices einer Gruppen überprüfen
-        client.service('devices').on('patched', action(d => {
-            console.log('device patched ' + JSON.stringify(d));
-            this.devices.forEach((dx, i) => {
-                if(dx._id === d._id) {
-                    this.devices[i] = d;
-                    console.log(JSON.stringify(d));
-                }
-            });
-        }));
 
         this.init();
     }
@@ -41,33 +29,68 @@ export default class DevicesObserver {
         }).then(action("fetchSuccess", g => {
             this.groups = g;
             this.isLoading = false;
-            console.log(g);
+            // console.log(g);
         })).catch(action("fetchError", e => {
             console.error(e);
             this.isLoading = false;
         }));
 
-        // // nur aktuelle Devices einer Gruppen überprüfen
-        // client.service('devices').on('patched', action(d => {
-        //     console.log('device patched ' + JSON.stringify(d));
-        //     this.devices.forEach((dx, i) => {
-        //         if(dx._id === d._id) {
-        //             this.devices[i] = d;
-        //             console.log(JSON.stringify(d));
-        //         }
-        //     });
-        // }));
+        // nur aktuelle Devices einer Gruppen überprüfen
+        client.service('devices').on('patched', action(d => {
+            console.log('device patched ' + JSON.stringify(d));
+            this.devices.forEach((dx, i) => {
+                if (dx._id === d._id) {
+                    this.devices[i] = d;
+                    console.log(JSON.stringify(d));
+                }
+            });
+        }));
+
+        client.io.on('connect', () => {
+            this.reloadDevices();
+        });
     }
 
     // devices aus group holen und refreshen
     setSelectedGroupIndex(i) {
+        this.isLoading = true;
         this.selectedGroupIndex = i;
-        console.log(i);
-        this.devices = this.groups[this.selectedGroupIndex].devices;
-        // TODO devices array neu laden
+        this.reloadDevices();
+        // console.log(i);
+        // this.devices = this.groups[this.selectedGroupIndex].devices;
+        // const ids = this.groups[this.selectedGroupIndex].devices.flatMap(s => s._id);
+        // console.log(ids);
+        // devices array neu laden
+        // client.service('devices').find({
+        //     query: {
+        //         $paginate: false,
+        //         _id: {
+        //             $in: ids
+        //         }
+        //     }
+        // }).then(action("fetchSuccess", d => {
+        //     this.devices = d;
+        // })).catch(action("fetchError",e => console.error(e)))
+        // .finally(action(() => this.isLoading = false));
     }
 
-    // get devices() {
-    //     return this.groups[this.selectedGroupIndex].devices;
-    // }
+    reloadDevices() {
+        if (this.selectedGroupIndex < 0)
+            return;
+
+        const ids = this.groups[this.selectedGroupIndex].devices.flatMap(s => s._id);
+        // console.log(ids);
+        // devices array neu laden
+        client.service('devices').find({
+            query: {
+                $paginate: false,
+                _id: {
+                    $in: ids
+                }
+            }
+        }).then(action("fetchSuccess", d => {
+            this.devices = d;
+        })).catch(action("fetchError", e => console.error(e)))
+            .finally(action(() => this.isLoading = false));
+    }
 }

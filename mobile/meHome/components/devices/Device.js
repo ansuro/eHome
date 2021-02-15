@@ -9,6 +9,7 @@ import DeviceValueOnly from './DeviceValueOnly';
 
 import { Loading } from "../Loading";
 import client from '../_helpers/fapp';
+import { appState } from '../_helpers/AppStateObserver';
 
 const DeviceHeader = (props) => {
     return (
@@ -63,7 +64,7 @@ class Device extends Component {
     render() {
         const device = this.props.item;
         const isChanging = this.state.isChanging;
-        const disabled = !device.online || isChanging;
+        const disabled = !device.online || isChanging || !appState.connected;
         return (
             <Layout level='2' style={styles.container}>
                 <DeviceHeader {...this.props} name={device.name} online={device.online} isChanging={isChanging} />
