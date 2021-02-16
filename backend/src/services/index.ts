@@ -4,6 +4,7 @@ import devices from './devices/devices.service';
 import deviceManager from './device-manager/device-manager.service';
 import log from './log/log.service';
 import groups from './groups/groups.service';
+import password from './password/password.service';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 export default function (app: Application) {
@@ -12,4 +13,5 @@ export default function (app: Application) {
   app.configure(deviceManager);
   app.configure(log);
   app.configure(groups);
+  app.configure(password);
 }
