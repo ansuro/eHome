@@ -1,9 +1,10 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Spinner } from '@ui-kitten/components';
+import { Spinner, Text } from '@ui-kitten/components';
 
-export const Loading = () => (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+export const Loading = (props) => (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#222B45' }}>
+        {props.msg ? <Text>{props.msg}</Text> : null}
         <Spinner />
     </View>
 );

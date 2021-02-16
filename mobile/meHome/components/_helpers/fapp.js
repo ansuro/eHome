@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
-import { AsyncStorage,  } from '@react-native-community/async-storage';
+import { AsyncStorage, } from '@react-native-community/async-storage';
 import feathers from '@feathersjs/feathers';
 import socketio from '@feathersjs/socketio-client';
 import authentication from '@feathersjs/authentication-client';
@@ -23,9 +23,19 @@ client.io.on('disconnect', () => {
   console.log('ws disconnected');
 });
 
-client.io.on('connect', () => { 
+client.io.on('connect', () => {
   appState.setConnected(true);
   console.log('ws connected');
+  // eingeloggt? Home : Login
+  client.reAuthenticate().then(() => {
+    // show application page
+    appState.login();
+    console.log(appState.loggedIn);
+  }).catch(() => {
+    // show login page
+    appState.logout();
+    console.log(appState.loggedIn);
+  });
 });
 
 export default client;

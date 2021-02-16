@@ -15,7 +15,7 @@ import { appState } from '../components/_helpers/AppStateObserver';
 import Settings from './Settings';
 
 // NOP component for logout
-const Logout = () => {return null;}
+const Logout = () => { return null; }
 
 const DrawerContent = ({ navigation, state }) => (
     <Drawer
@@ -42,20 +42,30 @@ class Main extends Component {
     }
 
     componentDidMount() {
-        // eingeloggt? Home : Login
-        client.reAuthenticate().then(() => {
-            // show application page
-            appState.login();
-            // console.log(appState.loggedIn);
-        }).catch(action(() => {
-            // show login page
-            appState.logout();
-            // console.log(appState.loggedIn);
-        }));
+        // client.on('authenticated', (jwt) => {
+        //     console.log('login event');
+        //     appState.login();
+        //     console.log(appState.loggedIn);
+        // });
+
+        // // eingeloggt? Home : Login
+        // client.reAuthenticate().then(() => {
+        //     // show application page
+        //     appState.login();
+        //     console.log(appState.loggedIn);
+        // }).catch(() => {
+        //     // show login page
+        //     appState.logout();
+        //     console.log(appState.loggedIn);
+        // });
     }
 
     render() {
         const l = appState.loggedIn;
+        const c = appState.connected;
+
+        if(!c && !l)
+            return <Loading msg='Connecting to server...' />
 
         if (l === null)
             return <Loading />;
