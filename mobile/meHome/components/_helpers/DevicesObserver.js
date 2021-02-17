@@ -2,23 +2,26 @@ import { observable, makeObservable, action, computed } from 'mobx';
 
 import client from './fapp';
 
-export default class DevicesObserver {
+class DevicesObserver {
     groups = [];
     devices = [];
 
     selectedGroupIndex = -1;
     isLoading = true;
+    isInit = true;
 
     constructor() {
         makeObservable(this, {
             groups: observable,
             selectedGroupIndex: observable,
             isLoading: observable,
+            isInit: observable,
             setSelectedGroupIndex: action,
-            devices: observable
+            devices: observable,
+            noGroups: computed
         });
 
-        this.init();
+        // this.init();
     }
 
     init() {
@@ -28,11 +31,14 @@ export default class DevicesObserver {
             }
         }).then(action("fetchSuccess", g => {
             this.groups = g;
-            this.isLoading = false;
+            if(g.length > 0) {
+                this.setSelectedGroupIndex(0);
+            }
+            this.isInit = false;
             // console.log(g);
         })).catch(action("fetchError", e => {
             console.error(e);
-            this.isLoading = false;
+            this.isInit = false;
         }));
 
         // nur aktuelle Devices einer Gruppen überprüfen
@@ -93,4 +99,10 @@ export default class DevicesObserver {
         })).catch(action("fetchError", e => console.error(e)))
             .finally(action(() => this.isLoading = false));
     }
+
+    get noGroups() {
+        return this.groups.length === 0;
+    }
 }
+
+export const devicesObserver = new DevicesObserver();

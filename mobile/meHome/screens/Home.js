@@ -12,7 +12,7 @@ import { Loading } from '../components/Loading';
 import GroupSelecor from '../components/GroupSelector';
 import DeviceList from "../components/devices/DeviceList";
 
-import DevicesObserver from '../components/_helpers/DevicesObserver';
+import { devicesObserver } from '../components/_helpers/DevicesObserver';
 import { observer, inject } from "mobx-react";
 
 
@@ -52,14 +52,12 @@ import { observer, inject } from "mobx-react";
 // };
 
 class Home extends Component {
-    store;
     constructor(props) {
         super(props);
-
-        this.store = new DevicesObserver();
     }
 
     componentDidMount() {
+        devicesObserver.init();
 
         // this.findDevices();
 
@@ -92,13 +90,13 @@ class Home extends Component {
             <GroupSelecor store={this.store} />
             <DeviceList store={this.store} />
         </>);
-        
-        if (this.store.state === 'loading') {
+
+        if (devicesObserver.isInit) {
             e = <Loading />;
         }
 
         return (
-            <Layout level='1' style={{height: '100%'}}>
+            <Layout level='1' style={{ height: '100%' }}>
                 <TopNav {...this.props} />
                 {e}
             </Layout>

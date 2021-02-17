@@ -8,6 +8,7 @@ import { Observer } from 'mobx-react';
 import { isObservable } from 'mobx';
 import { Loading } from "../Loading";
 import Device from "./Device";
+import { devicesObserver } from '../_helpers/DevicesObserver';
 
 // const RenderDeviceHeader = (headerProps, item) => (
 //     <Observer>{() =>
@@ -100,12 +101,12 @@ class DeviceList extends Component {
     }
 
     render() {
-        const { isLoading, selectedGroupIndex } = this.props.store;
+        const { isLoading } = devicesObserver;
 
         if (isLoading) {
             return <Loading />;
         }
-        const { devices } = this.props.store;
+        const { devices } = devicesObserver;
         // console.log(isObservable(devices));
         // console.log(devices);
 
