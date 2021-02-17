@@ -71,8 +71,6 @@ export default class DeviceOnOffOptions extends Component {
         this.setState({ showOptions: false });
     }
 
-
-
     render() {
         const { name, value } = this.props.st;
         const { disabled } = this.props;

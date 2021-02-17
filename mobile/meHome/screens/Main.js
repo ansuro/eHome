@@ -1,15 +1,13 @@
 import React, { Component } from "react";
 import { observer } from 'mobx-react';
-import { action, isObservable } from 'mobx';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Drawer, DrawerItem, Layout, Text, IndexPath } from '@ui-kitten/components';
+import { Drawer, DrawerItem, IndexPath } from '@ui-kitten/components';
 const { Navigator, Screen } = createDrawerNavigator();
 import client from '../components/_helpers/fapp';
 
 import Home from './Home';
 import Login from './Login';
-import TopNav from '../components/TopNav';
 import { Loading } from '../components/Loading';
 import { appState } from '../components/_helpers/AppStateObserver';
 import Settings from './Settings';
@@ -39,25 +37,6 @@ class Main extends Component {
 
     constructor(props) {
         super(props);
-    }
-
-    componentDidMount() {
-        // client.on('authenticated', (jwt) => {
-        //     console.log('login event');
-        //     appState.login();
-        //     console.log(appState.loggedIn);
-        // });
-
-        // // eingeloggt? Home : Login
-        // client.reAuthenticate().then(() => {
-        //     // show application page
-        //     appState.login();
-        //     console.log(appState.loggedIn);
-        // }).catch(() => {
-        //     // show login page
-        //     appState.logout();
-        //     console.log(appState.loggedIn);
-        // });
     }
 
     render() {

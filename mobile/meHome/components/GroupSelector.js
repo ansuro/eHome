@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import { Layout, Select, SelectItem, IndexPath } from "@ui-kitten/components";
 
-import { gid } from './_helpers/DevicesObserver';
 import { observer } from 'mobx-react';
 
-import client from './_helpers/fapp';
 import { devicesObserver } from './_helpers/DevicesObserver';
 
 class GroupSelector extends Component {
@@ -16,22 +14,6 @@ class GroupSelector extends Component {
         };
     }
 
-    componentDidMount() {
-        // client.service('groups').find({
-        //     query: {
-        //         $select: ['name'],
-        //         $paginate: false
-        //     }
-        // }).then(g => {
-        //     this.setState({
-        //         groups: g
-        //     });
-        //     console.log(g);
-        // }).catch(e => {
-        //     console.error(e);
-        // });
-    }
-
     onGroupSelected(i) {
         this.setState({ selGrpIdx: i });
         devicesObserver.setSelectedGroupIndex(i.row);
@@ -40,9 +22,6 @@ class GroupSelector extends Component {
     render() {
         const { groups, selectedGroupIndex, noGroups } = devicesObserver;
         const selGrpName = noGroups ? 'No Groups' : groups[selectedGroupIndex].name;
-
-        // const selGrp = groups[selectedGroupIndex];
-        // const selGrpName = selGrp == undefined ? 'Select Group' : groups[selectedGroupIndex].name;
 
         return (
             <Layout level='2' style={{ margin: '3px' }}>

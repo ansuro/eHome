@@ -20,8 +20,6 @@ class DevicesObserver {
             devices: observable,
             noGroups: computed
         });
-
-        // this.init();
     }
 
     init() {
@@ -35,7 +33,6 @@ class DevicesObserver {
                 this.setSelectedGroupIndex(0);
             }
             this.isInit = false;
-            // console.log(g);
         })).catch(action("fetchError", e => {
             console.error(e);
             this.isInit = false;
@@ -62,22 +59,6 @@ class DevicesObserver {
         this.isLoading = true;
         this.selectedGroupIndex = i;
         this.reloadDevices();
-        // console.log(i);
-        // this.devices = this.groups[this.selectedGroupIndex].devices;
-        // const ids = this.groups[this.selectedGroupIndex].devices.flatMap(s => s._id);
-        // console.log(ids);
-        // devices array neu laden
-        // client.service('devices').find({
-        //     query: {
-        //         $paginate: false,
-        //         _id: {
-        //             $in: ids
-        //         }
-        //     }
-        // }).then(action("fetchSuccess", d => {
-        //     this.devices = d;
-        // })).catch(action("fetchError",e => console.error(e)))
-        // .finally(action(() => this.isLoading = false));
     }
 
     reloadDevices() {
@@ -85,7 +66,6 @@ class DevicesObserver {
             return;
 
         const ids = this.groups[this.selectedGroupIndex].devices.flatMap(s => s._id);
-        // console.log(ids);
         // devices array neu laden
         client.service('devices').find({
             query: {

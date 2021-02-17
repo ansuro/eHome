@@ -44,20 +44,13 @@ class Device extends Component {
     }
 
     doUpdate(stobj) {
-        // TODO disabled prop setzen
-        // update request
-        // disabled prop false setzen on success else error somehow
-        // console.log(stobj);
         const { _id } = this.props.item;
-        // console.log(_id);
 
         this.setState({ isChanging: true });
         client.service('devicemanager').patch(_id, stobj).then(d => {
             console.log(d);
-            // this.setState({ isChanging: false });
         }).catch(e => {
             console.log(e);
-            // this.setState({ isChanging: false });
         });
     }
 

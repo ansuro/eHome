@@ -1,10 +1,5 @@
 import { observable, makeObservable, action, computed } from 'mobx';
 
-// export const connection = observable({
-//     connected: false,
-//     loggedIn: null
-// });
-
 // TODO login logik
 import client from './fapp';
 
