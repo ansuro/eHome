@@ -3,8 +3,8 @@ import { Application } from './declarations';
 import logger from './logger';
 import { GroupData } from './services/groups/groups.class';
 
-export default function(app: Application) {
-  if(typeof app.channel !== 'function') {
+export default function (app: Application) {
+  if (typeof app.channel !== 'function') {
     // If no real-time functionality has been configured just return
     return;
   }
@@ -18,7 +18,7 @@ export default function(app: Application) {
     // logger.info('login: %o %o', authResult, connection);
     // connection can be undefined if there is no
     // real-time connection, e.g. when logging in via REST
-    if(connection) {
+    if (connection) {
       // Obtain the logged in user from the connection
       const user = connection.user;
       logger.info('username: %o', user);
@@ -58,15 +58,15 @@ export default function(app: Application) {
   });
 
   // eslint-disable-next-line no-unused-vars
-  app.publish((data: any, hook: HookContext) => {
-    // Here you can add event publishers to channels set up in `channels.js`
-    // To publish only for a specific event use `app.publish(eventname, () => {})`
+  // app.publish((data: any, hook: HookContext) => {
+  // Here you can add event publishers to channels set up in `channels.js`
+  // To publish only for a specific event use `app.publish(eventname, () => {})`
 
-    console.log('Publishing all events to all authenticated users. See `channels.js` and https://docs.feathersjs.com/api/channels.html for more information.'); // eslint-disable-line
+  // console.log('Publishing all events to all authenticated users. See `channels.js` and https://docs.feathersjs.com/api/channels.html for more information.'); // eslint-disable-line
 
-    // e.g. to publish all service events to all authenticated users use
-    return app.channel('authenticated');
-  });
+  // e.g. to publish all service events to all authenticated users use
+  //   return app.channel('authenticated');
+  // });
 
   // Here you can also add service specific event publishers
   // e.g. the publish the `users` service `created` event to the `admins` channel

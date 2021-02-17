@@ -127,7 +127,7 @@ export class DeviceManager implements ServiceMethods<Data> {
   }
 
   async find(params?: Params): Promise<Data[] | Paginated<Data>> {
-    return [];
+    throw new NotImplemented();
   }
 
   async get(id: Id, params?: Params): Promise<Data> {
@@ -148,7 +148,7 @@ export class DeviceManager implements ServiceMethods<Data> {
   }
 
   async update(id: NullableId, data: Data, params?: Params): Promise<Data> {
-    return data;
+    throw new NotImplemented();
   }
 
   /*
