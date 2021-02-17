@@ -1,6 +1,6 @@
 import { Id, NullableId, Paginated, Params, ServiceMethods } from '@feathersjs/feathers';
-import { Client, connect, MqttClient } from 'mqtt';
-import { Application, ServiceTypes } from '../../declarations';
+import { Client, connect } from 'mqtt';
+import { Application } from '../../declarations';
 import logger from '../../logger';
 import { BadRequest, Forbidden, NotImplemented } from '@feathersjs/errors';
 import { DeviceData } from '../devices/devices.class';
@@ -75,8 +75,6 @@ export class DeviceManager implements ServiceMethods<Data> {
         }).catch(e => logger.error(e));
       }
     });
-
-
   }
 
   /*

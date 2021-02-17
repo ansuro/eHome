@@ -1,22 +1,20 @@
 import { Application } from './declarations';
 
-import { Server, Client } from 'mosca';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const aedes = require('aedes')();
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const server = require('net').createServer(aedes.handle);
 import logger from './logger';
 
+import { Client } from 'aedes';
+
 // start MQTT-Broker, set connected-disconnected-status handler
-export default function (app: Application) {
+export default function (app: Application): void {
   const deviceManager = app.service('devicemanager');
 
-  // TODO configure auth, ssl, cert, ...
-  const msrv = new Server({
-    port: app.get('MQTT_PORT')
-  });
+  const mqttport = app.get('MQTT_PORT') || 1883;
 
-  msrv.on('ready', () => {
-    logger.info('MQTT broker started');
-  });
-
-  msrv.on('clientConnected', (client: Client) => {
+  aedes.on('clientReady', (client: Client) => {
     logger.info('Client connect: %o', client.id);
     // client.id == MAC
     if (client.id !== app.get('MQTT_BACKEND_CLIENT_ID')) {
@@ -25,10 +23,14 @@ export default function (app: Application) {
     }
   });
 
-  msrv.on('clientDisconnected', (client: Client) => {
+  aedes.on('clientDisconnect', (client: Client) => {
     // client.id == MAC
     logger.info('device disconnected: %s', client.id);
     deviceManager.disconnect(client.id);
   });
 
+  // TODO configure auth, ssl, cert, ...
+  server.listen(mqttport, () => {
+    logger.info('MQTT broker listening on port: %s', mqttport);
+  });
 }
