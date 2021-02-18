@@ -8,6 +8,7 @@ import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { default as mapping } from './mapping.json';
 
 import Main from './screens/Main';
+import { View } from 'react-native';
 
 
 export default class App extends Component {
@@ -21,7 +22,9 @@ export default class App extends Component {
       <>
         <IconRegistry icons={EvaIconsPack} />
         <ApplicationProvider {...eva} theme={eva.dark} customMapping={mapping}>
-          <Main />
+          <View style={{backgroundColor: '#222B45', flex: 1}}>
+            <Main />
+          </View>
         </ApplicationProvider>
       </>
     );

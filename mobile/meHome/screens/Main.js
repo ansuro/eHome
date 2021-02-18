@@ -43,7 +43,7 @@ class Main extends Component {
         const l = appState.loggedIn;
         const c = appState.connected;
 
-        if(!c && !l)
+        if (!c && !l)
             return <Loading msg='Connecting to server...' />
 
         if (l === null)
