@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Layout, Select, SelectItem, IndexPath } from "@ui-kitten/components";
+import { View } from "react-native";
+import { Layout, Select, SelectItem, IndexPath, Button, Icon } from "@ui-kitten/components";
 
 import { observer } from 'mobx-react';
 
@@ -24,20 +25,30 @@ class GroupSelector extends Component {
         const selGrpName = noGroups ? 'No Groups' : groups[selectedGroupIndex].name;
 
         return (
-            <Layout level='2' style={{ margin: '3px' }}>
-                <Select
-                    placeholder='Select Group'
-                    selectedIndex={this.state.selGrpIdx}
-                    onSelect={i => this.onGroupSelected(i)}
-                    value={selGrpName}
-                    disabled={noGroups}
-                >
-                    {
-                        groups.map(g => <SelectItem title={g.name} key={g._id} />)
-                    }
-                </Select>
-
-            </Layout>
+            <View style={{ margin: 10, flexDirection: 'row' }}>
+                {/* <View> */}
+                <Button
+                    appearance='ghost'
+                    accessoryLeft={() => <Icon name='refresh'
+                    style={{ height: 16, width: 16 }} />}
+                    onPress={() => devicesObserver.reloadDevices()}
+                    disabled={devicesObserver.isLoading}
+                />
+                {/* </View> */}
+                <View style={{ flex: 1 }}>
+                    <Select
+                        placeholder='Select Group'
+                        selectedIndex={this.state.selGrpIdx}
+                        onSelect={i => this.onGroupSelected(i)}
+                        value={selGrpName}
+                        disabled={noGroups}
+                    >
+                        {
+                            groups.map(g => <SelectItem title={g.name} key={g._id} />)
+                        }
+                    </Select>
+                </View>
+            </View>
         );
     }
 }

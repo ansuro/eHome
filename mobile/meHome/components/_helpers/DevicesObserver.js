@@ -29,7 +29,7 @@ class DevicesObserver {
             }
         }).then(action("fetchSuccess", g => {
             this.groups = g;
-            if(g.length > 0) {
+            if (g.length > 0) {
                 this.setSelectedGroupIndex(0);
             }
             this.isInit = false;
@@ -56,26 +56,26 @@ class DevicesObserver {
 
     // devices aus group holen und refreshen
     setSelectedGroupIndex(i) {
-        this.isLoading = true;
         this.selectedGroupIndex = i;
         this.reloadDevices();
     }
 
     reloadDevices() {
+        console.log(this.selectedGroupIndex);
         if (this.selectedGroupIndex < 0)
             return;
 
-        const ids = this.groups[this.selectedGroupIndex].devices.flatMap(s => s._id);
-        // devices array neu laden
-        client.service('devices').find({
+        action(() => this.isLoading = true);
+
+        const gid = this.groups[this.selectedGroupIndex]._id;
+        // console.log(gid);
+        client.service('groups').get(gid, {
             query: {
-                $paginate: false,
-                _id: {
-                    $in: ids
-                }
+                $select: ['devices']
             }
-        }).then(action("fetchSuccess", d => {
-            this.devices = d;
+        }).then(action("fetchSuccess", g => {
+            console.log(g);
+            this.devices = g.devices;
         })).catch(action("fetchError", e => console.error(e)))
             .finally(action(() => this.isLoading = false));
     }

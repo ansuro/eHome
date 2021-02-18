@@ -64,6 +64,30 @@ export class Groups extends Service<GroupData> {
   //   return g;
   // }
 
+  async get(id: Id, params?: Params) {
+    if (!params || !params.user) // TODO
+      throw new BadRequest();
+
+    const { provider, user, edit } = params;
+
+    if (!provider || (user.admin && edit)) {
+      return await super.get(id, params);
+    }
+
+    const group = await super.get(id, {
+      ...params,
+      query: {
+        $select: ['_id', 'devices'],
+        members: user._id
+      }
+    }) as GroupData;
+    group.devices = await this.resolveDevices(group.devices) as DeviceData[];
+    logger.info('Group get: %o', group);
+    return group;
+    // prüfen ob User member ist
+    // return super.get(id, params);
+  }
+
   private resolveDevices(deviceList: any[] = []) {
     return this.deviceService.find({
       paginate: false,
@@ -94,12 +118,12 @@ export class Groups extends Service<GroupData> {
   async find(params?: Params) {
     logger.info('Params: %o', params);
 
-    if(!params || !params.user) // TODO
+    if (!params || !params.user) // TODO
       throw new BadRequest();
 
     const { provider, user, edit } = params;
 
-    if(!provider || (user.admin && edit)) {
+    if (!provider || (user.admin && edit)) {
       return await super.find(params);
     }
 

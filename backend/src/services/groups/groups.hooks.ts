@@ -10,7 +10,7 @@ export default {
   before: {
     all: [authenticate('jwt')],
     find: [noPaginate(), adminEditMode()],
-    get: [isAdmin()],
+    get: [adminEditMode()],
     create: [isAdmin()],
     update: [isAdmin()],
     patch: [isAdmin()],
