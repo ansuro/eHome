@@ -3,6 +3,4 @@
 
 #include <SmingCore.h>
 
-typedef Delegate<String(const String &topic, const String &message)> RequestResponseDelegate;
-
 #endif

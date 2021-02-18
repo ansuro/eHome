@@ -12,7 +12,6 @@ private:
     String mSSID;
     String mPW;
     Url mMqttHost;
-    RequestResponseDelegate mReqRespDelegate;
     MyDevice mMyDevice;
     Timer mMqttReconnectTimer;
     bool mWifiOnline = false;
@@ -22,7 +21,6 @@ public:
     ~DeviceManager();
 
     void setCredentials(const String &ssid, const String &pw);
-    void onRequest(RequestResponseDelegate &rrd);
     void connectMqtt();
     void boot() final;
 };

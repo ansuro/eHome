@@ -7,7 +7,6 @@
 #include "DeviceManager.h"
 #include "SetupManager.h"
 
-// TODO maybe dangerous
 static BuiltinLed BLed;
 
 class EHome
@@ -18,5 +17,5 @@ private:
 public:
     EHome();
     ~EHome();
-    void boot(RequestResponseDelegate rrd);
+    void boot();
 };

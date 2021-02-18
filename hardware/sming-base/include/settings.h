@@ -2,7 +2,7 @@
 
 // Define SSID and PW programatically
 // comment out / delete in production mode
-#define WIFI_SSID ""
+#define WIFI_SSID "Speedlink-417"
 #define WIFI_PW ""
 
 // builtin led pin

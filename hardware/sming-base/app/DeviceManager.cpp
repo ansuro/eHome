@@ -23,10 +23,6 @@ void DeviceManager::setCredentials(const String &ssid, const String &pw)
     debugf("SSID: %s PW: %s", mSSID.c_str(), mPW.c_str());
 }
 
-void DeviceManager::onRequest(RequestResponseDelegate &rrd)
-{
-    mReqRespDelegate = rrd;
-}
 
 void DeviceManager::boot()
 {

@@ -11,7 +11,7 @@ EHome::~EHome()
     debugf("~EHome");
 }
 
-void EHome::boot(RequestResponseDelegate rrd)
+void EHome::boot()
 {
     Serial.println("eHome booting...");
     // BuiltinLed, Configuration + the desired manager
@@ -20,7 +20,6 @@ void EHome::boot(RequestResponseDelegate rrd)
     Serial.println("WIFI_SSID & WIFI_PW is set programmatically");
     manager = new DeviceManager();
     ((DeviceManager *)manager)->setCredentials(WIFI_SSID, WIFI_PW);
-    ((DeviceManager *)manager)->onRequest(rrd);
 #else
     // TODO test.. and finish..
     mConfig = new Configuration();
