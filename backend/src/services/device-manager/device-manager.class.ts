@@ -64,6 +64,7 @@ export class DeviceManager implements ServiceMethods<Data> {
         logger.info('JSON: %o', m);
         logger.info('id: %s', id);
 
+        // TODO states array einzeln bearbeiten und register nutzen
         this.app.service('devices').patch(null, {
           states: m
         }, {

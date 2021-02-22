@@ -13,7 +13,6 @@ private:
     Timer mLedTimer;
     bool mLedState;
 
-    void setLed(bool state);
     void setLedBlink(uint32_t interval);
 
     // BuiltinLed() = default;
@@ -38,5 +37,6 @@ public:
 
     ~BuiltinLed();
 
+    void setLed(bool state);
     void set(LedState state);
 };

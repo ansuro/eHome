@@ -3,9 +3,9 @@
 ## Uncomment and change examples:
 
 ## Add your source directories here separated by space
-COMPONENT_SRCDIRS := app
+COMPONENT_SRCDIRS := app app/states
 # COMPONENT_SRCFILES := 
-COMPONENT_INCDIRS := include
+COMPONENT_INCDIRS := include include/states
 
 ## If you require any Arduino Libraries list them here
 ARDUINO_LIBRARIES := ArduinoJson6

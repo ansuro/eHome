@@ -8,8 +8,9 @@ DeviceManager::DeviceManager()
 // TODO not working.. no built-in mdns query 
     mMqttHost = "mqtt://ehome.local";
 #endif
-    mMqttClient.setKeepAlive(20);
-    mMqttClient.setPingRepeatTime(7);
+    // mMqttClient.setKeepAlive(20);
+    // mMqttClient.setPingRepeatTime(7);
+
 }
 
 DeviceManager::~DeviceManager()
@@ -45,7 +46,8 @@ void DeviceManager::boot()
     mMqttClient.setConnectedHandler([this](MqttClient &client, mqtt_message_t *message) {
         Serial.println("[MQTT] connected");
         client.subscribe(DEVICE_ID);
-        client.publish("status/" + DEVICE_ID, mMyDevice.getDeviceStates());
+        // TODO register topic implementieren (backend)
+        client.publish("register/" + DEVICE_ID, mMyDevice.getDeviceStates());
         BLed.set(BLed.OFF);
         return 0;
     });
@@ -88,6 +90,12 @@ void DeviceManager::boot()
             // String msg = mReqRespDelegate(topic, message);
             // debugf("TEST retval %s", msg.c_str());
     });
+
+    MqttClient *c = &this->mMqttClient;
+    mMyDevice.boot(c);
+
+    TcpClientState s = this->mMqttClient.getConnectionState();
+    Serial.printf("TEST -------------------- %i",  static_cast<int>(s));
 
     // connect Wifi
     WifiStation.config(mSSID, mPW);

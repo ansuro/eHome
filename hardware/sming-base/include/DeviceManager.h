@@ -16,12 +16,13 @@ private:
     Timer mMqttReconnectTimer;
     bool mWifiOnline = false;
 
+    void connectMqtt();
+
 public:
     DeviceManager();
     ~DeviceManager();
 
     void setCredentials(const String &ssid, const String &pw);
-    void connectMqtt();
     void boot() final;
 };
 
