@@ -3,7 +3,7 @@
 #include <SmingCore.h>
 #include <ArduinoJson6.h>
 
-#include "ehome_types.h"
+#include "StateTypes.h"
 
 class ValueState
 {
@@ -16,7 +16,7 @@ private:
     MqttClient *mqttClient;
 
 public:
-    ValueState() = default;
+    ValueState() = default; // @suppress("Class members should be properly initialized")
     ValueState(const String &name, uint32_t refreshTimeInMs, const Delegate<String(void)> cb, MqttClient *mqttClient);
     ~ValueState() = default;
 

@@ -14,9 +14,9 @@ private:
     Vector<String> *options;
 
 public:
-    OnOffOptionsState() = default;
+    OnOffOptionsState() = default; // @suppress("Class members should be properly initialized")
     OnOffOptionsState(const String &name, Vector<String> *options, const Delegate<String(const String &, const String &)> cb);
-    ~OnOffOptionsState() = default;
+    virtual ~OnOffOptionsState() = default;
 
     String getValue() { return curValue; }
     Vector<String> *getOptions() { return options; }

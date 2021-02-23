@@ -1,6 +1,6 @@
 #include "DeviceStates.h"
 
-DeviceStates::DeviceStates()
+DeviceStates::DeviceStates() // @suppress("Class members should be properly initialized")
 {
 }
 
@@ -94,7 +94,5 @@ String DeviceStates::getStatesAsJsonString()
 
 void DeviceStates::setMqtt(MqttClient *mClient)
 {
-    TcpClientState s = mClient->getConnectionState();
-    Serial.printf("TEST -------------------- %i", static_cast<int>(s));
     this->mqttClient = mClient;
 }

@@ -15,7 +15,7 @@ String OnOffOptionsState::handle(const String &value)
     }
 
     this->curValue = this->cb(this->curValue, value);
-    StaticJsonDocument<256> doc;
+    StaticJsonDocument<512> doc;
     doc["name"] = this->name;
     doc["value"] = this->curValue;
     doc["type"] = static_cast<int>(StateTypes::ON_OFF_OPTIONS);

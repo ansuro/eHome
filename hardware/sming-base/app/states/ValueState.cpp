@@ -6,38 +6,28 @@ ValueState::ValueState(const String &name, uint32_t refreshTimeInMs, const Deleg
     this->name = name;
     this->curValue = "curValue";
     this->mqttClient = mqttClient;
-    // Serial.printf("timer lambda");
-    // TcpClientState s = mqttClient2->getConnectionState();
-    // Serial.printf("TEST -------------------- %i", static_cast<int>(s));
-    auto td = TimerDelegate(&ValueState::handleTimer, this);
-    pTimer.initializeMs(5000, td).start();
-    // pTimer.initializeMs(refreshTimeInMs, td).start();
 
-    // pTimer.initializeMs(1000, [mqttClient2]() -> void {
-    //     Serial.printf("timer lambda");
-    //     TcpClientState s = mqttClient2->getConnectionState();
-    //     Serial.printf("TEST -------------------- %i", static_cast<int>(s));
-    // }).start();
+    auto td = TimerDelegate(&ValueState::handleTimer, this);
+    pTimer.initializeMs(refreshTimeInMs, td).start();
 }
 
 void ValueState::handleTimer()
 {
-    Serial.printf("handleTimer");
-    TcpClientState s = this->mqttClient->getConnectionState();
-    Serial.printf("TEST -------------------- %i", static_cast<int>(s));
-    // TcpClientState s = this->mqttClient->getConnectionState();
-    // Serial.printf("%i",  static_cast<short>(s));
-    // TODO 1. check mqtt connection, if connected call cb
+     if(this->mqttClient->getConnectionState() == TcpClientState::eTCS_Connected)
+     {
+         // mqtt is connected
+         Serial.println("mqtt connected");
+         String val = this->cb();
+         this->curValue = val;
 
-    // if(this->mqttClient->getConnectionState() == TcpClientState::eTCS_Ready)
-    // {
-    //     // mqtt is connected
-    //     Serial.println("mqtt connected");
-    // }
-    // else
-    // {
-    //     Serial.println("mqtt not connected");
-    // }
+         StaticJsonDocument<256> doc;
+         doc["name"] = this->getName();
+         doc["value"] = this->getValue();
+         doc["type"] = static_cast<int>(StateTypes::VALUE_ONLY);
 
-    // mqttClient->publish("status/" + DEVICE_ID, "Test MSG");
+         String s;
+         serializeJson(doc, s);
+//         Serial.printf("ValueState json: %s\n", s.c_str());
+          mqttClient->publish("status/" + DEVICE_ID, s);
+     }
 }

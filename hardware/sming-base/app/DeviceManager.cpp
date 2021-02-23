@@ -78,7 +78,7 @@ void DeviceManager::boot()
 
         if (topic == DEVICE_ID)
         {
-            StaticJsonDocument<256> d;
+            StaticJsonDocument<512> d;
             deserializeJson(d, message);
             const String stateName = d["name"];
             const String value = d["value"];
@@ -87,15 +87,9 @@ void DeviceManager::boot()
             debugf("ret: %s", msg.c_str());
             mMqttClient.publish("status/" + DEVICE_ID, msg);
         }
-            // String msg = mReqRespDelegate(topic, message);
-            // debugf("TEST retval %s", msg.c_str());
     });
 
-    MqttClient *c = &this->mMqttClient;
-    mMyDevice.boot(c);
-
-    TcpClientState s = this->mMqttClient.getConnectionState();
-    Serial.printf("TEST -------------------- %i",  static_cast<int>(s));
+    mMyDevice.boot(&this->mMqttClient);
 
     // connect Wifi
     WifiStation.config(mSSID, mPW);

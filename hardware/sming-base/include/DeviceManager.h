@@ -20,7 +20,7 @@ private:
 
 public:
     DeviceManager();
-    ~DeviceManager();
+    virtual ~DeviceManager();
 
     void setCredentials(const String &ssid, const String &pw);
     void boot() final;

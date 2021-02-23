@@ -10,12 +10,12 @@ class OnOffState : public State
 {
 private:
     Delegate<bool(const bool, const bool)> cb;
-    bool curValue;
+    bool curValue = false;
 
 public:
     OnOffState() = default;
     OnOffState(const String &name, const Delegate<bool(const bool, const bool)> cb);
-    ~OnOffState() = default;
+    virtual ~OnOffState() = default;
 
     bool getValue() { return curValue; }
 
