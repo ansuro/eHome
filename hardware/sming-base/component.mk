@@ -37,3 +37,11 @@ DISABLE_SPIFFS := 0
 SPIFF_FILES = files
 
 ## Refer to Basic_rBoot sample for options relating to rBoot
+
+SMING_ARCH = Esp8266
+ENABLE_SSL = 0
+# ENABLE_SSL = Axtls
+SPI_SIZE = 4M
+COM_PORT = COM3
+COM_SPEED = 74880
+COM_SPEED_ESPTOOL = 921600

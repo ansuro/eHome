@@ -48,7 +48,7 @@ String DeviceStates::getStatesAsJsonString()
     StaticJsonDocument<1024> doc;
     JsonArray array = doc.to<JsonArray>();
 
-    uint count = mOnOffStates.count();
+    size_t count = mOnOffStates.count();
     for (size_t i = 0; i < count; i++)
     {
         OnOffState *oos = mOnOffStates.valueAt(i);
@@ -68,8 +68,8 @@ String DeviceStates::getStatesAsJsonString()
         state["type"] = static_cast<int>(StateTypes::ON_OFF_OPTIONS);
         JsonArray options = state.createNestedArray("options");
         Vector<String> *opt = oos->getOptions();
-        uint y = opt->count();
-        for (uint i = 0; i < y; i++)
+        size_t y = opt->count();
+        for (size_t i = 0; i < y; i++)
         {
             options.add(opt->get(i));
         }

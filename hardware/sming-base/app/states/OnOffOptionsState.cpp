@@ -22,8 +22,8 @@ String OnOffOptionsState::handle(const String &value)
 
     JsonArray arrOptions = doc.createNestedArray("options");
 
-    uint y = this->options->count();
-    for (uint i = 0; i < y; i++)
+    size_t y = this->options->count();
+    for (size_t i = 0; i < y; i++)
     {
         arrOptions.add(this->options->get(i));
     }

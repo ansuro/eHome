@@ -47,12 +47,12 @@
             "command": "make",
             "args": [
                 "SMING_ARCH=Esp8266",
-                "flash",
-                "COM_PORT=COM3",
-                "COM_SPEED=74880",
-                "COM_SPEED_ESPTOOL=921600",
-                "SPI_SIZE=4M",
-                "ENABLE_GDB=0"
+                "flash"
+                // "COM_PORT=COM3",
+                // "COM_SPEED=74880",
+                // "COM_SPEED_ESPTOOL=921600",
+                // "SPI_SIZE=4M",
+                // "ENABLE_GDB=0"
             ],
             "problemMatcher": []
         }
