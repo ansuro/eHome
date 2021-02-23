@@ -4,7 +4,7 @@ ValueState::ValueState(const String &name, uint32_t refreshTimeInMs, const Deleg
 {
     this->cb = cb;
     this->name = name;
-    this->curValue = "curValue";
+    this->curValue = cb();
     this->mqttClient = mqttClient;
 
     auto td = TimerDelegate(&ValueState::handleTimer, this);

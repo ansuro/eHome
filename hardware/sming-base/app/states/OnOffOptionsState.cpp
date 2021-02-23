@@ -4,6 +4,7 @@ OnOffOptionsState::OnOffOptionsState(const String &name, Vector<String> *options
 {
     this->options = options;
     this->cb = cb;
+    this->curValue = options->get(0);
 }
 
 String OnOffOptionsState::handle(const String &value)

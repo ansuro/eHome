@@ -23,14 +23,13 @@ void MyDevice::defineStates()
 {
     this->deviceStates.addOnOffState("TestState1",
                                      [](const bool curValue, const bool newValue) -> bool {
-                                         Serial.println("TestState1 lambda");
-                                        //  this->BLed.setLed(!curValue);
-                                         digitalWrite(2, false);
+                                         Serial.println("TestState1");
+                                         digitalWrite(2, !curValue);
                                          return !curValue;
                                      });
 
     Vector<String> *opts = new Vector<String>();
-    opts->add("red"); opts->add("green"); opts->add("blue");
+    opts->add("off"); opts->add("red"); opts->add("green"); opts->add("blue");
     this->deviceStates.addOnOffOptionsState("TestState2", opts, [](const String &curValue, const String &newValue) -> String {
         Serial.println("TestState2");
         return newValue;
@@ -38,7 +37,8 @@ void MyDevice::defineStates()
 
     this->deviceStates.addValueOnlyState("TestState3", 5000, []() -> String {
         Serial.println("TestState3 timer...");
-        return "";
+        int r = rand() % 5;
+        return String(r);
     });
 }
 

@@ -27,6 +27,8 @@ void DeviceManager::setCredentials(const String &ssid, const String &pw)
 
 void DeviceManager::boot()
 {
+	Serial.printf("Device ID: %s\n", this->DEVICE_ID.c_str());
+
     // Wifi connected
     WifiEvents.onStationGotIP([this](IpAddress ip, IpAddress netmask, IpAddress gateway) {
         mWifiOnline = true;
