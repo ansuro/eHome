@@ -58,22 +58,52 @@ export class DeviceManager implements ServiceMethods<Data> {
 
       const m = JSON.parse(msg);
 
-      if (topic.startsWith('status/')) {
-        const id = topic.replace('status/', '');
+      if (topic.startsWith('register/')) {
+        const mac = topic.replace('register/', '');
         logger.info('(topic: %s) msg: %s', topic, message);
         logger.info('JSON: %o', m);
-        logger.info('id: %s', id);
+        logger.info('mac-id: %s', mac);
 
-        // TODO states array einzeln bearbeiten und register nutzen
         this.app.service('devices').patch(null, {
           states: m
         }, {
           query: {
-            MAC: id
+            MAC: mac
           }
-        }).then(m => {
-          logger.info('saved: %o', m);
+        }).then(d => {
+          logger.info('device registered: %o', d);
         }).catch(e => logger.error(e));
+      } else if (topic.startsWith('status/')) {
+        const mac = topic.replace('status/', '');
+        logger.info('(topic: %s) msg: %s', topic, message);
+        logger.info('JSON: %o', m);
+        logger.info('mac-id: %s', mac);
+
+        // 1. find by mac
+        // 2. patch complete array
+        (this.app.service('devices').find({
+          query: {
+            MAC: mac,
+            $select: ['_id', 'states'],
+            $paginate: false
+          }
+        }) as Promise<DeviceData[]>).then(d => {
+          logger.info('device(%s) state found: %o', mac, d);
+          const newStates = d[0].states?.map(s => {
+            if(s.name === m.name) {
+              s.value = m.value;
+            }
+
+            return s;
+          });
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          this.app.service('devices').patch(d[0]._id!, {
+            states: newStates
+          }).then(pd => {
+            logger.info('device states patched: %o', pd);
+          }).catch(e => logger.error(e));
+        }).catch(e => logger.error(e));
+
       }
     });
   }

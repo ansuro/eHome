@@ -35,11 +35,11 @@ void MyDevice::defineStates()
         return newValue;
     });
 
-    this->deviceStates.addValueOnlyState("TestState3", 5000, []() -> String {
-        Serial.println("TestState3 timer...");
-        int r = rand() % 5;
-        return String(r);
-    });
+//    this->deviceStates.addValueOnlyState("TestState3", 5000, []() -> String {
+//        Serial.println("TestState3 timer...");
+//        int r = rand() % 5;
+//        return String(r);
+//    });
 }
 
 String MyDevice::handleStateChange(const String &stateName, const String &value)
