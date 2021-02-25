@@ -9,12 +9,12 @@ class MyDevice
 {
 private:
     DeviceStates deviceStates;
+    void defineStates();
 
 public:
-    MyDevice();
-    ~MyDevice();
+    MyDevice() = default;
+    ~MyDevice() = default;
 
-    void defineStates();
     String getDeviceStates();
     String handleStateChange(const String &stateName, const String &value);
     void boot(MqttClient *mClient);
