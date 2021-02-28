@@ -6,9 +6,13 @@ import authentication from '@feathersjs/authentication-client';
 
 import { appState } from './AppStateObserver';
 
-const socket = io('http://ehome.local:3030', {
+// TODO externalize Config
+const IO_URL = __DEV__ ? 'http://ehome.local:3030' : 'https://api.ansuro.me:443';
+
+const socket = io(IO_URL, {
   transports: ['websocket'],
-  forceNew: true
+  forceNew: true,
+  secure: true
 });
 const client = feathers();
 

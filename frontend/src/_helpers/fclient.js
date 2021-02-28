@@ -1,7 +1,11 @@
 import io from 'socket.io-client';
 import feathers from '@feathersjs/client';
 
-const s = io('http://localhost:3030');
+const s = io(process.env.REACT_APP_IO_URL, {
+    // withCredentials: true,
+    transports: ['websocket'],
+    secure: true
+});
 const client = feathers();
 client.configure(feathers.socketio(s));
 client.configure(feathers.authentication({storage: window.localStorage}));

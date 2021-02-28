@@ -14,6 +14,7 @@ const logger = createLogger({
     format.simple(),
   ),
   transports: [
+    // new transports.File({filename: 'backend.log'}),
     new transports.Console()
   ],
 });

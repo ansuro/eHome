@@ -29,7 +29,10 @@ const app: Application = express(feathers());
 app.configure(configuration());
 // Enable security, CORS, compression, favicon and body parsing
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+  origin: ['https://admin.ansuro.me', 'https://ehome.ansuro.me'],
+  // credentials: true
+}));
 app.use(compress());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -39,7 +42,20 @@ app.use('/', express.static(app.get('public')));
 
 // Set up Plugins and providers
 app.configure(express.rest());
-app.configure(socketio());
+// app.configure(socketio());
+app.configure(socketio({
+  origins: ['https://admin.ansuro.me:443', 'https://ehome.ansuro.me:443'],
+  transports: ['websocket']
+  // handlePreflightRequest: (server, req, res) => {
+  //   res.writeHead(200, {
+  //     'Access-Control-Allow-Origin': 'https://admin.ansuro.me',
+  //     'Access-Control-Allow-Methods': '*',
+  //     'Access-Control-Allow-Headers': 'my-custom-header',
+  //     'Access-Control-Allow-Credentials': 'true'
+  //   });
+  //   res.end();
+// }
+}));
 
 // Configure other middleware (see `middleware/index.js`)
 app.configure(middleware);
