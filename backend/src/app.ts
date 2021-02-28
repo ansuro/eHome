@@ -44,7 +44,7 @@ app.use('/', express.static(app.get('public')));
 app.configure(express.rest());
 // app.configure(socketio());
 app.configure(socketio({
-  origins: ['https://admin.ansuro.me:443', 'https://ehome.ansuro.me:443'],
+  // origins: ['https://admin.ansuro.me:443', 'https://ehome.ansuro.me:443'],
   transports: ['websocket']
   // handlePreflightRequest: (server, req, res) => {
   //   res.writeHead(200, {
