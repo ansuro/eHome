@@ -5,11 +5,10 @@ DeviceManager::DeviceManager()
 #ifdef MQTT_HOST
     mMqttHost = MQTT_HOST;
 #else
-// TODO not working.. no built-in mdns query 
-    mMqttHost = "mqtt://ehome.local";
+    mMqttHost = "mqtt://api.ansuro.me";
 #endif
-    // mMqttClient.setKeepAlive(20);
-    // mMqttClient.setPingRepeatTime(7);
+     mMqttClient.setKeepAlive(5);
+//     mMqttClient.setPingRepeatTime(7);
 
 }
 
