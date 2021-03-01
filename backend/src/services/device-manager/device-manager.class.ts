@@ -4,6 +4,7 @@ import { Application } from '../../declarations';
 import logger from '../../logger';
 import { BadRequest, Forbidden, NotImplemented } from '@feathersjs/errors';
 import { DeviceData } from '../devices/devices.class';
+import fs from 'fs';
 
 interface Data {
   MAC: any;
@@ -26,9 +27,28 @@ export class DeviceManager implements ServiceMethods<Data> {
   }
 
   mqttSetup(): void {
-    const mqttOptions = {
-      clientId: this.app.get('MQTT_BACKEND_CLIENT_ID')
-    };
+    let mqttOptions;
+    // to check for encryption
+    const mqttport = this.app.get('MQTT_PORT') || 1883;
+
+    if (mqttport === 1883) {
+      mqttOptions = {
+        clientId: this.app.get('MQTT_BACKEND_CLIENT_ID'),
+        port: mqttport,
+        host: 'localhost',
+        protocol: 'mqtt'
+      };
+    } else {
+      mqttOptions = {
+        clientId: this.app.get('MQTT_BACKEND_CLIENT_ID'),
+        key: fs.readFileSync('../cert/key_1024.pem'),
+        cert: fs.readFileSync('../cert/x509_1024.pem'),
+        port: mqttport,
+        host: 'localhost',
+        protocol: 'mqtts',
+        rejectUnauthorized: false
+      };
+    }
 
     this.mqtt = connect(mqttOptions);
     this.mqtt.on('connect', () => {
@@ -90,7 +110,7 @@ export class DeviceManager implements ServiceMethods<Data> {
         }) as Promise<DeviceData[]>).then(d => {
           logger.info('device(%s) state found: %o', mac, d);
           const newStates = d[0].states?.map(s => {
-            if(s.name === m.name) {
+            if (s.name === m.name) {
               s.value = m.value;
             }
 

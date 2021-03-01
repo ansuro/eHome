@@ -1,11 +1,8 @@
 import { Application } from './declarations';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const aedes = require('aedes')();
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const server = require('net').createServer(aedes.handle);
-import logger from './logger';
+import fs from 'fs';
 
+import logger from './logger';
 import { Client } from 'aedes';
 
 // start MQTT-Broker, set connected-disconnected-status handler
@@ -13,6 +10,22 @@ export default function (app: Application): void {
   const deviceManager = app.service('devicemanager');
 
   const mqttport = app.get('MQTT_PORT') || 1883;
+  let server;
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const aedes = require('aedes')();
+
+  if(mqttport === 1883) {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    server = require('net').createServer(aedes.handle);
+  } else {
+    const options = {
+      key: fs.readFileSync('../cert/key_1024.pem'),
+      cert: fs.readFileSync('../cert/x509_1024.pem')
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    server = require('tls').createServer(options, aedes.handle);
+  }
 
   aedes.on('clientReady', (client: Client) => {
     logger.info('Client connect: %o', client.id);
@@ -29,7 +42,6 @@ export default function (app: Application): void {
     deviceManager.disconnect(client.id);
   });
 
-  // TODO configure auth, ssl, cert, ...
   server.listen(mqttport, () => {
     logger.info('MQTT broker listening on port: %s', mqttport);
   });

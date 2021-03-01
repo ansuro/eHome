@@ -1,11 +1,19 @@
 #include "DeviceManager.h"
 
+#ifdef ENABLE_SSL
+#include "ssl/private_key.h"
+#include "ssl/cert.h"
+#endif
 DeviceManager::DeviceManager()
 {
 #ifdef MQTT_HOST
     mMqttHost = MQTT_HOST;
 #else
-    mMqttHost = "mqtt://api.ansuro.me";
+	#ifdef ENABLE_SSL
+    	mMqttHost = "mqtts://api.ansuro.me";
+	#else
+    	mMqttHost = "mqtt://api.ansuro.me";
+	#endif
 #endif
      mMqttClient.setKeepAlive(5);
 //     mMqttClient.setPingRepeatTime(7);
@@ -42,6 +50,16 @@ void DeviceManager::boot()
         Serial.println("[Wifi] disconnected");
         BLed.set(BLed.ERROR_CON_WIFI);
     });
+
+#ifdef ENABLE_SSL
+
+    mMqttClient.setSslInitHandler([](Ssl::Session& session) {
+    	session.options.verifyLater = true;
+    	session.keyCert.assign(key_1024, sizeof(key_1024), x509_1024_cer,
+    								   sizeof(x509_1024_cer), nullptr);
+    });
+
+#endif
 
     // MQTT connected
     mMqttClient.setConnectedHandler([this](MqttClient &client, mqtt_message_t *message) {

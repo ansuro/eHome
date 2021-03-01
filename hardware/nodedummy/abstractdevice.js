@@ -2,8 +2,7 @@ const {
   connect
 } = require('mqtt');
 const { env } = require('process');
-
-const BROKER_URL = 'mqtt://api.ansuro.me';
+const fs = require('fs');
 
 exports.createDevice = function (MAC) {
   let status = [{
@@ -21,19 +20,29 @@ exports.createDevice = function (MAC) {
     type: 1
   }];
 
-  let client;
   let msg2send = '';
 
   if (env.NODE_ENV === 'prod' || 'production') {
-    client = connect(BROKER_URL, {
-      clientId: MAC
-    });
+      mqttOptions = {
+        clientId: MAC,
+        key: fs.readFileSync('../../../cert/key_1024.pem'),
+        cert: fs.readFileSync('../../../cert/x509_1024.pem'),
+        port: 8883,
+        host: 'api.ansuro.me',
+        protocol: 'mqtts',
+        rejectUnauthorized: false
+      };
   } else {
-    client = connect({
-      clientId: MAC
-    });
+    mqttOptions = {
+      clientId: MAC,
+      port: 1883,
+      host: 'localhost',
+      protocol: 'mqtt'
+    };
   }
 
+  const client = connect(mqttOptions);
+  
   client.on('connect', () => {
     client.subscribe(MAC, () => {
       console.log('Subscribed to: ' + MAC);
