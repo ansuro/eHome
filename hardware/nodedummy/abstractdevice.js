@@ -1,6 +1,9 @@
 const {
   connect
 } = require('mqtt');
+const { env } = require('process');
+
+const BROKER_URL = 'mqtt://api.ansuro.me';
 
 exports.createDevice = function (MAC) {
   let status = [{
@@ -18,9 +21,18 @@ exports.createDevice = function (MAC) {
     type: 1
   }];
 
-  const client = connect({
-    clientId: MAC
-  });
+  let client;
+  let msg2send = '';
+
+  if (env.NODE_ENV === 'prod' || 'production') {
+    client = connect(BROKER_URL, {
+      clientId: MAC
+    });
+  } else {
+    client = connect({
+      clientId: MAC
+    });
+  }
 
   client.on('connect', () => {
     client.subscribe(MAC, () => {
@@ -32,30 +44,35 @@ exports.createDevice = function (MAC) {
   client.on('message', (topic, message) => {
     if (topic === MAC) {
       const s = JSON.parse(message.toString());
+      console.log('Incoming msg: ');
+      console.log(s);
       // TODO array patchen nicht überschreiben
       // status.filter((s, i) => s.name === status.name).map((s, i) => {
       //   status[i].value = s.value;
       // });
       status.forEach((e, i) => {
-        if(s.name === e.name) {
+        if (s.name === e.name) {
           status[i].value = s.value;
+          console.log('State found and set: ');
+          console.log(status[i]);
+          msg2send = status[i];
         }
       });
-      // status = s.status;
-      // console.log(`New status: ${status ? 'on' : 'off'}`);
-      console.log(status.toString());
-      setTimeout(pubStatus, 5000);
+
+      // console.log(status.toString());
+      // setTimeout(pubStatus, 5000);
+      pubStatus();
     }
   });
 
   console.log(`Device ${MAC} up and running. Status: ${JSON.stringify(status)}`);
 
   const pubStatus = () => {
-    // const m = {
-    //   states: status
-    // };
     console.log(JSON.stringify(status));
-    client.publish('status/' + MAC, Buffer.from(JSON.stringify(status)), {
+    // client.publish('status/' + MAC, Buffer.from(JSON.stringify(status)), {
+    //   qos: 1
+    // });
+    client.publish('status/' + MAC, Buffer.from(JSON.stringify(msg2send)), {
       qos: 1
     });
   }

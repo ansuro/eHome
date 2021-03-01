@@ -1,3 +1,7 @@
 # NodeJs dummy device
 
-deprecated atm
+$>export NODE_ENV=prod (linux)
+
+$>SET NODE_ENV=prod (windows)
+
+or just start for testing on localhost
