@@ -1,6 +1,6 @@
 import { Service, NedbServiceOptions } from 'feathers-nedb';
 import { Application, ServiceTypes } from '../../declarations';
-import { Params, Paginated, Id, NullableId } from '@feathersjs/feathers';
+import { Params, Id, NullableId } from '@feathersjs/feathers';
 import logger from '../../logger';
 import { UserData } from '../users/users.class';
 import { DeviceData } from '../devices/devices.class';
@@ -65,7 +65,7 @@ export class Groups extends Service<GroupData> {
   // }
 
   async get(id: Id, params?: Params) {
-    if (!params || !params.user) // TODO
+    if (!params || !params.user)
       throw new BadRequest();
 
     const { provider, user, edit } = params;
@@ -84,8 +84,6 @@ export class Groups extends Service<GroupData> {
     group.devices = await this.resolveDevices(group.devices) as DeviceData[];
     logger.info('Group get: %o', group);
     return group;
-    // prüfen ob User member ist
-    // return super.get(id, params);
   }
 
   private resolveDevices(deviceList: any[] = []) {

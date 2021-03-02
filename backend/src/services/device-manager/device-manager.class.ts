@@ -2,7 +2,7 @@ import { Id, NullableId, Paginated, Params, ServiceMethods } from '@feathersjs/f
 import { Client, connect } from 'mqtt';
 import { Application } from '../../declarations';
 import logger from '../../logger';
-import { BadRequest, Forbidden, NotImplemented } from '@feathersjs/errors';
+import { BadRequest, Forbidden } from '@feathersjs/errors';
 import { DeviceData } from '../devices/devices.class';
 import fs from 'fs';
 
@@ -176,7 +176,7 @@ export class DeviceManager implements ServiceMethods<Data> {
   }
 
   async find(params?: Params): Promise<Data[] | Paginated<Data>> {
-    throw new NotImplemented();
+    throw new Forbidden();
   }
 
   async get(id: Id, params?: Params): Promise<Data> {
@@ -184,7 +184,7 @@ export class DeviceManager implements ServiceMethods<Data> {
     //   // id, text: `A new message with ID: ${id}!`
     // };
 
-    throw new NotImplemented();
+    throw new Forbidden();
   }
 
   async create(data: Data, params?: Params): Promise<Data> {
@@ -193,11 +193,11 @@ export class DeviceManager implements ServiceMethods<Data> {
     // }
 
     // return data;
-    throw new NotImplemented();
+    throw new Forbidden();
   }
 
   async update(id: NullableId, data: Data, params?: Params): Promise<Data> {
-    throw new NotImplemented();
+    throw new Forbidden();
   }
 
   /*
@@ -234,7 +234,7 @@ export class DeviceManager implements ServiceMethods<Data> {
 
   async remove(id: NullableId, params?: Params): Promise<Data> {
     // return { id };
-    throw new NotImplemented();
+    throw new Forbidden();
   }
 
   private async isPermitted(userId: Id, deviceId: NullableId) {

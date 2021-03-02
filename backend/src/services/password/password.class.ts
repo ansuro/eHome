@@ -1,4 +1,4 @@
-import { BadRequest, NotImplemented } from '@feathersjs/errors';
+import { BadRequest, Forbidden } from '@feathersjs/errors';
 import { Id, NullableId, Paginated, Params, ServiceMethods } from '@feathersjs/feathers';
 import { Application } from '../../declarations';
 import logger from '../../logger';
@@ -20,22 +20,22 @@ export class Password implements ServiceMethods<Data> {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async find(params?: Params): Promise<Data[] | Paginated<Data>> {
-    throw new NotImplemented();
+    throw new Forbidden();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async get(id: Id, params?: Params): Promise<Data> {
-    throw new NotImplemented();
+    throw new Forbidden();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async create(data: Data, params?: Params): Promise<Data> {
-    throw new NotImplemented();
+    throw new Forbidden();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async update(id: NullableId, data: Data, params?: Params): Promise<Data> {
-    throw new NotImplemented();
+    throw new Forbidden();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -53,13 +53,13 @@ export class Password implements ServiceMethods<Data> {
     try {
       await this.app.service('users')._patch(userId, { password: pw });
     } catch (e) {
-      console.warn('password change failed: %e', e);
+      logger.error('password change failed: %e', e);
     }
     return data;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async remove(id: NullableId, params?: Params): Promise<Data> {
-    throw new NotImplemented();
+    throw new Forbidden();
   }
 }
