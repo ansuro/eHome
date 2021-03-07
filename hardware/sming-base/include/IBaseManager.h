@@ -1,13 +1,18 @@
 #pragma once
 
+#include "Configuration.h"
+#include "settings.h"
+
 class IBaseManager
 {
 private:
-    /* data */
+
+protected:
+    Configuration *config;
+
 public:
-    // TODO check later how to correct define (virtual,...)
-    // IBaseManager();
-    ~IBaseManager() = default;
+	IBaseManager(Configuration *config) { this->config = config; };
+    virtual ~IBaseManager() = default;
 
     virtual void boot() = 0;
 };

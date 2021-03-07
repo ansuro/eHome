@@ -13,7 +13,7 @@ void init()
 {
 	Serial.begin(74880);
 	Serial.systemDebugOutput(SYSTEM_DEBUG_OUTPUT);
-	WifiAccessPoint.enable(false);
+//	WifiAccessPoint.enable(false);
 	// WifiStation.enable(false);
 
 	System.onReady(onSystemReady);

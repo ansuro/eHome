@@ -4,7 +4,7 @@
 #include "ssl/private_key.h"
 #include "ssl/cert.h"
 #endif
-DeviceManager::DeviceManager()
+DeviceManager::DeviceManager(Configuration *config) : IBaseManager(config)
 {
 #ifdef MQTT_HOST
     mMqttHost = MQTT_HOST;
@@ -22,13 +22,6 @@ DeviceManager::DeviceManager()
 
 DeviceManager::~DeviceManager()
 {
-}
-
-void DeviceManager::setCredentials(const String &ssid, const String &pw)
-{
-    mSSID = ssid;
-    mPW = pw;
-    debugf("SSID: %s PW: %s", mSSID.c_str(), mPW.c_str());
 }
 
 
@@ -65,7 +58,6 @@ void DeviceManager::boot()
     mMqttClient.setConnectedHandler([this](MqttClient &client, mqtt_message_t *message) {
         Serial.println("[MQTT] connected");
         client.subscribe(DEVICE_ID);
-        // TODO register topic implementieren (backend)
         client.publish("register/" + DEVICE_ID, mMyDevice.getDeviceStates());
         BLed.set(BLed.OFF);
         return 0;
@@ -111,7 +103,12 @@ void DeviceManager::boot()
     mMyDevice.boot(&this->mMqttClient);
 
     // connect Wifi
-    WifiStation.config(mSSID, mPW);
+#if defined(WIFI_SSID) && defined(WIFI_PW)
+    Credentials cred = {WIFI_SSID, WIFI_PW};
+#else
+    Credentials cred = this->config->getCredentials();
+#endif
+    WifiStation.config(cred.ssid, cred.pw);
     WifiStation.enable(true);
     WifiStation.connect();
 }

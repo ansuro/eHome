@@ -11,7 +11,7 @@ COMPONENT_INCDIRS := include include/states
 ARDUINO_LIBRARIES := ArduinoJson6
 
 ## List the names of any additional Components required for this project
-# COMPONENT_DEPENDS :=
+# COMPONENT_DEPENDS := mdns
 
 ## Set paths for any GIT submodules your application uses
 # COMPONENT_SUBMODULES :=
@@ -33,7 +33,8 @@ ARDUINO_LIBRARIES := ArduinoJson6
 # SPI_MODE := dio
 
 ## SPIFFS options
-DISABLE_SPIFFS := 0
+# DISABLE_SPIFFS := 0
+HWCONFIG = spiffs
 SPIFF_FILES = files
 
 ## Refer to Basic_rBoot sample for options relating to rBoot

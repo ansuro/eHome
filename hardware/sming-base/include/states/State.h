@@ -1,7 +1,7 @@
 #pragma once
 #include <SmingCore.h>
 
-class State
+class State // @suppress("Class has a virtual method and non-virtual destructor")
 {
 protected:
     String name;

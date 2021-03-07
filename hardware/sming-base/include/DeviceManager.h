@@ -19,10 +19,9 @@ private:
     void connectMqtt();
 
 public:
-    DeviceManager();
+    DeviceManager(Configuration *config);
     virtual ~DeviceManager();
 
-    void setCredentials(const String &ssid, const String &pw);
     void boot() final;
 };
 

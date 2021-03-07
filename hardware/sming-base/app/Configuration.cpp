@@ -1,9 +1,23 @@
 #include "Configuration.h"
 
-Configuration::Configuration(/* args */)
+Configuration::Configuration() : mResetTimer() // @suppress("Class members should be properly initialized")
 {
-    spiffs_mount();
-    debugf("spiffs mounted");
+    if(spiffs_mount())
+    {
+    	debugf("spiffs mounted");
+    	if(!fileExist("reset"))
+    	{
+    		debugf("file 'reset' not found. creating.");
+    		auto f = fileOpen("reset", eFO_CreateNewAlways | eFO_WriteOnly);
+    		char w = '0';
+    		fileWrite(f, &w, sizeof(w));
+    		fileClose(f);
+    	}
+    }
+    else
+    {
+    	debugf("[ERROR] spiffs mount failed");
+    }
 }
 
 Configuration::~Configuration()
@@ -18,12 +32,11 @@ bool Configuration::isConfigured() const
     return e;
 }
 
-// TODO untested, later..
-bool Configuration::save(String ssid, String pw)
+bool Configuration::save(const Credentials &creds)
 {
-    StaticJsonDocument<512> cfg;
-    cfg["ssid"] = ssid.c_str();
-    cfg["pw"] = pw.c_str();
+    StaticJsonDocument<1024> cfg;
+    cfg["ssid"] = creds.ssid.c_str();
+    cfg["pw"] = creds.pw.c_str();
 
     serializeJson(cfg, Serial);
     String out;
@@ -34,7 +47,7 @@ bool Configuration::save(String ssid, String pw)
 
 bool Configuration::deleteConfig()
 {
-    return false;
+    return fileDelete(mCfgName);
 }
 
 Credentials Configuration::getCredentials() const
@@ -53,4 +66,50 @@ Credentials Configuration::getCredentials() const
     }
 
     return credentials;
+}
+
+void Configuration::handleResetCheck()
+{
+/*
+ * 1. Datei vorhanden?
+ * 2. Wenn ja: Reset flag set? Ja: setup mode; Nein: flag setzen, nach 7 sec. löschen
+ */
+	auto fReset = fileOpen("reset", eFO_ReadOnly);
+
+	char r;
+	if(fileRead(fReset, &r, sizeof(r)) < 1)
+	{
+		debugf("file 'reset' read failed");
+		return;
+	}
+	fileClose(fReset);
+
+//	debugf("RESET VALUE: %c", r);
+	if(r == '1')
+	{
+		// reset button was clicked in between 5 seconds
+		// set setup mode
+
+		debugf("double reset detected");
+		this->writeResetFlag(false);
+		this->deleteConfig();
+	}
+	else
+	{
+		// set reset flag for 5 seconds
+		this->writeResetFlag(true);
+
+		this->mResetTimer.initializeMs(5000, [this](){
+			this->writeResetFlag(false);
+			debugf("reset timer fired");
+		}).startOnce();
+	}
+}
+
+void Configuration::writeResetFlag(bool enabled)
+{
+	auto f = fileOpen("reset", eFO_WriteOnly);
+	char w = enabled ? '1' : '0';
+	fileWrite(f, &w, sizeof(w));
+	fileClose(f);
 }

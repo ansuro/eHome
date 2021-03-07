@@ -12,7 +12,7 @@ static BuiltinLed BLed;
 class EHome
 {
 private:
-    Configuration *mConfig;
+    Configuration mConfig;
     IBaseManager *manager;
 public:
     EHome();
