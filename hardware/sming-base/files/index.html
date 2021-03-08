@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="bs.css">
+  <title>EHome Controller Config</title>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="offset-lg-2 col-lg-8 col-sm-12 offset-xl-3 col-xl-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">EHome Controller</h5>
+          </div>
+          <div class="card-body">
+            <span>MAC: {mac}</span>
+            <p>Due to channel limitation of the esp8266, the controller will reboot
+              on successful configuration and the page will remain loading, in most cases. Wrong
+              credentials will be reported.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="offset-lg-2 col-lg-4 mt-1 col-sm-6 offset-xl-3 col-xl-3">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Available Wifis</h5>
+          </div>
+          <div class="card-body" id="wload">
+            <div class="d-flex justify-content-center">
+              <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+          </div>
+          <div class="list-group list-group-flush" id="list">
+            <button type="button" class="list-group-item list-group-item-action" data-ssid="SSID1" data-auth="WPA">[WPA]
+              SSID1</button>
+            <button type="button" class="list-group-item list-group-item-action" data-ssid="SSID2"
+              data-auth="OPEN">[OPEN] SSID2</button>
+            <button type="button" class="list-group-item list-group-item-action" data-ssid="SSID3"
+              data-auth="WEP">[WEPLOL] SSID3</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 mt-1 col-sm-6 col-xl-3">
+        <div class="card invisible" id="selSSID">
+          <div class="card-header">
+            <h5 class="card-title">Selected Wifi</h5>
+          </div>
+          <div class="card-body">
+            <div class="form-group row" id="ssidrow">
+              <label for="ssid" class="col-md-4 col-form-label font-weight-bold">SSID</label>
+              <div class="col-md-8">
+                <span id="ssid"></span>
+              </div>
+            </div>
+            <div class="form-group row" id="pwrow">
+              <label for="inputPassword" class="col-md-4 col-form-label">Password</label>
+              <div class="col-md-8">
+                <input type="password" class="form-control" id="pw" placeholder="Password">
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <button class="btn btn-primary btn-block disabled" id="save" disabled>
+                  save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="jquery.min.js"></script>
+  <!-- <script type="module" src="assets/js/starter.js"></script> -->
+  <script src="app.js"></script>
+</body>
+
+</html>

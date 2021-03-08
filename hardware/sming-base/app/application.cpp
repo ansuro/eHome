@@ -13,8 +13,7 @@ void init()
 {
 	Serial.begin(74880);
 	Serial.systemDebugOutput(SYSTEM_DEBUG_OUTPUT);
-//	WifiAccessPoint.enable(false);
-	// WifiStation.enable(false);
+	WifiAccessPoint.setIP(IPAddress(192, 168, 4, 1));
 
 	System.onReady(onSystemReady);
 }

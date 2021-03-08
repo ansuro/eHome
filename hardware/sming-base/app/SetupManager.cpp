@@ -63,7 +63,7 @@ void SetupManager::setupHttpAndWebsocket()
 void SetupManager::doScanAndPropagate()
 {
 	WifiStation.startScan([this](bool succeeded, BssList& list) {
-		DynamicJsonDocument doc(1024); // @suppress("Function cannot be resolved")
+		DynamicJsonDocument doc(1024);
 		JsonObject obj = doc.to<JsonObject>();
 		obj["type"] = 0;
 		JsonArray wifis = obj.createNestedArray("wifis");
@@ -166,9 +166,12 @@ void SetupManager::setupWifi()
 		// get reason, disable WifiStation, ws broadcast
 		Serial.printf("onStationDisconnect: %s\n",  WifiEvents.getDisconnectReasonName(reason).c_str());
 		WifiStation.disconnect();
-		String r = WifiEvents.getDisconnectReasonName(reason);
-		Serial.printf("wifi discon reason: %s\n", r.c_str());
-		this->wsSendResult(false, r);
+
+		// ignore 4WAY_HANDSHAKE_TIMEOUT
+		if(reason != WifiDisconnectReason::WIFI_DISCONNECT_REASON_4WAY_HANDSHAKE_TIMEOUT)
+		{
+			this->wsSendResult(false, WifiEvents.getDisconnectReasonName(reason));
+		}
 	});
 
 	WifiEvents.onAccessPointConnect([](MacAddress mac, uint16_t aid){
