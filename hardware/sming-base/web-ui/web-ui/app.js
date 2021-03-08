@@ -2,6 +2,7 @@ let sock;
 
 const wsconnect = () => {
   sock = new WebSocket('ws://' + location.hostname + '/ws');
+  // sock = new WebSocket('ws://192.168.2.91/ws');
   sock.onopen = () => {
     console.log('ws connected');
     $('#loading').detach();
@@ -48,12 +49,11 @@ const wsconnect = () => {
 };
 
 $('#save').on('click', () => {
-  $('#save span').removeClass('invisible');
+  $('#save').append('<span class="spinner-border spinner-border-sm invisible" role="status" aria-hidden="true"></span>');
   $('#save').addClass('disabled');
   $('#pw').attr('disabled', true);
   const ssid = $('#ssid').text();
   const pw = $('#pw').val();
-  console.log(ssid + ' ' + pw);
 
   const msg = {
     ssid: ssid,
@@ -78,19 +78,19 @@ const updatewlist = (wifilist) => {
   $('#list button').off('click');
   $('#list button').on('click', (e) => {
     e.preventDefault();
-    console.log(e.target.dataset['ssid']);
     $('#list button').removeClass('active');
     e.target.classList.add('active');
     $('#ssid').text(e.target.dataset['ssid']);
+    $('#pwrow').remove();
     if (e.target.dataset['auth'] === 'OPEN') {
-      $('#pw').parent().parent().addClass('invisible');
       $('#save').removeClass('disabled');
+      $('#save').attr('disabled', false);
     } else {
-      $('#pw').text("");
-      $('#pw').parent().parent().removeClass('invisible');
+      $('#save').attr('disabled', true);
+      $('#save').addClass('disabled');
+      $('#ssidrow').after('<div class="form-group row" id="pwrow"><label for="inputPassword" class="col-md-4 col-form-label">Password</label><div class="col-md-8"><input type="password" class="form-control" id="pw" placeholder="Password"></div></div>');
       $('#pw').on('keyup', () => {
         const l = $('#pw').val().length;
-        console.log(l);
         if (l > 0) {
           $('#save').removeClass('disabled');
           $('#save').attr('disabled', false);
@@ -111,14 +111,13 @@ const saveresult = (msg) => {
   } else {
     console.log(reason);
     $('#save').removeClass('disabled');
-    $('#save span').addClass('invisible');
+    $('#save span').remove();
     $('#pw').prop('disabled', false);
     alert('Connect failed: ' + reason);
   }
 };
 
 $(() => {
-  console.log('doc loaded');
   wsconnect();
 });
 

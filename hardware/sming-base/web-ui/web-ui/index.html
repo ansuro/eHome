@@ -18,10 +18,8 @@
           </div>
           <div class="card-body">
             <span>MAC: {mac}</span>
-            <!-- <input class="form-control" type="text" name="mac" value="{mac}"> -->
-            <button>delete wifi settings</button>
             <p>Due to channel limitation of the esp8266, the controller will reboot
-              on successful configuration and the page will remain loading. Wrong
+              on successful configuration and the page will remain loading, in most cases. Wrong
               credentials will be reported.
             </p>
           </div>
@@ -45,33 +43,30 @@
         </div>
       </div>
       <div class="col-lg-4 mt-1 col-sm-6 col-xl-3">
-        <div class="card" id="selSSID" class="invisible">
+        <div class="card invisible" id="selSSID">
           <div class="card-header">
             <h5 class="card-title">Selected Wifi</h5>
           </div>
           <div class="card-body">
-            <!-- <form> -->
-              <div class="form-group row">
-                <label for="ssid" class="col-md-4 col-form-label">SSID</label>
-                <div class="col-md-8">
-                  <span id="ssid"></span>
-                </div>
+            <div class="form-group row" id="ssidrow">
+              <label for="ssid" class="col-md-4 col-form-label">SSID</label>
+              <div class="col-md-8">
+                <span id="ssid"></span>
               </div>
-              <div class="form-group row">
-                <label for="inputPassword" class="col-md-4 col-form-label">Password</label>
-                <div class="col-md-8">
-                  <input type="password" class="form-control" id="pw" placeholder="Password">
-                </div>
+            </div>
+            <div class="form-group row" id="pwrow">
+              <label for="inputPassword" class="col-md-4 col-form-label">Password</label>
+              <div class="col-md-8">
+                <input type="password" class="form-control" id="pw" placeholder="Password">
               </div>
-              <div class="form-group row">
-                <div class="col-md-12">
-                  <button class="btn btn-primary btn-block disabled" id="save">
-                    <span class="spinner-border spinner-border-sm invisible" role="status" aria-hidden="true"></span>
-                    save
-                  </button>
-                </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <button class="btn btn-primary btn-block disabled" id="save" disabled>
+                  save
+                </button>
               </div>
-            <!-- </form> -->
+            </div>
           </div>
         </div>
       </div>
