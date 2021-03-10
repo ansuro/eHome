@@ -1,6 +1,6 @@
 import { Platform } from 'react-native'
 import io from 'socket.io-client';
-import { AsyncStorage } from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-community/async-storage';
 import feathers from '@feathersjs/feathers';
 import socketio from '@feathersjs/socketio-client';
 import authentication from '@feathersjs/authentication-client';
@@ -18,9 +18,9 @@ const client = feathers();
 client.configure(socketio(socket));
 // TODO auf Emulator testen
 client.configure(authentication({
-  ...Platform.select({
-    android: AsyncStorage,
-    default: window.localStorage
+    storage: Platform.select({
+    native: AsyncStorage,
+    web: window.localStorage
   })
 }));
 

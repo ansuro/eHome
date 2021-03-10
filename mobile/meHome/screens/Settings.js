@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View } from "react-native";
 
-import { Layout, Button, Input, Divider } from "@ui-kitten/components";
+import { Layout, Button, Input, Text } from "@ui-kitten/components";
 
 import TopNav from '../components/TopNav';
 
@@ -52,7 +52,7 @@ export default class Settings extends Component {
             <Layout level='1' style={{ height: '100%' }}>
                 <TopNav {...this.props} />
                 <View style={[{ margin: '3px' }, styles.container]}>
-                    <h2>Change Password</h2>
+                    <Text category='h3'>Change Password</Text>
                     <Input style={styles.e} secureTextEntry={true} onChangeText={t => this.setText1(t)} />
                     <Input style={styles.e} secureTextEntry={true} onChangeText={t => this.setText2(t)} />
                     <Button style={styles.e} onPress={() => this.changePassword()} disabled={!this.state.equal}>change</Button>

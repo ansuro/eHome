@@ -76,7 +76,7 @@ class Main extends Component {
 
         return (
             <NavigationContainer>
-                <Navigator drawerContent={props => <DrawerContent {...props} />}>
+                <Navigator initialRouteName='Devices' drawerContent={props => <DrawerContent {...props} />}>
                     <Screen name='Devices' component={Home} />
                     <Screen name='Settings' component={Settings} />
                     <Screen name='Logout' component={Logout} />

@@ -10,6 +10,9 @@ import { default as mapping } from './mapping.json';
 import Main from './screens/Main';
 import { View } from 'react-native';
 
+import { Logs } from 'expo';
+
+Logs.enableExpoCliLogging();
 
 export default class App extends Component {
 
