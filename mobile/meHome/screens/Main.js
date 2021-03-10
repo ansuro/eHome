@@ -39,6 +39,28 @@ class Main extends Component {
         super(props);
     }
 
+    componentDidMount() {
+        client.io.on('disconnect', () => {
+            appState.setConnected(false);
+            console.log('ws disconnected');
+        });
+
+        client.io.on('connect', () => {
+            appState.setConnected(true);
+            console.log('ws connected');
+            // eingeloggt? Home : Login
+            client.reAuthenticate().then(() => {
+                // show application page
+                appState.login();
+                console.log(appState.loggedIn);
+            }).catch(() => {
+                // show login page
+                appState.logout();
+                console.log(appState.loggedIn);
+            });
+        });
+    }
+
     render() {
         const l = appState.loggedIn;
         const c = appState.connected;

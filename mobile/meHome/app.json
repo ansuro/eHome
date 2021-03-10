@@ -1,9 +1,10 @@
 {
   "expo": {
-    "name": "meHome",
-    "slug": "meHome",
+    "name": "mehome",
+    "slug": "mehome",
     "version": "1.0.0",
     "orientation": "portrait",
+	"owner": "ansuro",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
@@ -16,10 +17,9 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true
-    },
     "android": {
+	  "package": "me.ansuro.mehome",
+	  "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
