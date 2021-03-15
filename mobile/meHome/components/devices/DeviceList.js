@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { SafeAreaView, StyleSheet, Platform } from 'react-native';
 
 import { List, Layout } from '@ui-kitten/components';
 
@@ -47,7 +47,15 @@ class DeviceList extends Component {
 
 const styles = StyleSheet.create({
     list: {
-        flex: 1
+        ...Platform.select({
+            native: {
+                flex: 1
+            },
+            web: {
+                width: 650,
+                alignSelf: 'center'
+            }
+        })
     }
 });
 

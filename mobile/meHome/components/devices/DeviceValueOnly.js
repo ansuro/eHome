@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { View } from 'react-native';
-import { Layout, Text } from "@ui-kitten/components";
+import { Text } from "@ui-kitten/components";
 
 import styles from './DeviceCSS';
 

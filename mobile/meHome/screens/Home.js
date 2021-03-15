@@ -3,11 +3,11 @@ import { Layout } from "@ui-kitten/components";
 
 import TopNav from '../components/TopNav';
 import { Loading } from '../components/Loading';
-import GroupSelecor from '../components/GroupSelector';
+import GroupSelector from '../components/GroupSelector';
 import DeviceList from "../components/devices/DeviceList";
 
 import { devicesObserver } from '../components/_helpers/DevicesObserver';
-import { observer, inject } from "mobx-react";
+import { observer } from "mobx-react";
 
 
 class Home extends Component {
@@ -21,7 +21,7 @@ class Home extends Component {
 
     render() {
         let e = (<>
-            <GroupSelecor store={this.store} />
+            <GroupSelector store={this.store} />
             <DeviceList store={this.store} />
         </>);
 

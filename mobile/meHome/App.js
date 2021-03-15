@@ -8,12 +8,12 @@ import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { default as mapping } from './mapping.json';
 
 import Main from './screens/Main';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 
 import { Logs } from 'expo';
-
-Logs.enableExpoCliLogging();
-
+if (Platform.OS !== 'web') {
+  Logs.enableExpoCliLogging();
+}
 export default class App extends Component {
 
   constructor(props) {
@@ -25,7 +25,7 @@ export default class App extends Component {
       <>
         <IconRegistry icons={EvaIconsPack} />
         <ApplicationProvider {...eva} theme={eva.dark} customMapping={mapping}>
-          <View style={{backgroundColor: '#222B45', flex: 1}}>
+          <View style={{ backgroundColor: '#222B45', flex: 1 }}>
             <Main />
           </View>
         </ApplicationProvider>

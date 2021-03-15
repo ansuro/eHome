@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, Text, Platform } from "react-native";
 
 import { Layout, Button, Input } from "@ui-kitten/components";
 
@@ -58,6 +58,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     e: {
-        width: '95%'
+        width: Platform.OS === 'native' ? '95%' : '250px'
     }
 });

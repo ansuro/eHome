@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Platform } from "react-native";
 
 import { Layout, Button, Input, Text } from "@ui-kitten/components";
 
@@ -15,7 +15,8 @@ export default class Settings extends Component {
         this.state = {
             pw1: '',
             pw2: '',
-            equal: false
+            equal: false,
+            showError: false
         }
 
         this.setText1 = this.setText1.bind(this);
@@ -44,15 +45,19 @@ export default class Settings extends Component {
             console.log(d);
             client.logout();
             appState.logout();
-        }).catch(e => console.error(e));
+        }).catch(e => {
+            console.log(e);
+            this.setState({ showError: true });
+        });
     }
 
     render() {
         return (
             <Layout level='1' style={{ height: '100%' }}>
                 <TopNav {...this.props} />
-                <View style={[{ margin: '3px' }, styles.container]}>
+                <View style={styles.container}>
                     <Text category='h3'>Change Password</Text>
+                    {this.state.showError ? <Text>Password change failed</Text> : null}
                     <Input style={styles.e} secureTextEntry={true} onChangeText={t => this.setText1(t)} />
                     <Input style={styles.e} secureTextEntry={true} onChangeText={t => this.setText2(t)} />
                     <Button style={styles.e} onPress={() => this.changePassword()} disabled={!this.state.equal}>change</Button>
@@ -66,10 +71,18 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         // backgroundColor: rgb(143, 155, 179),
-        alignItems: 'center',
+        alignItems: 'center'
         // justifyContent: 'center',
+        // margin: '3px'
     },
     e: {
-        width: '95%'
+        ...Platform.select({
+            native: {
+                width: '95%'
+            },
+            web: {
+                width: 250
+            }
+        })
     }
 });
