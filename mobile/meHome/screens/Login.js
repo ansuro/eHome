@@ -53,11 +53,19 @@ export default class Login extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        height: '100%',
         // backgroundColor: rgb(143, 155, 179),
         alignItems: 'center',
         justifyContent: 'center',
     },
     e: {
-        width: Platform.OS === 'native' ? '95%' : '250px'
+        ...Platform.select({
+            native: {
+                width: '95%'
+            },
+            web: {
+                width: 250
+            }
+        })
     }
 });

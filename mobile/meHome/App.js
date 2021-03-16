@@ -9,9 +9,9 @@ import { default as mapping } from './mapping.json';
 
 import Main from './screens/Main';
 import { Platform, View } from 'react-native';
-
 import { Logs } from 'expo';
-if (Platform.OS !== 'web') {
+
+if (Platform.OS !== 'web' && __DEV__) {
   Logs.enableExpoCliLogging();
 }
 export default class App extends Component {
