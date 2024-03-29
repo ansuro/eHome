@@ -4,6 +4,17 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
+import { deviceClient } from './services/devices/devices.shared'
+export type { Device, DeviceData, DeviceQuery, DevicePatch } from './services/devices/devices.shared'
+
+import { deviceManagerClient } from './services/device-manager/device-manager.shared'
+export type {
+  DeviceManager,
+  DeviceManagerData,
+  DeviceManagerQuery,
+  DeviceManagerPatch
+} from './services/device-manager/device-manager.shared'
+
 import { userClient } from './services/users/users.shared'
 export type { User, UserData, UserQuery, UserPatch } from './services/users/users.shared'
 
@@ -34,5 +45,7 @@ export const createClient = <Configuration = any,>(
   client.set('connection', connection)
 
   client.configure(userClient)
+  client.configure(deviceManagerClient)
+  client.configure(deviceClient)
   return client
 }
