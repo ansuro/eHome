@@ -1,0 +1,52 @@
+// // For more information about this file see https://dove.feathersjs.com/guides/cli/service.schemas.html
+import { resolve } from '@feathersjs/schema'
+import { Type, getValidator, querySyntax } from '@feathersjs/typebox'
+import type { Static } from '@feathersjs/typebox'
+
+import type { HookContext } from '../../declarations'
+import { dataValidator, queryValidator } from '../../validators'
+import type { GroupService } from './groups.class'
+
+// Main data model schema
+export const groupSchema = Type.Object(
+  {
+    id: Type.Number(),
+    text: Type.String()
+  },
+  { $id: 'Group', additionalProperties: false }
+)
+export type Group = Static<typeof groupSchema>
+export const groupValidator = getValidator(groupSchema, dataValidator)
+export const groupResolver = resolve<Group, HookContext<GroupService>>({})
+
+export const groupExternalResolver = resolve<Group, HookContext<GroupService>>({})
+
+// Schema for creating new entries
+export const groupDataSchema = Type.Pick(groupSchema, ['text'], {
+  $id: 'GroupData'
+})
+export type GroupData = Static<typeof groupDataSchema>
+export const groupDataValidator = getValidator(groupDataSchema, dataValidator)
+export const groupDataResolver = resolve<Group, HookContext<GroupService>>({})
+
+// Schema for updating existing entries
+export const groupPatchSchema = Type.Partial(groupSchema, {
+  $id: 'GroupPatch'
+})
+export type GroupPatch = Static<typeof groupPatchSchema>
+export const groupPatchValidator = getValidator(groupPatchSchema, dataValidator)
+export const groupPatchResolver = resolve<Group, HookContext<GroupService>>({})
+
+// Schema for allowed query properties
+export const groupQueryProperties = Type.Pick(groupSchema, ['id', 'text'])
+export const groupQuerySchema = Type.Intersect(
+  [
+    querySyntax(groupQueryProperties),
+    // Add additional query properties here
+    Type.Object({}, { additionalProperties: false })
+  ],
+  { additionalProperties: false }
+)
+export type GroupQuery = Static<typeof groupQuerySchema>
+export const groupQueryValidator = getValidator(groupQuerySchema, queryValidator)
+export const groupQueryResolver = resolve<GroupQuery, HookContext<GroupService>>({})
