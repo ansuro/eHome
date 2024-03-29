@@ -4,6 +4,14 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
+import { passwordClient } from './services/password/password.shared'
+export type {
+  Password,
+  PasswordData,
+  PasswordQuery,
+  PasswordPatch
+} from './services/password/password.shared'
+
 import { groupClient } from './services/groups/groups.shared'
 export type { Group, GroupData, GroupQuery, GroupPatch } from './services/groups/groups.shared'
 
@@ -51,5 +59,6 @@ export const createClient = <Configuration = any,>(
   client.configure(deviceManagerClient)
   client.configure(deviceClient)
   client.configure(groupClient)
+  client.configure(passwordClient)
   return client
 }
