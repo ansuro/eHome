@@ -5,7 +5,9 @@ export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('devices', (table) => {
     table.increments('id')
 
-    table.string('text')
+    table.string('MAC').unique();
+    table.string('name')
+    table.boolean('isOnline')
   })
 }
 

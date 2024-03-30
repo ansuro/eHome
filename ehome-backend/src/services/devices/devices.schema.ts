@@ -11,7 +11,9 @@ import type { DeviceService } from './devices.class'
 export const deviceSchema = Type.Object(
   {
     id: Type.Number(),
-    text: Type.String()
+    MAC: Type.String(),
+    name: Type.String(),
+    isOnline: Type.Boolean()
   },
   { $id: 'Device', additionalProperties: false }
 )
@@ -22,7 +24,7 @@ export const deviceResolver = resolve<Device, HookContext<DeviceService>>({})
 export const deviceExternalResolver = resolve<Device, HookContext<DeviceService>>({})
 
 // Schema for creating new entries
-export const deviceDataSchema = Type.Pick(deviceSchema, ['text'], {
+export const deviceDataSchema = Type.Pick(deviceSchema, ['name', 'MAC', 'isOnline'], {
   $id: 'DeviceData'
 })
 export type DeviceData = Static<typeof deviceDataSchema>
@@ -38,7 +40,7 @@ export const devicePatchValidator = getValidator(devicePatchSchema, dataValidato
 export const devicePatchResolver = resolve<Device, HookContext<DeviceService>>({})
 
 // Schema for allowed query properties
-export const deviceQueryProperties = Type.Pick(deviceSchema, ['id', 'text'])
+export const deviceQueryProperties = Type.Pick(deviceSchema, ['id', 'name', 'MAC', 'isOnline'])
 export const deviceQuerySchema = Type.Intersect(
   [
     querySyntax(deviceQueryProperties),

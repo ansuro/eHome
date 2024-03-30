@@ -1,3 +1,4 @@
+import { state } from './states/states'
 import { password } from './password/password'
 import { group } from './groups/groups'
 import { device } from './devices/devices'
@@ -7,6 +8,7 @@ import { user } from './users/users'
 import type { Application } from '../declarations'
 
 export const services = (app: Application) => {
+  app.configure(state)
   app.configure(password)
   app.configure(group)
   app.configure(device)

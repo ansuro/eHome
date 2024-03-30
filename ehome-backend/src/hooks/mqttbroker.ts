@@ -7,6 +7,7 @@ import { Client } from 'aedes';
 import type { Server } from 'net';
 
 let server: Server;
+let aedes: any;
 
 // start MQTT-Broker, set connected-disconnected-status handler
 export const startMQTTBroker = async (context: HookContext, next: NextFunction) => {
@@ -14,7 +15,7 @@ export const startMQTTBroker = async (context: HookContext, next: NextFunction) 
 
   const mqttport = context.app.get('MQTT_PORT') || 1883;
   
-  const aedes = require('aedes')();
+  aedes = require('aedes')();
 
   if (mqttport === 1883) {
     server = require('net').createServer(aedes.handle);
@@ -44,13 +45,25 @@ export const startMQTTBroker = async (context: HookContext, next: NextFunction) 
 
   server.listen(mqttport, async () => {
     logger.info('MQTT broker listening on port: %s', mqttport);
+    // connect mqtt backend client
+    context.app.service('device-manager').mqttSetup();
     await next();
   });
 }
 
 export const stopMQTTBroker = async (context: HookContext, next: NextFunction) => {
-  server.close(async () => {
+  aedes.close(async (err: any) => {
+    if (err)
+      logger.error(err);
     logger.info('MQTT broker stopped.');
     await next();
   });
+  // FIXME
+  
+  // server.close(async (err) => {
+  //   if (err)
+  //     logger.error(err);
+  //   logger.info('MQTT broker stopped.');
+  //   await next();
+  // });
 }

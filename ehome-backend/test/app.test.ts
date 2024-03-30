@@ -11,11 +11,11 @@ describe('Feathers application tests', () => {
   let server: Server
 
   before(async () => {
-    server = await app.listen(port)
+    server = await app.listen(port);
   })
 
   after(async () => {
-    await app.teardown()
+    await app.teardown();
   })
 
   it('starts and shows the index page', async () => {

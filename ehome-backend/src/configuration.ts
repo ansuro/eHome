@@ -8,7 +8,9 @@ export const configurationSchema = Type.Intersect([
   Type.Object({
     host: Type.String(),
     port: Type.Number(),
-    public: Type.String()
+    public: Type.String(),
+    MQTT_BACKEND_CLIENT_ID: Type.String(),
+    MQTT_PORT: Type.Number()
   })
 ])
 

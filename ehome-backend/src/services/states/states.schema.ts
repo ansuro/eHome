@@ -26,7 +26,7 @@ export const stateResolver = resolve<State, HookContext<StateService>>({})
 export const stateExternalResolver = resolve<State, HookContext<StateService>>({})
 
 // Schema for creating new entries
-export const stateDataSchema = Type.Pick(stateSchema, ['name', 'MAC'], {
+export const stateDataSchema = Type.Pick(stateSchema, ['name', 'MAC', 'value', 'type'], {
   $id: 'StateData'
 })
 export type StateData = Static<typeof stateDataSchema>

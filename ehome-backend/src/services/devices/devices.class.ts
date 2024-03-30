@@ -1,5 +1,5 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.class.html#database-services
-import type { Params } from '@feathersjs/feathers'
+import type { Paginated, Params } from '@feathersjs/feathers'
 import { KnexService } from '@feathersjs/knex'
 import type { KnexAdapterParams, KnexAdapterOptions } from '@feathersjs/knex'
 
@@ -16,12 +16,31 @@ export class DeviceService<ServiceParams extends Params = DeviceParams> extends 
   DeviceData,
   DeviceParams,
   DevicePatch
-> {}
+> {
+
+  async existsInDb(mac: string) {
+    const e = await super.find({
+      query: {
+        $limit: 0,
+        MAC: mac
+      }
+    }) as Paginated<DeviceData>;
+    // logger.info('existsInDB %o', e);
+    // const e2 = await super.find({
+    //   query: {
+    //     MAC: mac
+    //   }
+    // });
+    // logger.info('existsInDB2 %o', e2);
+    return e.total == 0 ? false : true;
+  }
+}
 
 export const getOptions = (app: Application): KnexAdapterOptions => {
   return {
     paginate: app.get('paginate'),
     Model: app.get('sqliteClient'),
-    name: 'devices'
+    name: 'devices',
+    multi: ['remove', 'patch']
   }
 }
