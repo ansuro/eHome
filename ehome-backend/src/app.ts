@@ -11,6 +11,7 @@ import { sqlite } from './sqlite'
 import { authentication } from './authentication'
 import { services } from './services/index'
 import { channels } from './channels'
+import { startMQTTBroker, stopMQTTBroker } from './hooks/mqttbroker'
 
 const app: Application = koa(feathers())
 
@@ -49,8 +50,8 @@ app.hooks({
 })
 // Register application setup and teardown hooks here
 app.hooks({
-  setup: [],
-  teardown: []
+  setup: [startMQTTBroker],
+  teardown: [stopMQTTBroker]
 })
 
 export { app }
