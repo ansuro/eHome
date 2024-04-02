@@ -62,6 +62,8 @@ describe('devicemanager service', () => {
           assert.strictEqual(granted[0].topic, deviceMAC, 'subscription failed');
         }
 
+        // TODO check DB if device exists
+
         done();
       });
     });
@@ -100,11 +102,12 @@ describe('devicemanager service', () => {
       switch (data.type) {
         case 0:
           assert.strictEqual(data.name, states[0].name, 'name not saved correctly');
+          // database value is string not boolean
           assert.strictEqual(data.value, 'false', 'value not saved correctly');
           cStates++;
           break;
         case 1:
-          assert.strictEqual(JSON.parse(data.options!), states[1].options, 'options not saved correctly');
+          assert.strictEqual(data.options, states[1].options, 'options not saved correctly');
           assert.strictEqual(data.value, 'red', 'value not saved correctly');
           cStates++;
           break;
@@ -133,4 +136,62 @@ describe('devicemanager service', () => {
     });
 
   });
+
+  it('states can be read via state service', async () => {
+    const stateService = app.service('states');
+    assert.ok(stateService, 'service state registered');
+
+    const states = await stateService.find({
+      query: {
+        MAC: deviceMAC
+      }, paginate: false
+    });
+
+    assert.equal(states.length, 3, "there should be 3 states");
+
+    for (let i = 0; i < states.length; i++) {
+      const s = states[i];
+      switch (s.type) {
+        case 0:
+          assert.equal(s.value, false, "value of type 0 device should be boolean not string");
+          break;
+
+        case 1:
+          assert.equal(s.options, JSON.stringify(['red', 'blue', 'green']), 'options of type 1 devices are not equal');
+          break;
+
+        case 2:
+          assert.equal(s.value, '21,5°', 'value of type 2 device is not equal');
+          break;
+      
+        default:
+          assert.fail('Unknown device type: ' + s.type);
+      }
+    }
+  });
+
+  it('a device state can be changed via mqtt', function (done) {
+    const stateService = app.service('states');
+
+    // check the result
+    stateService.on('patched', (s: State) => {
+      logger.info('patched: %o', s);
+      assert.equal(s.value, '22,5°', 'changed state value not as expected.');
+
+      done();
+    });
+
+    fakeDevice.publish('status/' + deviceMAC, JSON.stringify({
+      name: 'Sensor 1',
+      value: '22,5°',
+      type: 2
+    }), { qos: 2 }, (err) => {
+      if (err) {
+        assert.fail(`unable to publish to topic status/${deviceMAC}: ${err}`);
+      }
+
+      logger.info(`msg on topic "status/${deviceMAC}" sent.`);
+    });
+  });
+
 });

@@ -111,7 +111,7 @@ export class DeviceManagerService<ServiceParams extends DeviceManagerParams = De
           let ns: State = {
             ...s,
             MAC: deviceMAC,
-            // value: s.value + ''
+            value: s.value + ''
           };
 
           return ns;
@@ -150,7 +150,7 @@ export class DeviceManagerService<ServiceParams extends DeviceManagerParams = De
         // find and update
 
         try {
-          const s = this.app.service('states').patch(null, {
+          const s = await this.app.service('states').patch(null, {
             value: parsedMessage["value"]
           }, {
             query: {
@@ -262,7 +262,7 @@ export class DeviceManagerService<ServiceParams extends DeviceManagerParams = De
         }
       });
 
-      logger.info('Device offline: %o', d);
+      logger.info('Device offline: %s', d[0]?.MAC);
     } catch (e) {
       logger.error("Error changing device status to offline: %", e);
     }

@@ -13,7 +13,7 @@ export const stateSchema = Type.Object(
     id: Type.Number(),
     name: Type.String(),
     MAC: Type.String(),
-    value: Type.String(),
+    value: Type.Union([Type.String(), Type.Boolean()]),
     type: Type.Number(),
     options: Type.Optional(Type.String())
   },
@@ -26,7 +26,7 @@ export const stateResolver = resolve<State, HookContext<StateService>>({})
 export const stateExternalResolver = resolve<State, HookContext<StateService>>({})
 
 // Schema for creating new entries
-export const stateDataSchema = Type.Pick(stateSchema, ['name', 'MAC', 'value', 'type'], {
+export const stateDataSchema = Type.Pick(stateSchema, ['name', 'MAC', 'value', 'type', 'options'], {
   $id: 'StateData'
 })
 export type StateData = Static<typeof stateDataSchema>
@@ -42,7 +42,7 @@ export const statePatchValidator = getValidator(statePatchSchema, dataValidator)
 export const statePatchResolver = resolve<State, HookContext<StateService>>({})
 
 // Schema for allowed query properties
-export const stateQueryProperties = Type.Pick(stateSchema, ['id', 'name', 'MAC'])
+export const stateQueryProperties = Type.Pick(stateSchema, ['name', 'MAC'])
 export const stateQuerySchema = Type.Intersect(
   [
     querySyntax(stateQueryProperties),

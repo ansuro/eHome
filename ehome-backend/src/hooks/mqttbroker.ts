@@ -52,18 +52,14 @@ export const startMQTTBroker = async (context: HookContext, next: NextFunction) 
 }
 
 export const stopMQTTBroker = async (context: HookContext, next: NextFunction) => {
-  aedes.close(async (err: any) => {
-    if (err)
-      logger.error(err);
-    logger.info('MQTT broker stopped.');
+  await new Promise((resolve, reject) => {
+    aedes.close((err: any) => {
+      server.close(() => {
+        logger.info('MQTT broker closed.');
+        resolve(err);
+      });
+    }
+    )});
+
     await next();
-  });
-  // FIXME
-  
-  // server.close(async (err) => {
-  //   if (err)
-  //     logger.error(err);
-  //   logger.info('MQTT broker stopped.');
-  //   await next();
-  // });
 }
