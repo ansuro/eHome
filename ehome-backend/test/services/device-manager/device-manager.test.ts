@@ -40,6 +40,8 @@ describe('devicemanager service', () => {
       }
     });
 
+    app.service('states').removeAllListeners('created');
+
     await app.teardown();
   });
 

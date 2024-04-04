@@ -220,8 +220,9 @@ export class DeviceManagerService<ServiceParams extends DeviceManagerParams = De
 */
   async connect(mac: string) {
     if (await this.app.service('devices').existsInDb(mac)) {
-      // at least once connected
+      // at least connected once
       try {
+        //TODO do find first and check if there is only one device then patch
         const d = await this.app.service('devices').patch(null, { isOnline: true }, {
           query: {
             MAC: mac
@@ -262,7 +263,7 @@ export class DeviceManagerService<ServiceParams extends DeviceManagerParams = De
         }
       });
 
-      logger.info('Device offline: %s', d[0]?.MAC);
+      logger.info('Device offline (%s): %s', mac, d[0]?.name);
     } catch (e) {
       logger.error("Error changing device status to offline: %", e);
     }

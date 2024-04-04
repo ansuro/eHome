@@ -9,6 +9,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string('name').primary();
     table.string('value')
     table.smallint('type').notNullable();
+    // JSON-Array
     table.string('options').nullable();
   })
 }
