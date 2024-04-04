@@ -14,7 +14,7 @@ export const startMQTTBroker = async (context: HookContext, next: NextFunction) 
   const deviceManager = context.app.service('device-manager');
 
   const mqttport = context.app.get('MQTT_PORT') || 1883;
-  
+
   aedes = require('aedes')();
 
   if (mqttport === 1883) {
@@ -39,8 +39,10 @@ export const startMQTTBroker = async (context: HookContext, next: NextFunction) 
 
   aedes.on('clientDisconnect', (client: Client) => {
     // client.id == MAC
-    logger.info('device disconnected: %s', client.id);
-    deviceManager.disconnect(client.id);
+    if (client.id !== context.app.get('MQTT_BACKEND_CLIENT_ID')) {
+      logger.info('device disconnected: %s', client.id);
+      deviceManager.disconnect(client.id);
+    }
   });
 
   server.listen(mqttport, async () => {
@@ -58,8 +60,8 @@ export const stopMQTTBroker = async (context: HookContext, next: NextFunction) =
         logger.info('MQTT broker closed.');
         resolve(err);
       });
-    }
-    )});
+    });
+  });
 
-    await next();
+  await next();
 }
