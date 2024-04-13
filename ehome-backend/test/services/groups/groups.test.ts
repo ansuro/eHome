@@ -103,7 +103,7 @@ describe('groups service', () => {
     assert.deepEqual(user1, dbUser, 'user not saved correctly');
 
     adminUser = await app.service('users').create({
-      username: 'admin',
+      username: 'admin2',
       isAdmin: true
     });
 
@@ -138,7 +138,7 @@ describe('groups service', () => {
     assert.deepEqual(group, userGroups[0], 'groups dont match');
   });
 
-  it('sdmin can get all groups and associated devices', async () => {
+  it('admin can get all groups and associated devices', async () => {
     const allGroups = await app.service('groups').find({
       user: adminUser,
       paginate: false,
