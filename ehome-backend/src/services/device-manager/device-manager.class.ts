@@ -66,14 +66,26 @@ export class DeviceManagerService<ServiceParams extends DeviceManagerParams = De
       this.mqtt.subscribe({ 'status/+': { qos: 1 } }, (err, granted) => {
         if (err)
           logger.error('%o', err);
+
+        logger.info("subscribe status: %o", granted)
       });
 
       this.mqtt.subscribe({ 'register/+': { qos: 1 } }, (err, granted) => {
         if (err)
           logger.error('%o', err);
+
+          logger.info("subscribe register: %o", granted)
       });
 
       logger.info('Backend mqtt client connected');
+    });
+
+    this.mqtt.on('error', (err) => {
+      logger.info("%o", err);
+    });
+
+    this.mqtt.on('disconnect', () => {
+      logger.info("disconnect");
     });
 
     this.mqtt.on('message', async (topic, message) => {
@@ -89,6 +101,7 @@ export class DeviceManagerService<ServiceParams extends DeviceManagerParams = De
 
       // TODO catch error
       const parsedMessage = JSON.parse(msg);
+      logger.info("%o", parsedMessage);
 
       if (topic.startsWith('register/')) {
         const deviceMAC = topic.replace('register/', '');
@@ -263,7 +276,7 @@ export class DeviceManagerService<ServiceParams extends DeviceManagerParams = De
         }
       });
 
-      logger.info('Device offline (%s): %s', mac, d[0]?.name);
+      logger.info('Device offline (%s): %s', mac, d[0]?.name!);
     } catch (e) {
       logger.error("Error changing device status to offline: %", e);
     }

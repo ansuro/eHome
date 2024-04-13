@@ -1,3 +1,4 @@
+import { membership } from './membership/membership'
 import { state } from './states/states'
 import { password } from './password/password'
 import { group } from './groups/groups'
@@ -8,6 +9,7 @@ import { user } from './users/users'
 import type { Application } from '../declarations'
 
 export const services = (app: Application) => {
+  app.configure(membership)
   app.configure(state)
   app.configure(password)
   app.configure(group)

@@ -28,27 +28,35 @@ export const startMQTTBroker = async (context: HookContext, next: NextFunction) 
     server = require('tls').createServer(options, aedes.handle);
   }
 
-  aedes.on('clientReady', (client: Client) => {
-    logger.info('Client connect: %o', client.id);
+  aedes.on('clientReady', async (client: Client) => {
+    // logger.info('Client connect: %o', client.id);
+    logger.info('device connected: %s', client.id);
     // client.id == MAC
     if (client.id !== context.app.get('MQTT_BACKEND_CLIENT_ID')) {
-      logger.info('device connected: %s', client.id);
-      deviceManager.connect(client.id);
+      await deviceManager.connect(client.id);
     }
   });
 
-  aedes.on('clientDisconnect', (client: Client) => {
+  aedes.on('clientDisconnect', async (client: Client) => {
+    logger.info('device disconnected: %s', client.id);
     // client.id == MAC
     if (client.id !== context.app.get('MQTT_BACKEND_CLIENT_ID')) {
-      logger.info('device disconnected: %s', client.id);
-      deviceManager.disconnect(client.id);
+      await deviceManager.disconnect(client.id);
     }
+  });
+
+  aedes.on('clientError', (client: Client, error: Error) => {
+    logger.error('clientError: %s', error.message);
+  });
+
+  aedes.on('connectionError', (client: Client, error: Error) => {
+    logger.error('connectionError: %s', error.message);
   });
 
   server.listen(mqttport, async () => {
-    logger.info('MQTT broker listening on port: %s', mqttport);
     // connect mqtt backend client
     context.app.service('device-manager').mqttSetup();
+    logger.info('MQTT broker listening on port: %s', mqttport);
     await next();
   });
 }

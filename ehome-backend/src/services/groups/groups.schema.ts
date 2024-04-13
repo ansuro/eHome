@@ -3,6 +3,8 @@ import { resolve } from '@feathersjs/schema'
 import { Type, getValidator, querySyntax } from '@feathersjs/typebox'
 import type { Static } from '@feathersjs/typebox'
 
+import { logger } from '../../logger'
+
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
 import type { GroupService } from './groups.class'
@@ -11,7 +13,10 @@ import type { GroupService } from './groups.class'
 export const groupSchema = Type.Object(
   {
     id: Type.Number(),
-    text: Type.String()
+    name: Type.String(),
+
+    // JSON-Array
+    devices: Type.String()
   },
   { $id: 'Group', additionalProperties: false }
 )
@@ -22,7 +27,7 @@ export const groupResolver = resolve<Group, HookContext<GroupService>>({})
 export const groupExternalResolver = resolve<Group, HookContext<GroupService>>({})
 
 // Schema for creating new entries
-export const groupDataSchema = Type.Pick(groupSchema, ['text'], {
+export const groupDataSchema = Type.Pick(groupSchema, ['name', 'devices'], {
   $id: 'GroupData'
 })
 export type GroupData = Static<typeof groupDataSchema>
@@ -38,14 +43,16 @@ export const groupPatchValidator = getValidator(groupPatchSchema, dataValidator)
 export const groupPatchResolver = resolve<Group, HookContext<GroupService>>({})
 
 // Schema for allowed query properties
-export const groupQueryProperties = Type.Pick(groupSchema, ['id', 'text'])
+export const groupQueryProperties = Type.Pick(groupSchema, ['id', 'name'])
 export const groupQuerySchema = Type.Intersect(
   [
     querySyntax(groupQueryProperties),
     // Add additional query properties here
-    Type.Object({}, { additionalProperties: false })
+    Type.Object({
+      findAll: Type.Optional(Type.Boolean())
+    }, { additionalProperties: true })
   ],
-  { additionalProperties: false }
+  { additionalProperties: true }
 )
 export type GroupQuery = Static<typeof groupQuerySchema>
 export const groupQueryValidator = getValidator(groupQuerySchema, queryValidator)

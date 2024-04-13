@@ -22,7 +22,8 @@ describe('devicemanager service', () => {
     await app.listen(app.get('port'));
     user = await app.service('users').create({
       username: 'tester',
-      password: 'test'
+      password: 'test',
+      isAdmin: false
     });
   });
 

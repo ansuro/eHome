@@ -18,8 +18,8 @@ export class StateService<ServiceParams extends Params = StateParams> extends Kn
   StatePatch
 > {
 
-  async find(params?: ServiceParams & { paginate?: { default?: number; max?: number } }): Promise<Paginated<State>>
   async find(params?: ServiceParams & { paginate: false; }): Promise<State[]>
+  async find(params?: ServiceParams & { paginate?: { default?: number; max?: number } }): Promise<Paginated<State>>
   async find(params?: ServiceParams): Promise<Paginated<State> | State[]> {
     let states = await super.find(params);
 

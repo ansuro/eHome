@@ -4,6 +4,14 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
+import { membershipClient } from './services/membership/membership.shared'
+export type {
+  Membership,
+  MembershipData,
+  MembershipQuery,
+  MembershipPatch
+} from './services/membership/membership.shared'
+
 import { stateClient } from './services/states/states.shared'
 export type { State, StateData, StateQuery, StatePatch } from './services/states/states.shared'
 
@@ -64,5 +72,6 @@ export const createClient = <Configuration = any,>(
   client.configure(groupClient)
   client.configure(passwordClient)
   client.configure(stateClient)
+  client.configure(membershipClient)
   return client
 }

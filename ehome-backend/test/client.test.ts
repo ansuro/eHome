@@ -29,7 +29,8 @@ describe('application client tests', () => {
   it('creates and authenticates a user with email and password', async () => {
     const userData: UserData = {
       username: 'user',
-      password: 'supersecret'
+      password: 'supersecret',
+      isAdmin: false
     }
 
     await client.service('users').create(userData)
