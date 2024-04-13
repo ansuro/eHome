@@ -12,6 +12,7 @@ import { authentication } from './authentication'
 import { services } from './services/index'
 import { channels } from './channels'
 import { startMQTTBroker, stopMQTTBroker } from './hooks/mqttbroker'
+import { createDefaultUser } from './hooks/createDefaultUser'
 
 const app: Application = koa(feathers())
 
@@ -50,7 +51,7 @@ app.hooks({
 })
 // Register application setup and teardown hooks here
 app.hooks({
-  setup: [startMQTTBroker],
+  setup: [startMQTTBroker, createDefaultUser],
   teardown: [stopMQTTBroker]
 })
 
