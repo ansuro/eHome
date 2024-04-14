@@ -1,10 +1,11 @@
 import io from 'socket.io-client';
 import socketio from '@feathersjs/socketio-client';
 import { createClient } from 'ehome-backend';
-import type { ServiceTypes, Configuration } from 'ehome-backend';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthenticationClient, ClientConstructor } from '@feathersjs/authentication-client';
+import authentication from '@feathersjs/authentication-client';
+import { feathers } from '@feathersjs/feathers';
 
 // const IO_URL = Platform.select({
 //   web: __DEV__ ? 'http://localhost:3030' : 'https://api.ansuro.me:443',
@@ -19,17 +20,16 @@ const socket = io(IO_URL, {
   secure: true
 });
 
-const connection = socketio<ServiceTypes>(socket);
-
-const client = createClient<Configuration>(connection);//, {
-//   storage: AsyncStorage,
-//   Authentication: AuthenticationClient
-//   // storage: Platform.select({
-//   //   native: AsyncStorage,
-//   //   web: window.localStorage
-//   // })
+const connection = socketio(socket);
+const _client = createClient(connection);//, {
+  // storage: AsyncStorage,
+  // Authentication: AuthenticationClient
+  // storage: Platform.select({
+  //   native: AsyncStorage,
+  //   web: window.localStorage
+  // })
 // });
-// client.authentication
 
-client.
+const client = _client as unknown as AuthenticationClient;
+
 export default client;

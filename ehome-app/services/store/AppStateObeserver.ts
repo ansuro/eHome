@@ -4,10 +4,11 @@ import { Appearance } from 'react-native';
 
 // TODO login logik
 // import client from './fapp';
+import client from '../feathers-client';
 
 class AppStateObserver {
     connected: boolean = false;
-    loggedIn: boolean = true;
+    loggedIn: boolean = false;
     isLoaded: boolean = false;
     colorMode: ThemeMode = 'light';
 
@@ -28,6 +29,7 @@ class AppStateObserver {
 
     init() {
         console.log('init');
+        // determine color mode
         const mode = localStorage.getItem('colorMode');
         if (mode !== null) {
             this.setColorMode(mode as ThemeMode);
@@ -41,6 +43,15 @@ class AppStateObserver {
                 this.setColorMode('dark');
             }
         }
+
+        // login, if jwt is present
+        client.reAuthenticate(false, 'jwt').then(l => {
+            console.log('reauth: ' + l);
+            this.login();
+        }).catch(e => {
+            console.log('reauth failed: ' + e);
+            this.logout();
+        });
 
         setTimeout(() => {
             this.setIsLoaded(true);
