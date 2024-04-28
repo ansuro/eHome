@@ -5,7 +5,7 @@ export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('groups', (table) => {
     table.increments('id')
 
-    table.string('name').primary()
+    table.string('name').primary().collate('nocase')
 
     // DeviceIds as JSON-Array
     table.string('devices').nullable()

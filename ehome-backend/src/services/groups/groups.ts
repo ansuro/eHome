@@ -21,6 +21,8 @@ import { groupPath, groupMethods } from './groups.shared'
 import { logger } from '../../logger'
 import { NotAuthenticated } from '@feathersjs/errors'
 import { Membership } from '../membership/membership.schema'
+import { paginate } from '../../hooks/paginate'
+import { findAll } from '../../hooks/findAll'
 
 export * from './groups.class'
 export * from './groups.schema'
@@ -45,44 +47,7 @@ export const group = (app: Application) => {
     },
     before: {
       all: [schemaHooks.validateQuery(groupQueryValidator), schemaHooks.resolveQuery(groupQueryResolver)],
-      find: [async (context: HookContext) => {
-        // logger.info("%o", context.toJSON());
-        // logger.info("%o", context.params.query);
-
-        const { findAll } = context.params.query;
-        delete context.params.query.findAll;
-        logger.info('findAll: %s', findAll);
-
-        const { user } = context.params;
-        if (user == undefined) {
-          throw new NotAuthenticated();
-        }
-// logger.info('USER ID: %s', user.id);
-        if (user.isAdmin && findAll !== undefined && findAll) {
-          // find all..
-          logger.info('found findAll on admin request. returning all groups.');
-          return;
-        }
-
-        const gids = await context.app.service('membership').find({
-          paginate: false,
-          query: {
-            uid: user.id,
-            $select: ['gid']
-          }
-        });
-
-        // logger.info('returning user groups: %o', gids);
-
-        context.params.query = {
-          ...context.params.query,
-          id: {
-            $in: gids.flatMap(i => i.gid)
-          }
-        };
-
-        // logger.info("%o", context.params.query);
-      }],
+      find: [paginate, findAll],
       get: [],
       create: [schemaHooks.validateData(groupDataValidator), schemaHooks.resolveData(groupDataResolver)],
       patch: [schemaHooks.validateData(groupPatchValidator), schemaHooks.resolveData(groupPatchResolver)],

@@ -1,18 +1,19 @@
 import { Button, Card, Input, makeStyles } from "@rneui/themed";
 import { Platform, Text, View } from "react-native";
-import { appState } from "../services/store/AppStateObeserver";
 import { Formik, FormikHelpers } from "formik";
 import client from "../services/feathers-client";
+import useStore from "../services/store/useStore";
 
-interface TFormValues {
+interface TLoginFormValues {
   username: string;
   pw: string;
 }
 
 const Login = () => {
   const styles = useStyles();
+  const appStore = useStore();
 
-  const doLogin = (values: TFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
+  const doLogin = (values: TLoginFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
     const username = values.username.trim();
     const pw = values.pw.trim();
 
@@ -20,8 +21,9 @@ const Login = () => {
       strategy: 'local',
       username: username,
       password: pw
-    }).then(a => {
-      appState.login();
+    }).then(authResult => {
+      console.log(authResult);
+      appStore.login(authResult);
     }).catch(e => {
       console.log('Login failed: ' + e.message);
     }).finally(() => {
@@ -29,7 +31,7 @@ const Login = () => {
     });
   };
 
-  const validateForm = (values: TFormValues) => {
+  const validateForm = (values: TLoginFormValues) => {
     const errors: any = {};
 
     values.username = values.username.trim();
@@ -54,7 +56,7 @@ const Login = () => {
     <Formik
       initialValues={{ username: '', pw: '' }}
       validate={validateForm}
-      onSubmit={(values: TFormValues, { setSubmitting }) => doLogin(values, setSubmitting)}
+      onSubmit={(values: TLoginFormValues, { setSubmitting }) => doLogin(values, setSubmitting)}
     >
       {({ handleChange, handleBlur, handleSubmit, values, errors, isSubmitting, isValid }) => (
         <View style={styles.container}>

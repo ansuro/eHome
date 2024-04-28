@@ -2,6 +2,9 @@ import { Platform, View, FlatList } from "react-native";
 // import Modal from 'modal-react-native-web';
 import { Button, CheckBox, Dialog, makeStyles, useTheme } from "@rneui/themed";
 import { useState } from "react";
+import { observer } from "mobx-react";
+import { autorun, entries, isObservable, values } from "mobx";
+import useStore from "../../services/store/useStore";
 // import theme from "../utils/Theme";
 
 type TGroup = {
@@ -15,11 +18,12 @@ for (let i = 0; i < 50; i++) {
   DATA.push({ 'id': i, 'name': 'name' + i });
 }
 
-const GroupSelector = () => {
+const GroupSelector = observer(() => {
   const [selectedIndex, setIndex] = useState(0);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const styles = useStyles();
   const { theme } = useTheme();
+  const { userState } = useStore();
 
   const renderDialogItem = (group: TGroup) => (
     <CheckBox
@@ -35,12 +39,25 @@ const GroupSelector = () => {
   const saveDialog = () => {
     setIsDialogOpen(false);
     // TODO Gruppe setzen im Store
+    userState.setSelectedGroup(groups[selectedIndex]);
   }
 
+  const { groups, isLoaded } = userState;
+  autorun(() => {
+    if (isLoaded) {
+      console.log(groups[0].name);
+    } else {
+      console.log("not loaded");
+    }
+  });
+
+  let title = userState.selectedGroup?.name;
+  title = title === undefined ? 'alle' : title; 
+// console.log(userState.currentUser);
   return (
     <View style={styles.container}>
       <Button
-        title={'Select Group'}
+        title={title}
         type={'outline'}
         containerStyle={styles.btnGroupContainer}
         onPress={() => setIsDialogOpen(true)}
@@ -48,7 +65,7 @@ const GroupSelector = () => {
       <Dialog isVisible={isDialogOpen} overlayStyle={styles.dgGroups}>
         <Dialog.Title titleStyle={{ color: theme.colors.primary }} title={'Select Group'} />
         <FlatList
-          data={DATA}
+          data={groups}
           renderItem={({ item }) => renderDialogItem(item)}
           keyExtractor={(group: TGroup, index: number) => group.id.toString()}
         />
@@ -60,7 +77,7 @@ const GroupSelector = () => {
       </Dialog>
     </View>
   );
-}
+});
 
 export default GroupSelector;
 

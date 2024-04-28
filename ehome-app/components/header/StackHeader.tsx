@@ -3,25 +3,27 @@ import { Platform, View } from 'react-native';
 
 import { Icon, Header as RNHeader, Text, makeStyles, useTheme } from '@rneui/themed';
 
-import { DrawerHeaderProps } from '@react-navigation/drawer';
+import { StackHeaderProps } from '@react-navigation/stack';
 
-import { appState } from '../../services/store/AppStateObeserver';
+import { observer } from 'mobx-react';
+import useStore from '../../services/store/useStore';
 
-const Header = (props: DrawerHeaderProps) => {
+const StackHeader = observer((props: StackHeaderProps) => {
   const { theme } = useTheme();
   const styles = useStyles();
+  const appStore = useStore();
   const { navigation, route } = props;
 
   const leftComponent = (
     <View>
-      <Icon name={'menu'} type={'material'} color={theme.colors.black} onPress={() => { navigation.openDrawer(); }} />
+      <Icon name={'arrow-back'} type={'material'} color={theme.colors.black} onPress={() => { navigation.pop() }} />
     </View>
   );
 
   const rightComponent = (
     <View>
       {
-        appState.connected ?
+        appStore.connected ?
           <Icon name={'cloud-queue'} type={'material'} color={theme.colors.connected} /> :
           <Icon name={'cloud-off'} type={'material'} color={theme.colors.notconnected} />
       }
@@ -33,9 +35,9 @@ const Header = (props: DrawerHeaderProps) => {
   );
 
   return <RNHeader containerStyle={styles.headerContainer} leftComponent={leftComponent} rightComponent={rightComponent} centerComponent={centerComponent} />;
-}
+});
 
-export default Header;
+export default StackHeader;
 
 const useStyles = makeStyles((theme) => ({
   headerContainer: {

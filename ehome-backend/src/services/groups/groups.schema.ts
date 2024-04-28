@@ -8,6 +8,7 @@ import { logger } from '../../logger'
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
 import type { GroupService } from './groups.class'
+import { paginate } from '../../hooks/paginate'
 
 // Main data model schema
 export const groupSchema = Type.Object(
@@ -49,7 +50,8 @@ export const groupQuerySchema = Type.Intersect(
     querySyntax(groupQueryProperties),
     // Add additional query properties here
     Type.Object({
-      findAll: Type.Optional(Type.Boolean())
+      findAll: Type.Optional(Type.Boolean()),
+      $paginate: Type.Optional(Type.Boolean())
     }, { additionalProperties: true })
   ],
   { additionalProperties: true }

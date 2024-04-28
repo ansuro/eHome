@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 import socketio from '@feathersjs/socketio-client';
-import { createClient } from 'ehome-backend';
+import { ClientApplication, createClient } from 'ehome-backend';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthenticationClient, ClientConstructor } from '@feathersjs/authentication-client';
@@ -21,15 +21,16 @@ const socket = io(IO_URL, {
 });
 
 const connection = socketio(socket);
-const _client = createClient(connection);//, {
-  // storage: AsyncStorage,
+const _client = createClient(connection, {
+  storage: AsyncStorage,
+  storageKey: 'eh'
   // Authentication: AuthenticationClient
   // storage: Platform.select({
   //   native: AsyncStorage,
   //   web: window.localStorage
   // })
-// });
+});
 
-const client = _client as unknown as AuthenticationClient;
-
+const client = _client as unknown as ClientApplication & AuthenticationClient;
+console.log('client created');
 export default client;

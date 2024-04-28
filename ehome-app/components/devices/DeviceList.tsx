@@ -3,22 +3,29 @@ import { makeStyles } from "@rneui/themed";
 import { IDevice } from "./DeviceTypes";
 
 import Device from './Device';
+import { observer } from "mobx-react";
+import useStore from "../../services/store/useStore";
 
 const DATA: IDevice[] = [
-  { name: 'Device1',MAC: 'MAC1', states: [{name: 'Lamp1', type: 0,  value: true}], online: true },
-  { name: 'Device2', MAC: 'MAC2', states: [{name: 'Sensor1', type: 2, value: '18.8°'}], online: false},
-  { name: 'Deivce3', MAC: 'MAC3', states: [{name: 'Super Lamp 1', type: 1, value: 'Value 1', options: ['Value 1', 'Value 2', 'Value 3', 'Value 4']}], online: true }
+  { name: 'Device1', MAC: 'MAC1', states: [{ name: 'Lamp1', type: 0, value: true }], online: true },
+  { name: 'Device2', MAC: 'MAC2', states: [{ name: 'Sensor1', type: 2, value: '18.8°' }], online: false },
+  { name: 'Deivce3', MAC: 'MAC3', states: [{ name: 'Super Lamp 1', type: 1, value: 'Value 1', options: ['Value 1', 'Value 2', 'Value 3', 'Value 4'] }], online: true }
 ];
 
-const DeviceList = () => {
+const DeviceList = observer(() => {
+  const { userState } = useStore();
+
+  const sd = userState.selectedGroup;
+  const dev = sd?.devices == undefined ? "[]" : sd?.devices;
+  const devices = JSON.parse(dev);
   return (
     <FlatList
       keyExtractor={(device: IDevice, index: number) => device.MAC}
-      data={DATA}
-      renderItem={({ item }) => <Device key={item.MAC} device={item}/>}
+      data={devices}
+      renderItem={({ item }) => <Device key={item.MAC} device={item} />}
     />
   );
-}
+});
 
 export default DeviceList;
 

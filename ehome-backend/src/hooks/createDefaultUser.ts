@@ -15,6 +15,7 @@ logger.info("user count: %s", usercount);
   if (usercount.total == 0) {
     logger.info('Creating default users...');
     await userService.create({ username: 'admin', password: 'password', isAdmin: true });
+    await userService.create({ username: 'admin2', password: 'password', isAdmin: true });
     await userService.create({ username: 'user', password: 'password', isAdmin: false });
     logger.info('Default users created');
   } else {

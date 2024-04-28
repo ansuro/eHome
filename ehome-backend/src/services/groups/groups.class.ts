@@ -21,13 +21,14 @@ export class GroupService<ServiceParams extends Params = GroupParams> extends Kn
   async find(params?: ServiceParams & { paginate: false; }): Promise<Group[]>
   async find(params?: ServiceParams & { paginate?: { default?: number; max?: number } }): Promise<Paginated<Group>>
   async find(params?: ServiceParams): Promise<Paginated<Group> | Group[]> {
-    // logger.info('REQUEST: %o', params?.query);
+    logger.info('REQUEST: %o', params?.query);
     return await super.find(params);
   }
 }
 
 export const getOptions = (app: Application): KnexAdapterOptions => {
   return {
+    paginate: app.get('paginate'),
     Model: app.get('sqliteClient'),
     name: 'groups'
   }

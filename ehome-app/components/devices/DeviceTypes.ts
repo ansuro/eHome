@@ -6,7 +6,6 @@ export interface IDevice {
   MAC: string;
   states: Array<IStateOnOff | IStateOnOffOptions | IStateValueOnly>;
   online: boolean;
-
 }
 
 interface IState {
