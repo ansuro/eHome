@@ -1,4 +1,4 @@
-import { ThemeMode } from '@rneui/themed';
+import { ThemeMode, useThemeMode } from '@rneui/themed';
 import { observable, makeObservable, action, computed } from 'mobx';
 import { Appearance } from 'react-native';
 

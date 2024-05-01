@@ -1,38 +1,44 @@
-import { NavigationContainer } from "@react-navigation/native";
+import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { observer } from "mobx-react";
 import useStore from "../services/store/useStore";
 import client from "../services/feathers-client";
-import { Dialog, useTheme } from "@rneui/themed";
+import { Dialog, useTheme, useThemeMode } from "@rneui/themed";
 import myTheme from '../utils/Theme';
 import AppContainer from "./AppContainer";
 import GroupAddEdit from "./configuration/groups/GroupAddEdit";
 import StackHeader from "../components/header/StackHeader";
 import Login from "./Login";
+import { useEffect } from "react";
 
 const Stack = createStackNavigator();
 
 const AppNavigationContainer = observer(() => {
   const { appState, userState } = useStore();
   const { replaceTheme, theme } = useTheme();
+  const { setMode } = useThemeMode();
 
+  console.log('setMode');
+  useEffect(() => {
+    setMode(appState.colorMode);
+  }, [appState.colorMode]);
   const { isLoggedIn } = userState;
   const { colorMode, isLoaded } = appState;
-  console.log(isLoaded);
+  // console.log(colorMode);
+  // console.log(isLoaded);
   myTheme.mode = colorMode;
-
-  let bg = myTheme.mode == 'dark' ? myTheme.darkColors?.sceneBackground : myTheme.lightColors?.sceneBackground
+  // TODO
+  let bg = myTheme.mode == 'light' ? myTheme.lightColors?.sceneBackground : myTheme.darkColors?.sceneBackground;
   bg = bg == undefined ? 'black' : bg;
 
   return (
     !isLoaded && <Dialog.Loading /> ||
 
     <NavigationContainer>
-      {/* <NavigationContainer theme={{ colors: { background: '#2F4858' } }}> */}
       <Stack.Navigator screenOptions={{
         headerShown: false,
         cardStyle: {
-          backgroundColor: myTheme.mode == 'dark' ? myTheme.darkColors?.sceneBackground : myTheme.lightColors?.sceneBackground
+          backgroundColor: bg
         }
       }}>
         {isLoggedIn ?

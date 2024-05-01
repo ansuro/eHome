@@ -51,11 +51,13 @@ export class UserStateObserver {
     private reloadGroups() {
         this.setIsLoaded(false);
         client.service('groups').find({
+            paginate: false,
             query: {
+                $paginate: false,
                 findAll: true
             }
         }).then(action('fetchSuccess', g => {
-            this.setGroups(g.data);
+            this.setGroups(g);
             this.setIsLoaded(true);
         })).catch(action('fetchError', e => {
             console.log(e);

@@ -45,7 +45,7 @@ const GroupSelector = observer(() => {
   const { groups, isLoaded } = userState;
 
   let title = userState.selectedGroup?.name;
-  title = title === undefined ? 'alle' : title; 
+  title = title === undefined ? 'alle' : title;
 // console.log(userState.currentUser);
   return (
     <View style={styles.container}>
@@ -93,7 +93,7 @@ const useStyles = makeStyles((theme) => ({
     ...Platform.select({
       web: {
         width: 400,
-        maxHeight: '90%'
+        height: '90%'
       }
     }),
     backgroundColor: theme.colors.background,
