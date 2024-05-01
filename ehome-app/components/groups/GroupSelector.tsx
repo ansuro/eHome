@@ -43,13 +43,6 @@ const GroupSelector = observer(() => {
   }
 
   const { groups, isLoaded } = userState;
-  autorun(() => {
-    if (isLoaded) {
-      console.log(groups[0].name);
-    } else {
-      console.log("not loaded");
-    }
-  });
 
   let title = userState.selectedGroup?.name;
   title = title === undefined ? 'alle' : title; 
@@ -61,6 +54,7 @@ const GroupSelector = observer(() => {
         type={'outline'}
         containerStyle={styles.btnGroupContainer}
         onPress={() => setIsDialogOpen(true)}
+        loading={!isLoaded}
       />
       <Dialog isVisible={isDialogOpen} overlayStyle={styles.dgGroups}>
         <Dialog.Title titleStyle={{ color: theme.colors.primary }} title={'Select Group'} />

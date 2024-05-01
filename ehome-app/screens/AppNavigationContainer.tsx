@@ -10,35 +10,22 @@ import GroupAddEdit from "./configuration/groups/GroupAddEdit";
 import StackHeader from "../components/header/StackHeader";
 import Login from "./Login";
 
-
 const Stack = createStackNavigator();
 
 const AppNavigationContainer = observer(() => {
-  const appStore = useStore();
+  const { appState, userState } = useStore();
   const { replaceTheme, theme } = useTheme();
 
-  client.io.on('connect', () => {
-    appStore.setConnected(true);
-    console.log('socket.io connected');
-  });
-
-  client.io.on('disconnect', (reason: any) => {
-    appStore.setConnected(false);
-    console.log('socket.io disconnected');
-  });
-
-  const isLoggedIn = appStore.loggedIn;
-
-  myTheme.mode = appStore.colorMode;
+  const { isLoggedIn } = userState;
+  const { colorMode, isLoaded } = appState;
+  console.log(isLoaded);
+  myTheme.mode = colorMode;
 
   let bg = myTheme.mode == 'dark' ? myTheme.darkColors?.sceneBackground : myTheme.lightColors?.sceneBackground
   bg = bg == undefined ? 'black' : bg;
 
-  const isNotLoaded = !appStore.isLoaded;
-  console.log(isNotLoaded);
-
   return (
-    isNotLoaded && <Dialog.Loading /> ||
+    !isLoaded && <Dialog.Loading /> ||
 
     <NavigationContainer>
       {/* <NavigationContainer theme={{ colors: { background: '#2F4858' } }}> */}

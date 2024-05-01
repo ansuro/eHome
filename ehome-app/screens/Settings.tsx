@@ -1,15 +1,14 @@
-import { Platform, View } from "react-native";
-import { Input, ListItem, Switch, Text, makeStyles, useTheme } from "@rneui/themed";
-import { observer } from "mobx-react";
+import { View } from "react-native";
+import { ListItem, Switch, Text, makeStyles } from "@rneui/themed";
 import useScreenContainerStyle from "../utils/ContainerStyle";
 import useStore from "../services/store/useStore";
 
 const Settings = () => {
   const containerStyle = useScreenContainerStyle();
   const styles = useStyles();
-  const appStore = useStore();
+  const { appState } = useStore();
 
-  const colorMode = appStore.colorMode == 'light' ? false : true;
+  const colorMode = appState.colorMode == 'light' ? false : true;
 
   return (
     <View style={containerStyle.container}>
@@ -18,7 +17,7 @@ const Settings = () => {
         <ListItem.Content>
           <ListItem.Title>darkmode</ListItem.Title>
         </ListItem.Content>
-        <Switch value={colorMode} onValueChange={(value) => appStore.setColorMode(value ? 'dark' : 'light')} />
+        <Switch value={colorMode} onValueChange={(value) => appState.setColorMode(value ? 'dark' : 'light')} />
       </ListItem>
       <ListItem>
         <ListItem.Content>

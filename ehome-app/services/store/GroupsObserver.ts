@@ -2,13 +2,15 @@ import { observable, makeObservable, action, computed } from 'mobx';
 
 import client from '../feathers-client';
 import { Group } from 'ehome-backend';
+import { AppRootStore } from './AppRootStore';
 
 // Observer for all groups (admin only)
 export class GroupsObserver {
+    appRootStore: AppRootStore;
     isLoaded: boolean = false;
     groups: Group[] = [];
 
-    constructor() {
+    constructor(appRootStore: AppRootStore) {
         makeObservable(this, {
             isLoaded: observable,
             groups: observable,
@@ -16,11 +18,14 @@ export class GroupsObserver {
             setGroups: action,
             addGroup: action
         });
+
+        this.appRootStore = appRootStore;
+
         this.init();
     }
 
     async init() {
-        console.log('init');
+        console.log('init GroupsObserver');
 
         try {
             this.groups = await client.service('groups').find({
@@ -75,5 +80,3 @@ export class GroupsObserver {
         this.isLoaded = isLoaded;
     }
 }
-
-// export const groupsObserver = new GroupsObserver();

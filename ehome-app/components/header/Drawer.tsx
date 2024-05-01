@@ -1,6 +1,8 @@
 import type { DrawerContentComponentProps } from "@react-navigation/drawer/lib/typescript/src/types";
-import { Divider, ListItem, Text, makeStyles, useTheme } from "@rneui/themed";
 import { View } from "react-native";
+import { Divider, ListItem, Text, makeStyles, useTheme } from "@rneui/themed";
+
+import client from "../../services/feathers-client";
 
 
 const DrawerContent = ({ navigation, state }: DrawerContentComponentProps) => {
@@ -23,6 +25,13 @@ const DrawerContent = ({ navigation, state }: DrawerContentComponentProps) => {
           </ListItem.Content>
         </ListItem>
       ))}
+      <ListItem key={'lelogout'}
+        bottomDivider
+        onPress={() => { client.logout() }}>
+        <ListItem.Content>
+          <ListItem.Title style={{ fontWeight: "bold" }}>Logout</ListItem.Title>
+        </ListItem.Content>
+      </ListItem>
     </View>
   );
 }

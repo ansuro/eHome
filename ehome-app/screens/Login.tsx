@@ -1,17 +1,18 @@
+import { Platform, View } from "react-native";
 import { Button, Card, Input, makeStyles } from "@rneui/themed";
-import { Platform, Text, View } from "react-native";
-import { Formik, FormikHelpers } from "formik";
+import { Formik } from "formik";
 import client from "../services/feathers-client";
 import useStore from "../services/store/useStore";
+import { observer } from "mobx-react";
 
 interface TLoginFormValues {
   username: string;
   pw: string;
 }
 
-const Login = () => {
+const Login = observer(() => {
   const styles = useStyles();
-  const appStore = useStore();
+  const { appState } = useStore();
 
   const doLogin = (values: TLoginFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
     const username = values.username.trim();
@@ -23,7 +24,6 @@ const Login = () => {
       password: pw
     }).then(authResult => {
       console.log(authResult);
-      appStore.login(authResult);
     }).catch(e => {
       console.log('Login failed: ' + e.message);
     }).finally(() => {
@@ -52,6 +52,10 @@ const Login = () => {
     return errors;
   };
 
+  const { isConnected } = appState;
+
+  console.log('verbunden: ' + isConnected);
+
   return (
     <Formik
       initialValues={{ username: '', pw: '' }}
@@ -61,7 +65,7 @@ const Login = () => {
       {({ handleChange, handleBlur, handleSubmit, values, errors, isSubmitting, isValid }) => (
         <View style={styles.container}>
           <Card containerStyle={styles.logincard}>
-            <Card.Title>Login</Card.Title>
+            <Card.Title>Login {isConnected ? '' : ' - Connecting...'}</Card.Title>
             <Input
               placeholder="Username"
               onChangeText={handleChange('username')}
@@ -77,13 +81,13 @@ const Login = () => {
               value={values.pw}
               errorMessage={errors.pw}
             />
-            <Button disabled={!isValid || isSubmitting} loading={isSubmitting} onPress={handleSubmit as any} title={'Login'} />
+            <Button disabled={!isValid || isSubmitting || !isConnected} loading={isSubmitting} onPress={handleSubmit as any} title={'Login'} />
           </Card>
         </View>
       )}
     </Formik>
   );
-}
+});
 
 export default Login;
 

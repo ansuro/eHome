@@ -36,7 +36,9 @@ const AppContainer = observer(() => {
     >
       <Screen name='Devices' component={Devices} />
       <Screen name='Settings' component={Settings} />
-      <Screen name='Configuration' component={Configuration} />
+      {userState.isAdmin ? (
+        <Screen name='Configuration' component={Configuration} />
+      ) : null}
     </Navigator>
   );
 });

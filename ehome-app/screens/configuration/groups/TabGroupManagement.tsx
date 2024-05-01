@@ -17,7 +17,7 @@ const TabGroupManagement = observer(() => {
   const containerStyle = useScreenContainerStyle();
   const navigation = useNavigation<StackNavigationProp<NavigationParams>>();
 
-  const { groups } = groupsObserver;
+  const groups = groupsObserver ? groupsObserver.groups : [];
 
   return (
     <View style={containerStyle.container}>

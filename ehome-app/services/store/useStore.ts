@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
-import { AppStateObserver } from "./AppStateObeserver";
+import { AppRootStore } from "./AppRootStore";
 
-const StoreContext = createContext<AppStateObserver>(null!);
+const StoreContext = createContext<AppRootStore>(null!);
 
 export const StoreProvider = StoreContext.Provider;
 

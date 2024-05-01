@@ -1,34 +1,55 @@
-import { ThemeMode } from '@rneui/themed';
 import { observable, makeObservable, action, computed } from 'mobx';
-import { Appearance } from 'react-native';
 import { IDevice } from '../../components/devices/DeviceTypes';
-import { IGroup } from '../../components/groups/GroupTypes';
 import client from '../feathers-client';
-import { Group } from 'ehome-backend';
+import { Group, User } from 'ehome-backend';
+import { AppRootStore } from './AppRootStore';
 
 export class UserStateObserver {
+    appRootStore: AppRootStore;
     isLoaded: boolean = false;
     devices: IDevice[] = [];
-    groups: IGroup[] = [];
-    selectedGroup: IGroup | undefined; 
+    groups: Group[] = [];
+    selectedGroup?: Group;
+    user?: User;
+    isLoggedIn: boolean = false;
 
-    constructor() {
+    constructor(appRootStore: AppRootStore) {
         makeObservable(this, {
             isLoaded: observable,
             setIsLoaded: action,
             devices: observable,
             setGroups: action,
             groups: observable,
-            updateDevice: action,
             setSelectedGroup: action,
-            currentUser: computed
+            user: observable,
+            login: action,
+            logout: action,
+            isLoggedIn: observable,
+            isAdmin: computed
         });
+
+        this.appRootStore = appRootStore;
+
         this.init();
     }
 
-    init() {
+    private init() {
         console.log('init UserStateObserver');
 
+        client.on('login', (authenticationResult, params, context) => {
+            console.log('Logged in event');
+            this.login(authenticationResult.user);
+            this.reloadGroups();
+        });
+        
+        client.on('logout', (authenticationResult, params, context) => {
+            console.log('Logged out event');
+            this.logout();
+        });
+    }
+
+    private reloadGroups() {
+        this.setIsLoaded(false);
         client.service('groups').find({
             query: {
                 findAll: true
@@ -36,14 +57,12 @@ export class UserStateObserver {
         }).then(action('fetchSuccess', g => {
             this.setGroups(g.data);
             this.setIsLoaded(true);
-
         })).catch(action('fetchError', e => {
             console.log(e);
-
         }));
     }
 
-    setSelectedGroup(group: IGroup) {
+    setSelectedGroup(group: Group) {
         this.selectedGroup = group;
     }
 
@@ -55,15 +74,17 @@ export class UserStateObserver {
         this.isLoaded = isLoaded;
     }
 
-    // only called by feathers-clinet
-    updateDevice(device: IDevice) {
-
+    login(user: User) {
+        this.user = user;
+        this.isLoggedIn = true;
     }
 
-    get currentUser() {
-        return client.app.get('authentication').user;
+    logout() {
+        delete this.user;
+        this.isLoggedIn = false;
     }
 
+    get isAdmin() {
+        return this.user?.isAdmin;
+    }
 }
-
-// export const userState = new UserStateObserver();

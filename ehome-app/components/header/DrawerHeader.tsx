@@ -11,7 +11,7 @@ import useStore from '../../services/store/useStore';
 const DrawerHeader = observer((props: DrawerHeaderProps) => {
   const { theme } = useTheme();
   const styles = useStyles();
-  const appStore = useStore();
+  const { appState } = useStore();
   const { navigation, route } = props;
 
   const leftComponent = (
@@ -23,7 +23,7 @@ const DrawerHeader = observer((props: DrawerHeaderProps) => {
   const rightComponent = (
     <View>
       {
-        appStore.connected ?
+        appState.isConnected ?
           <Icon name={'cloud-queue'} type={'material'} color={theme.colors.connected} /> :
           <Icon name={'cloud-off'} type={'material'} color={theme.colors.notconnected} />
       }
