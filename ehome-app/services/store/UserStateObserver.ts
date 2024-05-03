@@ -64,7 +64,7 @@ export class UserStateObserver {
         }));
     }
 
-    setSelectedGroup(group: Group) {
+    setSelectedGroup(group?: Group) {
         this.selectedGroup = group;
     }
 

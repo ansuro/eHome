@@ -12,11 +12,11 @@ type TGroup = {
   name: string
 };
 
-const DATA: TGroup[] = [{ id: -1, name: 'Alle' }];
+// const DATA: TGroup[] = [{ id: -1, name: 'Alle' }];
 
-for (let i = 0; i < 50; i++) {
-  DATA.push({ 'id': i, 'name': 'name' + i });
-}
+// for (let i = 0; i < 50; i++) {
+//   DATA.push({ 'id': i, 'name': 'name' + i });
+// }
 
 const GroupSelector = observer(() => {
   const [selectedIndex, setIndex] = useState(0);
@@ -40,13 +40,23 @@ const GroupSelector = observer(() => {
     setIsDialogOpen(false);
     // TODO Gruppe setzen im Store
     userState.setSelectedGroup(groups[selectedIndex]);
+    console.log(selectedIndex);
   }
 
   const { groups, isLoaded } = userState;
 
   let title = userState.selectedGroup?.name;
   title = title === undefined ? 'alle' : title;
-// console.log(userState.currentUser);
+  // if (!sg) {
+  //   setIndex(-1);
+  //   sg = {
+  //     id: -1,
+  //     name: 'Alle',
+  //     //TODO remove devices
+  //     devices: ''
+  //   }
+  // }
+  // console.log(userState.currentUser);
   return (
     <View style={styles.container}>
       <Button
@@ -58,6 +68,7 @@ const GroupSelector = observer(() => {
       />
       <Dialog isVisible={isDialogOpen} overlayStyle={styles.dgGroups}>
         <Dialog.Title titleStyle={{ color: theme.colors.primary }} title={'Select Group'} />
+        {renderDialogItem({ id: -1, name: 'Alle' })}
         <FlatList
           data={groups}
           renderItem={({ item }) => renderDialogItem(item)}
