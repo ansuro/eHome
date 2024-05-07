@@ -4,7 +4,7 @@ import { Icon, Text, makeStyles, useTheme } from "@rneui/themed";
 import useScreenContainerStyle, { useTabNavigationStyle } from "../utils/ContainerStyle";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-import TabUserManagement from "./configuration/TabUserManagement";
+import TabUserManagement from "./configuration/users/TabUserManagement";
 import TabDeviceManagement from "./configuration/TabDeviceManagement";
 import TabGroupManagement from "./configuration/groups/TabGroupManagement";
 

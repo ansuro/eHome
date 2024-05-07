@@ -57,8 +57,10 @@ export class UserStateObserver {
                 findAll: true
             }
         }).then(action('fetchSuccess', g => {
-            this.setGroups(g);
-            this.setIsLoaded(true);
+            // this.setGroups(g);
+            // this.setIsLoaded(true);
+            this.groups = g;
+            this.isLoaded = true;
         })).catch(action('fetchError', e => {
             console.log(e);
         }));

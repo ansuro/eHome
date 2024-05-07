@@ -2,12 +2,14 @@ import client from "../feathers-client";
 import { AppStateObserver } from "./AppStateObserver";
 import { GroupsObserver } from "./GroupsObserver";
 import { UserStateObserver } from "./UserStateObserver";
+import { UsersObserver } from "./UsersObserver";
 
 
 export class AppRootStore {
   appState: AppStateObserver;
   userState: UserStateObserver;
 
+  usersObserver?: UsersObserver;
   groupsObserver?: GroupsObserver;
 
   constructor() {
@@ -17,6 +19,8 @@ export class AppRootStore {
     client.on('login', (authenticationResult, params, context) => {
       console.log('Logged in event');
       if (authenticationResult.user?.isAdmin) {
+        this.usersObserver = new UsersObserver(this);
+        console.log('usersObserver created');
         this.groupsObserver = new GroupsObserver(this);
         console.log('groupsObserver created');
       }
@@ -24,6 +28,7 @@ export class AppRootStore {
 
     client.on('logout', (authenticationResult, params, context) => {
       console.log('Logged out event');
+      delete this.usersObserver;
       delete this.groupsObserver;
     });
 

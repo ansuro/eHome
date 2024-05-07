@@ -11,12 +11,16 @@ import Settings from './Settings';
 import Configuration from './ConfigurationContainer';
 import { observer } from 'mobx-react';
 import useStore from '../services/store/useStore';
+import { Group, User } from 'ehome-backend';
 
 export type NavigationParams = {
+  Root: undefined;
+  Login: undefined;
   Devices: undefined;
   Settings: undefined;
   Configuration: undefined;
-  GroupAddEdit: { gid?: number }
+  UserAddEdit: { user: User } | undefined;
+  GroupAddEdit: { group: Group } | undefined;
 };
 
 const { Navigator, Screen } = createDrawerNavigator<NavigationParams>();

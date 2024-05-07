@@ -7,6 +7,7 @@ import { passwordHash } from '@feathersjs/authentication-local'
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
 import type { UserService } from './users.class'
+import { logger } from '../../logger'
 
 // Main data model schema
 export const userSchema = Type.Object(
@@ -53,9 +54,11 @@ export const userQuerySchema = Type.Intersect(
   [
     querySyntax(userQueryProperties),
     // Add additional query properties here
-    Type.Object({}, { additionalProperties: false })
+    Type.Object({
+      $paginate: Type.Optional(Type.Boolean())
+    }, { additionalProperties: true })
   ],
-  { additionalProperties: false }
+  { additionalProperties: true }
 )
 export type UserQuery = Static<typeof userQuerySchema>
 export const userQueryValidator = getValidator(userQuerySchema, queryValidator)
@@ -63,7 +66,11 @@ export const userQueryResolver = resolve<UserQuery, HookContext<UserService>>({
   // If there is a user (e.g. with authentication), they are only allowed to see their own data
   id: async (value, user, context) => {
     if (context.params.user) {
-      return context.params.user.id
+      if (context.params.user.isAdmin) {
+        return value;
+      } else {
+        return context.params.user.id
+      }
     }
 
     return value

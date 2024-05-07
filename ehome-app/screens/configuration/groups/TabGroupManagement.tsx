@@ -22,7 +22,7 @@ const TabGroupManagement = observer(() => {
   return (
     <View style={containerStyle.container}>
       <Text h3 h3Style={{ 'textAlign': 'center' }}>Gruppen</Text>
-      <Button onPress={() => { navigation.navigate("GroupAddEdit", {}) }}>Neu</Button>
+      <Button onPress={() => { navigation.navigate("GroupAddEdit") }}>Neu</Button>
       <FlatList
         keyExtractor={(group: Group, index: number) => group.id + ""}
         data={groups.slice()}

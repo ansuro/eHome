@@ -5,13 +5,14 @@ import useStore from "../services/store/useStore";
 import client from "../services/feathers-client";
 import { Dialog, useTheme, useThemeMode } from "@rneui/themed";
 import myTheme from '../utils/Theme';
-import AppContainer from "./AppContainer";
+import AppContainer, { NavigationParams } from "./AppContainer";
 import GroupAddEdit from "./configuration/groups/GroupAddEdit";
 import StackHeader from "../components/header/StackHeader";
 import Login from "./Login";
 import { useEffect } from "react";
+import UserAddEdit from "./configuration/users/UserAddEdit";
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<NavigationParams>();
 
 const AppNavigationContainer = observer(() => {
   const { appState, userState } = useStore();
@@ -22,8 +23,8 @@ const AppNavigationContainer = observer(() => {
   useEffect(() => {
     setMode(appState.colorMode);
   }, [appState.colorMode]);
-  const { isLoggedIn } = userState;
-  const { colorMode, isLoaded } = appState;
+  const { isLoggedIn, isLoaded: userIsLoaded } = userState;
+  const { colorMode, isLoaded: appIsLoaded } = appState;
   // console.log(colorMode);
   // console.log(isLoaded);
   myTheme.mode = colorMode;
@@ -32,7 +33,7 @@ const AppNavigationContainer = observer(() => {
   bg = bg == undefined ? 'black' : bg;
 
   return (
-    !isLoaded && <Dialog.Loading /> ||
+    !appIsLoaded && !userIsLoaded && <Dialog.Loading /> ||
 
     <NavigationContainer>
       <Stack.Navigator screenOptions={{
@@ -44,6 +45,7 @@ const AppNavigationContainer = observer(() => {
         {isLoggedIn ?
           <Stack.Group>
             <Stack.Screen name={'Root'} component={AppContainer} />
+            <Stack.Screen name={'UserAddEdit'} component={UserAddEdit} options={{ headerShown: true, header: (props) => <StackHeader {...props} /> }} />
             <Stack.Screen name={'GroupAddEdit'} component={GroupAddEdit} options={{ headerShown: true, header: (props) => <StackHeader {...props} /> }} />
           </Stack.Group>
           :

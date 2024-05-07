@@ -7,17 +7,12 @@ import client from "../../../services/feathers-client";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
-interface TEditGroupFormValues {
-  name: string;
-  // TODO devices[]
-}
-
 const GroupAddEdit = () => {
   const navigation = useNavigation();
   const { theme } = useTheme();
   const containerStyle = useScreenContainerStyle();
 
-  const validateForm = async (values: TEditGroupFormValues) => {
+  const validateForm = async (values: Group) => {
     const errors: any = {};
 
     values.name = values.name.trim();
@@ -47,7 +42,7 @@ const GroupAddEdit = () => {
     return errors;
   };
 
-  const doSave = async (values: TEditGroupFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
+  const doSave = async (values: Group, setSubmitting: (isSubmitting: boolean) => void) => {
     try {
       const g = await client.service('groups').create({
         name: values.name,
@@ -64,9 +59,9 @@ const GroupAddEdit = () => {
 
   return (
     <Formik
-      initialValues={{ name: '' }}
+      initialValues={{ name: '', id: 0, devices: '' }}
       validate={validateForm}
-      onSubmit={(values: TEditGroupFormValues, { setSubmitting }) => doSave(values, setSubmitting)}
+      onSubmit={(values: Group, { setSubmitting }) => doSave(values, setSubmitting)}
     >
       {({ handleChange, handleBlur, handleSubmit, values, errors, isSubmitting, isValid }) => (
         <View style={containerStyle.container}>
