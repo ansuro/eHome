@@ -39,14 +39,10 @@ const Login = observer(() => {
 
     if (!values.username) {
       errors.username = 'Username required';
-    } else if (values.username.length < 3 || values.username.length > 25) {
-      errors.username = 'Username length must be between 3 and 25';
     }
 
     if (!values.pw) {
       errors.pw = 'Password required';
-    } else if (values.pw.length < 6 || values.pw.length > 25) {
-      errors.pw = 'Password length must be between 6 and 25';
     }
 
     return errors;
