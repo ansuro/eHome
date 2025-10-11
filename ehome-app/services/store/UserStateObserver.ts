@@ -1,7 +1,7 @@
 import { observable, makeObservable, action, computed } from 'mobx';
 import { IDevice } from '../../components/devices/DeviceTypes';
 import client from '../feathers-client';
-import { Group, User } from 'ehome-backend';
+import { DeviceData, Group, User } from 'ehome-backend';
 import { AppRootStore } from './AppRootStore';
 
 export class UserStateObserver {
@@ -60,6 +60,25 @@ export class UserStateObserver {
             // this.setGroups(g);
             // this.setIsLoaded(true);
             this.groups = g;
+            this.isLoaded = true;
+            this.setIsLoaded(true);
+        })).catch(action('fetchError', e => {
+            console.log(e);
+        }));
+        
+        client.service('devices').find({
+            paginate: false
+        }).then(action('fetchSuccess', devices => {
+            // this.setGroups(g);
+            // this.setIsLoaded(true);
+            this.devices = devices.map((d: DeviceData) => {
+                return {
+                    name: d.name,
+                    MAC: d.MAC,
+                    states: [],
+                    online: d.isOnline
+                } as IDevice;
+            });
             this.isLoaded = true;
         })).catch(action('fetchError', e => {
             console.log(e);

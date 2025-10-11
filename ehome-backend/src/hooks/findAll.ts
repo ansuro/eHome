@@ -11,6 +11,7 @@ export const findAll = async (context: HookContext) => {
 
   const { user } = context.params;
   if (user == undefined) {
+    logger.info('user == undefined :(');
     throw new NotAuthenticated();
   }
   // logger.info('USER ID: %s', user.id);

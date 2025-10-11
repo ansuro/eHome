@@ -17,7 +17,9 @@ const DeviceList = observer(() => {
 
   const sd = userState.selectedGroup;
   const dev = sd?.devices == undefined ? "[]" : sd?.devices;
-  const devices = JSON.parse(dev);
+  // const devices = JSON.parse(dev);
+
+  const devices: IDevice[] = userState.devices;
   return (
     <FlatList
       keyExtractor={(device: IDevice, index: number) => device.MAC}

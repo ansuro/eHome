@@ -16,7 +16,7 @@ const Device = ({ device }: { device: IDevice }) => {
         <Icon type={'material'} name={'wifi'} color={device.online ? theme.colors.connected : theme.colors.notconnected} />
       </ListItem>
       {
-        device.states.map(s => {
+        device.states?.map(s => {
           switch (s.type) {
             case 0:
               return <StateOnOff key={device.MAC} state={s as IStateOnOff} disabled={!device.online} />;

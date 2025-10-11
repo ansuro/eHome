@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "Esp8266 GDB",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/out/Esp8266/debug/build/app_0.out",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "miDebuggerPath": "${env:ESP_HOME}/xtensa-lx106-elf/bin/xtensa-lx106-elf-gdb.exe",
+            "miDebuggerArgs": "-x ${env:SMING_HOME}/Arch/Esp8266/Components/gdbstub/gdbcmds -b 74880",
+            "miDebuggerServerAddress": "COM5",
+        }
+    ]
+}

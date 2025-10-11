@@ -34,7 +34,7 @@ const AppContainer = observer(() => {
       initialRouteName='Configuration'
       screenOptions={{
         header: (props) => <DrawerHeader {...props} />,
-        sceneContainerStyle: { backgroundColor: theme.colors.sceneBackground }
+        sceneContainerStyle: { backgroundColor: theme.colors.sceneBackground, flex: 1 },
       }}
       drawerContent={props => <DrawerContent {...props} />}
     >

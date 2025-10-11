@@ -45,9 +45,12 @@ export const deviceQuerySchema = Type.Intersect(
   [
     querySyntax(deviceQueryProperties),
     // Add additional query properties here
-    Type.Object({}, { additionalProperties: false })
+    Type.Object({
+      findAll: Type.Optional(Type.Boolean()),
+      $paginate: Type.Optional(Type.Boolean())
+    }, { additionalProperties: true })
   ],
-  { additionalProperties: false }
+  { additionalProperties: true }
 )
 export type DeviceQuery = Static<typeof deviceQuerySchema>
 export const deviceQueryValidator = getValidator(deviceQuerySchema, queryValidator)

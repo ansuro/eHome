@@ -20,6 +20,7 @@ import { userPath, userMethods } from './users.shared'
 import { findAll } from '../../hooks/findAll'
 import { paginate } from '../../hooks/paginate'
 import { isAdmin } from '../../hooks/isAdmin'
+import { queryParamsToParams } from '../../hooks/query-params-to-params'
 
 export * from './users.class'
 export * from './users.schema'
@@ -45,7 +46,7 @@ export const user = (app: Application) => {
       remove: [authenticate('jwt')]
     },
     before: {
-      all: [schemaHooks.validateQuery(userQueryValidator), schemaHooks.resolveQuery(userQueryResolver)],
+      all: [queryParamsToParams, schemaHooks.validateQuery(userQueryValidator), schemaHooks.resolveQuery(userQueryResolver)],
       find: [paginate],
       get: [],
       create: [schemaHooks.validateData(userDataValidator), schemaHooks.resolveData(userDataResolver)],

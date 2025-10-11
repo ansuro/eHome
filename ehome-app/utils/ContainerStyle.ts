@@ -10,10 +10,11 @@ const useScreenContainerStyle = makeStyles((theme) => ({
       },
       web: {
         width: 500,
-        alignSelf: 'center'
+        alignSelf: 'center',
+        flex: 1,           // nimmt den verfügbaren Platz ein
+        overflowY: 'auto'  // Scrollbar aktivieren
       }
     }),
-    height: '100%',
     backgroundColor: theme.colors.background,
     color: theme.colors.primary
   }

@@ -1,5 +1,5 @@
 // // For more information about this file see https://dove.feathersjs.com/guides/cli/service.schemas.html
-import { resolve } from '@feathersjs/schema'
+import { resolve, virtual } from '@feathersjs/schema'
 import { Type, getValidator, querySyntax } from '@feathersjs/typebox'
 import type { Static } from '@feathersjs/typebox'
 import { passwordHash } from '@feathersjs/authentication-local'
@@ -8,6 +8,8 @@ import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
 import type { UserService } from './users.class'
 import { logger } from '../../logger'
+import { Group, groupSchema } from '../groups/groups.schema'
+
 
 // Main data model schema
 export const userSchema = Type.Object(
@@ -15,13 +17,44 @@ export const userSchema = Type.Object(
     id: Type.Number(),
     username: Type.String(),
     password: Type.Optional(Type.String()),
-    isAdmin: Type.Boolean()
+    isAdmin: Type.Boolean(),
+    userGroups: Type.Optional(Type.Array(Type.Ref(groupSchema)))
   },
   { $id: 'User', additionalProperties: false }
 )
 export type User = Static<typeof userSchema>
 export const userValidator = getValidator(userSchema, dataValidator)
-export const userResolver = resolve<User, HookContext<UserService>>({})
+export const userResolver = resolve<User, HookContext<UserService>>({
+  userGroups: virtual(async (user, context) => {
+    logger.info('%o', context.params.query);
+
+    if (!context.params.$withGroups) {
+      logger.info('$withGroups');
+      return;
+    }
+
+    const gids = await context.app.service('membership').find({
+      user: user,
+      paginate: false,
+      query: {
+        uid: user.id,
+        $select: ['gid']
+      }
+    });
+
+    const groups = await context.app.service('groups').find({
+      user: user,
+      paginate: false,
+      query: {
+        id: {
+          $in: gids.flatMap(g => g.gid)
+        }
+      }
+    });
+
+    return groups;
+  })
+})
 
 export const userExternalResolver = resolve<User, HookContext<UserService>>({
   // The password should never be visible externally
@@ -55,7 +88,8 @@ export const userQuerySchema = Type.Intersect(
     querySyntax(userQueryProperties),
     // Add additional query properties here
     Type.Object({
-      $paginate: Type.Optional(Type.Boolean())
+      $paginate: Type.Optional(Type.Boolean()),
+      $withGroups: Type.Optional(Type.Boolean())
     }, { additionalProperties: true })
   ],
   { additionalProperties: true }
