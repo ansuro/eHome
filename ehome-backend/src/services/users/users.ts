@@ -17,7 +17,6 @@ import {
 import type { Application } from '../../declarations'
 import { UserService, getOptions } from './users.class'
 import { userPath, userMethods } from './users.shared'
-import { findAll } from '../../hooks/findAll'
 import { paginate } from '../../hooks/paginate'
 import { isAdmin } from '../../hooks/isAdmin'
 import { queryParamsToParams } from '../../hooks/query-params-to-params'
@@ -47,7 +46,7 @@ export const user = (app: Application) => {
     },
     before: {
       all: [queryParamsToParams, schemaHooks.validateQuery(userQueryValidator), schemaHooks.resolveQuery(userQueryResolver)],
-      find: [paginate],
+      find: [paginate, queryParamsToParams],
       get: [],
       create: [schemaHooks.validateData(userDataValidator), schemaHooks.resolveData(userDataResolver)],
       patch: [schemaHooks.validateData(userPatchValidator), schemaHooks.resolveData(userPatchResolver)],

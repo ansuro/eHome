@@ -55,8 +55,9 @@ export class UsersObserver {
         console.log('init UsersObserver');
         client.service('users').find({
             paginate: false,
+            $withGroups: false,
             query: {
-                $withGroups: true,
+                $withGroups: false,
                 $paginate: false
             }
         }).then(u => this.setUsers(u))

@@ -5,6 +5,7 @@ import type { KnexAdapterParams, KnexAdapterOptions } from '@feathersjs/knex'
 
 import type { Application } from '../../declarations'
 import type { State, StateData, StatePatch, StateQuery } from './states.schema'
+import { logger } from '../../logger'
 
 export type { State, StateData, StatePatch, StateQuery }
 
@@ -17,7 +18,6 @@ export class StateService<ServiceParams extends Params = StateParams> extends Kn
   StateParams,
   StatePatch
 > {
-
   async find(params?: ServiceParams & { paginate: false; }): Promise<State[]>
   async find(params?: ServiceParams & { paginate?: { default?: number; max?: number } }): Promise<Paginated<State>>
   async find(params?: ServiceParams): Promise<Paginated<State> | State[]> {
@@ -36,6 +36,39 @@ export class StateService<ServiceParams extends Params = StateParams> extends Kn
     });
 
     return states;
+  }
+
+  async create(data: StateData, params?: ServiceParams): Promise<State>;
+  async create(data: StateData[], params?: ServiceParams): Promise<State[]>;
+  async create(
+    data: StateData | StateData[],
+    params?: ServiceParams
+  ): Promise<State | State[]> {
+    const items = Array.isArray(data) ? data : [data];
+
+    const processedItems = items.map(item => ({
+      ...item,
+      value: item.type === 0 ? String(item.value) : item.value,
+      options: item.options ? JSON.stringify(item.options) : undefined
+    }));
+
+    const result = await super.create(
+      processedItems, 
+      params
+    );
+
+    result.forEach(s => {
+      if (s.type === 0) {
+        s.value = s.value === 'false' ? false : true;
+      }
+      if (s.options) {
+        if (typeof s.options === 'string') {
+          s.options = JSON.parse(s.options);
+        }
+      }
+    });
+
+    return result;
   }
 }
 

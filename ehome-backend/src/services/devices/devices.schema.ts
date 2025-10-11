@@ -6,6 +6,7 @@ import type { Static } from '@feathersjs/typebox'
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
 import type { DeviceService } from './devices.class'
+import { stateSchema } from '../states/states'
 
 // Main data model schema
 export const deviceSchema = Type.Object(
@@ -13,13 +14,28 @@ export const deviceSchema = Type.Object(
     id: Type.Number(),
     MAC: Type.String(),
     name: Type.String(),
-    isOnline: Type.Boolean()
+    isOnline: Type.Boolean(),
+    states: Type.Optional(Type.Array(Type.Ref(stateSchema)))
   },
   { $id: 'Device', additionalProperties: false }
 )
 export type Device = Static<typeof deviceSchema>
 export const deviceValidator = getValidator(deviceSchema, dataValidator)
-export const deviceResolver = resolve<Device, HookContext<DeviceService>>({})
+export const deviceResolver = resolve<Device, HookContext<DeviceService>>({
+  states: async (value, device, context) => {
+
+    if (device.MAC) {
+      const states = await context.app.service('states').find({
+        query: {
+          MAC: device.MAC
+        }
+      });
+
+      return Array.isArray(states) ? states : states.data;
+    }
+    return [];
+  }
+})
 
 export const deviceExternalResolver = resolve<Device, HookContext<DeviceService>>({})
 

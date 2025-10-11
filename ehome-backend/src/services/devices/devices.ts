@@ -17,6 +17,7 @@ import {
 import type { Application } from '../../declarations'
 import { DeviceService, getOptions } from './devices.class'
 import { devicePath, deviceMethods } from './devices.shared'
+import { paginate } from '../../hooks/paginate'
 
 export * from './devices.class'
 export * from './devices.schema'
@@ -41,7 +42,7 @@ export const device = (app: Application) => {
     },
     before: {
       all: [schemaHooks.validateQuery(deviceQueryValidator), schemaHooks.resolveQuery(deviceQueryResolver)],
-      find: [],
+      find: [paginate],
       get: [],
       create: [schemaHooks.validateData(deviceDataValidator), schemaHooks.resolveData(deviceDataResolver)],
       patch: [schemaHooks.validateData(devicePatchValidator), schemaHooks.resolveData(devicePatchResolver)],

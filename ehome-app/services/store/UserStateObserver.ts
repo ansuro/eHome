@@ -46,6 +46,37 @@ export class UserStateObserver {
             console.log('Logged out event');
             this.logout();
         });
+
+        // === Device Events ===
+        // TODO new device event
+        client.service('devices').on('created', action((device: DeviceData) => {
+            console.log('Device created:', device);
+            this.devices.push({
+                name: device.name,
+                MAC: device.MAC,
+                states: [],
+                online: device.isOnline
+            });
+        }));
+
+        // device updated event: name or isOnline changed
+        client.service('devices').on('patched', action((device: DeviceData) => {
+            console.log('Device updated:', device);
+            const index = this.devices.findIndex(d => d.MAC === device.MAC);
+            if (index !== -1) {
+                this.devices[index] = {
+                    ...this.devices[index],
+                    name: device.name,
+                    online: device.isOnline
+                };
+            }
+        }));
+
+        // device removed event
+        client.service('devices').on('removed', action((device: DeviceData) => {
+            console.log('Device removed:', device);
+            this.devices = this.devices.filter(d => d.MAC !== device.MAC);
+        }));
     }
 
     private reloadGroups() {
@@ -67,10 +98,14 @@ export class UserStateObserver {
         }));
         
         client.service('devices').find({
-            paginate: false
+            paginate: false,
+            query: {
+                $paginate: false
+            }
         }).then(action('fetchSuccess', devices => {
             // this.setGroups(g);
             // this.setIsLoaded(true);
+            console.log("Devices from backend: %o", devices);
             this.devices = devices.map((d: DeviceData) => {
                 return {
                     name: d.name,
@@ -83,6 +118,8 @@ export class UserStateObserver {
         })).catch(action('fetchError', e => {
             console.log(e);
         }));
+        // console.log('reloadGroups called: ' + this.devices.length);
+        console.log('reloadGroups called: ' + this.devices);
     }
 
     setSelectedGroup(group?: Group) {

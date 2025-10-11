@@ -15,7 +15,9 @@ export const stateSchema = Type.Object(
     MAC: Type.String(),
     value: Type.Union([Type.String(), Type.Boolean()]),
     type: Type.Number(),
-    options: Type.Optional(Type.String())
+    options: Type.Optional(
+      Type.Union([Type.String(), Type.Array(Type.String())])
+    )
   },
   { $id: 'State', additionalProperties: false }
 )
