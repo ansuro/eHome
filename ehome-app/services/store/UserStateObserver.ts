@@ -1,7 +1,7 @@
 import { observable, makeObservable, action, computed } from 'mobx';
 import { IDevice } from '../../components/devices/DeviceTypes';
 import client from '../feathers-client';
-import { DeviceData, Group, User } from 'ehome-backend';
+import { Device, Group, User } from 'ehome-backend';
 import { AppRootStore } from './AppRootStore';
 
 export class UserStateObserver {
@@ -18,6 +18,7 @@ export class UserStateObserver {
             isLoaded: observable,
             setIsLoaded: action,
             devices: observable,
+            setDevices: action,
             setGroups: action,
             groups: observable,
             setSelectedGroup: action,
@@ -31,6 +32,16 @@ export class UserStateObserver {
         this.appRootStore = appRootStore;
 
         this.init();
+    }
+
+    private mapDeviceStates(states: any[] | undefined) {
+        return states?.map(state => {
+            const options = state.options ? JSON.parse(state.options) : undefined;
+            return {
+                ...state,
+                options: options
+            }
+        });
     }
 
     private init() {
@@ -49,34 +60,38 @@ export class UserStateObserver {
 
         // === Device Events ===
         // TODO new device event
-        client.service('devices').on('created', action((device: DeviceData) => {
+        client.service('devices').on('created', action((device: Device) => {
             console.log('Device created:', device);
-            this.devices.push({
+            const newDevices = [...this.devices, {
                 name: device.name,
                 MAC: device.MAC,
-                states: [],
+                states: this.mapDeviceStates(device.states),
                 online: device.isOnline
-            });
+            }];
+            this.setDevices(newDevices);
         }));
 
         // device updated event: name or isOnline changed
-        client.service('devices').on('patched', action((device: DeviceData) => {
+        client.service('devices').on('patched', action((device: Device) => {
             console.log('Device updated:', device);
-            const index = this.devices.findIndex(d => d.MAC === device.MAC);
-            if (index !== -1) {
-                this.devices[index] = {
-                    ...this.devices[index],
-                    name: device.name,
-                    online: device.isOnline
-                };
-            }
+            const updatedDevices = this.devices.map(d => 
+                d.MAC === device.MAC 
+                    ? { ...d, name: device.name, online: device.isOnline }
+                    : d
+            );
+            this.setDevices(updatedDevices);
         }));
 
         // device removed event
-        client.service('devices').on('removed', action((device: DeviceData) => {
+        client.service('devices').on('removed', action((device: Device) => {
             console.log('Device removed:', device);
-            this.devices = this.devices.filter(d => d.MAC !== device.MAC);
+            const filteredDevices = this.devices.filter(d => d.MAC !== device.MAC);
+            this.setDevices(filteredDevices);
         }));
+    }
+
+    setDevices(devices: IDevice[]) {
+        this.devices = devices;
     }
 
     private reloadGroups() {
@@ -88,10 +103,7 @@ export class UserStateObserver {
                 findAll: true
             }
         }).then(action('fetchSuccess', g => {
-            // this.setGroups(g);
-            // this.setIsLoaded(true);
-            this.groups = g;
-            this.isLoaded = true;
+            this.setGroups(g);
             this.setIsLoaded(true);
         })).catch(action('fetchError', e => {
             console.log(e);
@@ -103,18 +115,15 @@ export class UserStateObserver {
                 $paginate: false
             }
         }).then(action('fetchSuccess', devices => {
-            // this.setGroups(g);
-            // this.setIsLoaded(true);
             console.log("Devices from backend: %o", devices);
-            this.devices = devices.map((d: DeviceData) => {
-                return {
-                    name: d.name,
-                    MAC: d.MAC,
-                    states: [],
-                    online: d.isOnline
-                } as IDevice;
-            });
-            this.isLoaded = true;
+            const mappedDevices = devices.map((d: Device) => ({
+                name: d.name,
+                MAC: d.MAC,
+                states: this.mapDeviceStates(d.states),
+                online: d.isOnline
+            }));
+            this.setDevices(mappedDevices);
+            this.setIsLoaded(true);
         })).catch(action('fetchError', e => {
             console.log(e);
         }));

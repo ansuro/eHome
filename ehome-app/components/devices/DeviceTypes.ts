@@ -1,5 +1,4 @@
-
-// export type TDevice = IStateOnOff | IStateOnOffOptions | IStateValueOnly;
+import { Id } from "@feathersjs/feathers";
 
 export interface IDevice {
   name: string;
@@ -8,7 +7,10 @@ export interface IDevice {
   online: boolean;
 }
 
+export type DeviceState = IStateOnOff | IStateOnOffOptions | IStateValueOnly;
+
 interface IState {
+  id: Id;
   name: string;
   type: number;
 }

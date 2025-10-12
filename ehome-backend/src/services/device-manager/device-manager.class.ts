@@ -99,9 +99,6 @@ export class DeviceManagerService<ServiceParams extends DeviceManagerParams = De
         return;
       }
 
-      // TODO catch error
-      const parsedMessage = JSON.parse(msg);
-      logger.info("%o", parsedMessage);
 
       if (topic.startsWith('register/')) {
         const deviceMAC = topic.replace('register/', '');
@@ -109,11 +106,19 @@ export class DeviceManagerService<ServiceParams extends DeviceManagerParams = De
         // logger.info('JSON: %o', parsedMessage);
         // logger.info('mac-id: %s', deviceMAC);
 
+        let parsedMessage: StateData[] = [];
+        try {
+          parsedMessage = JSON.parse(msg);
+          logger.info("%o", parsedMessage);
+        } catch (e) {
+          logger.error("Parsing JSON failed: %o", e);
+          return;
+        }
+
         // TODO states patchen
 
         // TODO prüfen
-        let states: StateData[];
-        states = parsedMessage.map((s: any) => {
+        let states: StateData[] = parsedMessage.map((s: any) => {
           // let newValue: any;
           // if (s['value'] === !!s['value']) {
           //   newValue = s['value'] ? 'true' : 'false';
@@ -121,16 +126,17 @@ export class DeviceManagerService<ServiceParams extends DeviceManagerParams = De
           //   newValue = s['value'];
           // }
 
-          let ns: State = {
+          let ns: StateData = {
             ...s,
-            MAC: deviceMAC,
-            value: s.value + ''
+            MAC: deviceMAC
+            // value: s.value + ''
+            // options: s.options ? JSON.stringify(s.options) : undefined
           };
 
           return ns;
         });
 
-        // logger.info("JSON-Array nach States[] gecastet: %o", states);
+        logger.info("JSON-Array nach States[] gecastet: %o", states);
 
         // alle rows löschen, alle states inserten
         // emit custom event
@@ -156,13 +162,22 @@ export class DeviceManagerService<ServiceParams extends DeviceManagerParams = De
 
         const mac = topic.replace('status/', '');
         logger.info('(topic: %s) msg: %s', topic, message);
-        logger.info('JSON: %o', parsedMessage);
         logger.info('mac-id: %s', mac);
-
+        
+        let parsedMessage: StateData;
+        try {
+          parsedMessage = JSON.parse(msg);
+          logger.info("%o", parsedMessage);
+        } catch (e) {
+          logger.error("Parsing JSON failed: %o", e);
+          return;
+        }
+        
+        logger.info('JSON: %o', parsedMessage);
         // update state change
         // find and update
 
-        try {
+        try { // TODO
           const s = await this.app.service('states').patch(null, {
             value: parsedMessage["value"]
           }, {

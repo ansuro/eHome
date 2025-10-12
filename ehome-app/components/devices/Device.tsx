@@ -11,21 +11,21 @@ const Device = ({ device }: { device: IDevice }) => {
     <>
       <ListItem key={device.MAC} bottomDivider topDivider>
         <ListItem.Content>
-          <ListItem.Title style={{ fontSize: 18, fontWeight: "bold" }}>{device.name}</ListItem.Title>
+          <ListItem.Title style={{ fontSize: 18, fontWeight: "bold" }}>{device.name}{device.states?.length}</ListItem.Title>
         </ListItem.Content>
         <Icon type={'material'} name={'wifi'} color={device.online ? theme.colors.connected : theme.colors.notconnected} />
       </ListItem>
       {
-        device.states?.map(s => {
-          switch (s.type) {
+        device.states?.map(state => {
+          switch (state.type) {
             case 0:
-              return <StateOnOff key={device.MAC} state={s as IStateOnOff} disabled={!device.online} />;
+              return <StateOnOff key={state.id} state={state as IStateOnOff} disabled={!device.online} />;
             case 1:
-              return <StateOnOffOptions key={device.MAC} state={s as IStateOnOffOptions} disabled={!device.online} />;
+              return <StateOnOffOptions key={state.id} state={state as IStateOnOffOptions} disabled={!device.online} />;
             case 2:
-              return <StateValueOnly key={device.MAC} state={s as IStateValueOnly} disabled={!device.online} />;
+              return <StateValueOnly key={state.id} state={state as IStateValueOnly} disabled={!device.online} />;
             default:
-              return <StateOnOff key={device.MAC} state={s as IStateOnOff} disabled={!device.online} />;
+              return <StateOnOff key={state.id} state={state as IStateOnOff} disabled={!device.online} />;
           }
         })
       }

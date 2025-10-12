@@ -26,12 +26,20 @@ export const deviceResolver = resolve<Device, HookContext<DeviceService>>({
 
     if (device.MAC) {
       const states = await context.app.service('states').find({
+        paginate: false,
         query: {
           MAC: device.MAC
         }
       });
 
-      return Array.isArray(states) ? states : states.data;
+      // OnOffState.value is boolean but comes as string from DB, convert it here
+      states.forEach(s => {
+        if (s.type === 0) {
+          s.value = s.value == 'false' ? false : true;
+        }
+      });
+
+      return states;
     }
     return [];
   }
