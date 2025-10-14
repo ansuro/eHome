@@ -9,7 +9,7 @@ export type StateClientService = Pick<StateService<Params<StateQuery>>, (typeof 
 
 export const statePath = 'states'
 
-export const stateMethods = ['find', 'get', 'create', 'patch', 'remove'] as const
+export const stateMethods = ['find', 'get'] as const
 
 export const stateClient = (client: ClientApplication) => {
   const connection = client.get('connection')

@@ -11,27 +11,15 @@ type TStateOnOff = {
 
 const StateOnOff = (props: TStateOnOff) => {
   const { state, disabled } = props;
-  const [localValue, setLocalValue] = useState(state.value);
 
-  const changeValue = (value: boolean) => {
+  const changeValue = async (value: boolean) => {
     console.log('New value:', value);
-    setLocalValue(value);
 
-    client.service('states').patch(state.id, { value: value, type: state.type }).then(res => {
-      console.log('Patched state successfully:', res);
-      if (typeof res.value === 'boolean') {
-        setLocalValue(res.value);
-        console.log('Updated local state value to:', res.value);
-      } else {
-        console.error('Patched state value is not boolean:', res.value);
-      }
-    }).catch(err => {
-      console.error('Error patching state:', err);
-      setLocalValue(state.value); // Revert to original value on error
-    });
+    await client.service('device-manager').patch(null, { value: value, MAC: state.MAC, name: state.name, type: state.type } );
+
   };
 
-  console.log('Rendering StateOnOff with value:', localValue, 'and disabled:', disabled);
+  console.log('Rendering StateOnOff with value:', state.value, 'and disabled:', disabled);
   
   return (
     <ListItem bottomDivider>
@@ -39,7 +27,7 @@ const StateOnOff = (props: TStateOnOff) => {
         <ListItem.Title>{state.name}</ListItem.Title>
       </ListItem.Content>
       <Switch
-        value={localValue}
+        value={state.value}
         disabled={disabled}
         onValueChange={changeValue}
       />

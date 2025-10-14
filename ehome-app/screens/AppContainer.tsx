@@ -31,7 +31,7 @@ const AppContainer = observer(() => {
 
   return (
     <Navigator
-      initialRouteName='Configuration'
+      initialRouteName='Devices'
       screenOptions={{
         header: (props) => <DrawerHeader {...props} />,
         sceneContainerStyle: { backgroundColor: theme.colors.sceneBackground, flex: 1 },

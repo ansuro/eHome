@@ -17,13 +17,11 @@ const StateOnOffOptions = (props: TStateOnOffOptions) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const styles = useStyles();
 
-  const changeValue = (index: number, value: string) => {
-    console.log(value);
-    client.service('states').patch(state.id, { value: value, type: state.type }).then(res => {
-      console.log('Patched state successfully:', res);
-    }).catch(err => {
-      console.error('Error patching state:', err);
-    });
+  const changeValue = async  (index: number, value: string) => {
+    console.log('New value:', value);
+    const data = { value: value, MAC: state.MAC, name: state.name, type: state.type };
+    console.log(data);
+    await client.service('device-manager').patch(null,  data);
   };
 
   const onOffOptions = state.options.flatMap((o, i) => {

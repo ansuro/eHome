@@ -37,11 +37,20 @@ export const stateDataResolver = resolve<State, HookContext<StateService>>({})
 
 // Schema for updating existing entries
 export const statePatchSchema = Type.Partial(stateSchema, {
-  $id: 'StatePatch'
+  $id: 'StatePatch',
+  additionalProperties: false
 })
 export type StatePatch = Static<typeof statePatchSchema>
 export const statePatchValidator = getValidator(statePatchSchema, dataValidator)
-export const statePatchResolver = resolve<State, HookContext<StateService>>({})
+export const statePatchResolver = resolve<StatePatch, HookContext<StateService>>({
+  value: async (value: any, patch: StatePatch) => {
+    // Konvertiere Wert basierend auf type
+    if (patch.type === 0) {
+      return typeof value === 'boolean' ? (value ? 'true' : 'false') : value;
+    }
+    return value;
+  }
+})
 
 // Schema for allowed query properties
 export const stateQueryProperties = Type.Pick(stateSchema, ['name', 'MAC'])

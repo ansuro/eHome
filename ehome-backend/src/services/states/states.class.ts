@@ -121,7 +121,7 @@ export class StateService<ServiceParams extends Params = StateParams> extends Kn
     data: StatePatch,
     params?: ServiceParams
   ): Promise<State | State[]> {
-    // Der type kommt jetzt direkt aus data
+
     const processedData = {
       ...data,
       value: data.type === 0 ? (data.value === 'true' ? true : false) : false,
@@ -131,7 +131,7 @@ export class StateService<ServiceParams extends Params = StateParams> extends Kn
     logger.info('Patching state with id %s: %o', id, processedData);
     // logger.info('Params: %o', params);
     logger.info('Current data before patch: %o', data);
-    const result = await super.patch(id, processedData, params);
+    const result = await super.patch(id, data, params);
     logger.info('Patched state with id %s: %o', id, result);
 
     if (Array.isArray(result)) {

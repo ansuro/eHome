@@ -18,7 +18,7 @@ export type DeviceManagerClientService = Pick<
 
 export const deviceManagerPath = 'device-manager'
 
-export const deviceManagerMethods = ['find', 'get', 'create', 'patch', 'remove'] as const
+export const deviceManagerMethods = ['patch'] as const
 
 export const deviceManagerClient = (client: ClientApplication) => {
   const connection = client.get('connection')

@@ -21,6 +21,8 @@ import { deviceManagerPath, deviceManagerMethods } from './device-manager.shared
 export * from './device-manager.class'
 export * from './device-manager.schema'
 
+import { logPayload } from '../../hooks/log-payload'
+
 // A configure function that registers the service and its hooks via `app.configure`
 export const deviceManager = (app: Application) => {
   // Register our service on the Feathers application
@@ -34,6 +36,7 @@ export const deviceManager = (app: Application) => {
   app.service(deviceManagerPath).hooks({
     around: {
       all: [
+        // logPayload,
         authenticate('jwt'),
         schemaHooks.resolveExternal(deviceManagerExternalResolver),
         schemaHooks.resolveResult(deviceManagerResolver)
@@ -44,17 +47,10 @@ export const deviceManager = (app: Application) => {
         schemaHooks.validateQuery(deviceManagerQueryValidator),
         schemaHooks.resolveQuery(deviceManagerQueryResolver)
       ],
-      find: [],
-      get: [],
-      create: [
-        schemaHooks.validateData(deviceManagerDataValidator),
-        schemaHooks.resolveData(deviceManagerDataResolver)
-      ],
       patch: [
         schemaHooks.validateData(deviceManagerPatchValidator),
         schemaHooks.resolveData(deviceManagerPatchResolver)
-      ],
-      remove: []
+      ]
     },
     after: {
       all: []

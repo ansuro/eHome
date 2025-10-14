@@ -35,34 +35,23 @@ export class DeviceManagerService<ServiceParams extends DeviceManagerParams = De
     this.app = options.app;
   }
 
-  public mqqttSend(Id: Id, state: State | State[]): void {
+  public mqttSend(state: State | State[]): void {
     if (!this.mqtt) {
       logger.error('MQTT client not initialized');
       return;
     }
 
-    this.app.service('states').get(Id).then(s => {
-      const MAC = s.MAC;
-      const topic = `${MAC}`;
-      if (Array.isArray(state)) {
-        state.forEach(s => {
-          this._send(topic, s);
-        });
-      } else {
-        this._send(topic, state);
-      }
-    }).catch(e => {
-      logger.error('Getting state for mqtt send failed: %o', e);
-    });
+    const states = Array.isArray(state) ? state : [state];
+    states.forEach( s => this._send(s) );
   }
 
-  private _send(topic: string, state: State): void {
+  private _send(state: State): void {
     const message = JSON.stringify(state);
-    this.mqtt.publish(topic, message, { qos: 1 }, (err) => {
+    this.mqtt.publish(state.MAC, message, { qos: 1 }, (err) => {
       if (err) {
         logger.error('Error publishing MQTT message: %o', err);
       } else {
-        logger.info('Published MQTT message to topic %s: %s', topic, message);
+        logger.info('Published MQTT message to topic %s: %s', state.MAC, message);
       }
     });
   }
@@ -329,57 +318,34 @@ export class DeviceManagerService<ServiceParams extends DeviceManagerParams = De
     }
   }
 
+  // cLient calls patch to send state changes to device
+  async patch(id: NullableId, data: DeviceManagerPatch, _params?: ServiceParams): Promise<DeviceManager> {
+    logger.info('DeviceManager patch called: %o', data);
+    logger.info('Params: %o', _params);
+
+    const msg : State = {
+      id: -1,
+      MAC: data.MAC!,
+      name: data.name!,
+      value: data.value!,
+      type: data.type!,
+      options: data.options
+    };
+
+    logger.info('Prepared MQTT message: %o', msg);
+
+    this.mqttSend(data as State);
+    logger.info('MQTT message sent for state change: %o', data);
+    return data as DeviceManager;
+  }
+
+  // fullfill interface, not used  
   async find(_params?: ServiceParams): Promise<DeviceManager[]> {
     return [];
-  }
-
-  async get(id: Id, _params?: ServiceParams): Promise<DeviceManager> {
-    return {
-      id: 0,
-      text: `A new message with ID: ${id}!`
-    };
-  }
-
-  async create(data: DeviceManagerData, params?: ServiceParams): Promise<DeviceManager>;
-  async create(data: DeviceManagerData[], params?: ServiceParams): Promise<DeviceManager[]>;
-  async create(
-    data: DeviceManagerData | DeviceManagerData[],
-    params?: ServiceParams
-  ): Promise<DeviceManager | DeviceManager[]> {
-    if (Array.isArray(data)) {
-      return Promise.all(data.map((current) => this.create(current, params)));
-    }
-
-    return {
-      id: 0,
-      ...data
-    };
-  }
-
-  // This method has to be added to the 'methods' option to make it available to clients
-  async update(id: NullableId, data: DeviceManagerData, _params?: ServiceParams): Promise<DeviceManager> {
-    return {
-      id: 0,
-      ...data
-    };
-  }
-
-  async patch(id: NullableId, data: DeviceManagerPatch, _params?: ServiceParams): Promise<DeviceManager> {
-    return {
-      id: 0,
-      text: `Fallback for ${id}`,
-      ...data
-    };
-  }
-
-  async remove(id: NullableId, _params?: ServiceParams): Promise<DeviceManager> {
-    return {
-      id: 0,
-      text: 'removed'
-    };
   }
 }
 
 export const getOptions = (app: Application) => {
-  return { app }
+  return { app, sanitize: false  // Sanitization für diesen Service ausschalten
+  }
 }
