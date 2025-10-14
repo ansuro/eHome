@@ -29,7 +29,7 @@ export const userResolver = resolve<User, HookContext<UserService>>({
     logger.info('%o', context.params.query);
 
     if (!context.params.$withGroups) {
-      logger.info('$withGroups');
+      // logger.info('$withGroups');
       return;
     }
 

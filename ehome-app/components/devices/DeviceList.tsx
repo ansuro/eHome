@@ -6,11 +6,11 @@ import Device from './Device';
 import { observer } from "mobx-react";
 import useStore from "../../services/store/useStore";
 
-const DATA: IDevice[] = [
-  { name: 'Device1', MAC: 'MAC1', states: [{ name: 'Lamp1', type: 0, value: true }], online: true },
-  { name: 'Device2', MAC: 'MAC2', states: [{ name: 'Sensor1', type: 2, value: '18.8°' }], online: false },
-  { name: 'Deivce3', MAC: 'MAC3', states: [{ name: 'Super Lamp 1', type: 1, value: 'Value 1', options: ['Value 1', 'Value 2', 'Value 3', 'Value 4'] }], online: true }
-];
+// const DATA: IDevice[] = [
+//   { name: 'Device1', MAC: 'MAC1', states: [{ id: 123, name: 'Lamp1', type: 0, value: true }], online: true },
+//   { name: 'Device2', MAC: 'MAC2', states: [{ id: 456, name: 'Sensor1', type: 2, value: '18.8°' }], online: false },
+//   { name: 'Deivce3', MAC: 'MAC3', states: [{ id: 789, name: 'Super Lamp 1', type: 1, value: 'Value 1', options: ['Value 1', 'Value 2', 'Value 3', 'Value 4'] }], online: true }
+// ];
 
 const DeviceList = observer(() => {
   const { userState } = useStore();
@@ -20,6 +20,7 @@ const DeviceList = observer(() => {
   // const devices = JSON.parse(dev);
 
   const devices: IDevice[] = userState.devices;
+  console.log('Rendering DeviceList with devices:', devices);
   return (
     <FlatList
       keyExtractor={(device: IDevice, index: number) => device.MAC}

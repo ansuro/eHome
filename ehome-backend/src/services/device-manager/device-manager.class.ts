@@ -33,7 +33,38 @@ export class DeviceManagerService<ServiceParams extends DeviceManagerParams = De
 
   constructor(public options: DeviceManagerServiceOptions) {
     this.app = options.app;
-    // this.mqttSetup();
+  }
+
+  public mqqttSend(Id: Id, state: State | State[]): void {
+    if (!this.mqtt) {
+      logger.error('MQTT client not initialized');
+      return;
+    }
+
+    this.app.service('states').get(Id).then(s => {
+      const MAC = s.MAC;
+      const topic = `${MAC}`;
+      if (Array.isArray(state)) {
+        state.forEach(s => {
+          this._send(topic, s);
+        });
+      } else {
+        this._send(topic, state);
+      }
+    }).catch(e => {
+      logger.error('Getting state for mqtt send failed: %o', e);
+    });
+  }
+
+  private _send(topic: string, state: State): void {
+    const message = JSON.stringify(state);
+    this.mqtt.publish(topic, message, { qos: 1 }, (err) => {
+      if (err) {
+        logger.error('Error publishing MQTT message: %o', err);
+      } else {
+        logger.info('Published MQTT message to topic %s: %s', topic, message);
+      }
+    });
   }
 
   // configure and connect mqtt backend client
@@ -179,7 +210,8 @@ export class DeviceManagerService<ServiceParams extends DeviceManagerParams = De
 
         try { // TODO
           const s = await this.app.service('states').patch(null, {
-            value: parsedMessage["value"]
+            value: parsedMessage["value"],
+            type: parsedMessage["type"]
           }, {
             query: {
               $and: [{ MAC: mac }, { name: parsedMessage["name"] }]

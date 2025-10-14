@@ -6,6 +6,8 @@ import type { KnexAdapterParams, KnexAdapterOptions } from '@feathersjs/knex'
 import type { Application } from '../../declarations'
 import type { State, StateData, StatePatch, StateQuery } from './states.schema'
 import { logger } from '../../logger'
+import { app } from '../../app'
+import { log } from 'console'
 
 export type { State, StateData, StatePatch, StateQuery }
 
@@ -44,31 +46,112 @@ export class StateService<ServiceParams extends Params = StateParams> extends Kn
     data: StateData | StateData[],
     params?: ServiceParams
   ): Promise<State | State[]> {
+    // Konvertiere einzelnes Objekt zu Array für einheitliche Verarbeitung
     const items = Array.isArray(data) ? data : [data];
 
-    const processedItems = items.map(item => ({
-      ...item,
-      value: item.type === 0 ? String(item.value) : item.value,
-      options: item.options ? JSON.stringify(item.options) : undefined
+    // Verarbeite jedes Item einzeln
+    const results = await Promise.all(items.map(async (item) => {
+      try {
+        // Suche nach existierendem State mit Knex direkt
+        const [existingState] = await (this.options.Model as any)
+          .select('id')
+          .from('states')
+          .where({
+            name: item.name,
+            MAC: item.MAC
+          })
+          .limit(1);
+
+        let result: State;
+        
+        // Konvertiere Werte für die Datenbank
+        const processedItem = {
+          ...item,
+          value: item.type === 0 ? String(item.value) : item.value,
+          options: item.options ? JSON.stringify(item.options) : undefined
+        };
+
+        if (existingState) {
+          // Update existierenden State
+          logger.info('Updating existing state for MAC %s, name %s', item.MAC, item.name);
+          const tmpResult = await super.patch(existingState.id, processedItem);
+          result = Array.isArray(tmpResult) ? tmpResult[0] : tmpResult;
+        } else {
+          // Erstelle neuen State
+          logger.info('Creating new state for MAC %s, name %s', item.MAC, item.name);
+          result = await super.create(processedItem);
+        }
+
+        // Konvertiere Werte zurück für die Antwort
+        if (Array.isArray(result)) {
+
+          result.forEach(s => {
+            if (s.type === 0) {
+              s.value = s.value === 'false' ? false : true;
+            }
+            if (s.options && typeof s.options === 'string') {
+              s.options = JSON.parse(s.options);
+            }
+          });
+
+        } else {
+          if (result.type === 0) {
+            result.value = result.value === 'false' ? false : true;
+          }
+          if (result.options && typeof result.options === 'string') {
+            result.options = JSON.parse(result.options);
+          }
+        }
+
+        return result;
+
+      } catch (error) {
+        logger.error('Error in updateOrCreate: %o', error);
+        throw error;
+      }
     }));
 
-    const result = await super.create(
-      processedItems, 
-      params
-    );
+    return results;
+  }
 
-    result.forEach(s => {
-      if (s.type === 0) {
-        s.value = s.value === 'false' ? false : true;
-      }
-      if (s.options) {
-        if (typeof s.options === 'string') {
-          s.options = JSON.parse(s.options);
-        }
-      }
-    });
+  async patch(id: null, data: StatePatch, params?: ServiceParams): Promise<State[]>;
+  async patch(id: number, data: StatePatch, params?: ServiceParams): Promise<State>;
+  async patch(
+    id: number | null,
+    data: StatePatch,
+    params?: ServiceParams
+  ): Promise<State | State[]> {
+    // Der type kommt jetzt direkt aus data
+    const processedData = {
+      ...data,
+      value: data.type === 0 ? (data.value === 'true' ? true : false) : false,
+      options: data.options ? JSON.stringify(data.options) : undefined
+    };
+
+    logger.info('Patching state with id %s: %o', id, processedData);
+    // logger.info('Params: %o', params);
+    logger.info('Current data before patch: %o', data);
+    const result = await super.patch(id, processedData, params);
+    logger.info('Patched state with id %s: %o', id, result);
+
+    if (Array.isArray(result)) {
+      result.forEach(s => this.convertResult(s));
+    } else {
+      this.convertResult(result);
+    }
+
+    logger.info('Converted patched state with id %s: %o', id, result);
 
     return result;
+  }
+
+  private convertResult(state: State) {
+    if (state.type === 0) {
+      state.value = state.value === '0' ? false : true;
+    }
+    if (state.options && typeof state.options === 'string') {
+      state.options = JSON.parse(state.options);
+    }
   }
 }
 

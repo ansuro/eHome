@@ -11,7 +11,7 @@ const Device = ({ device }: { device: IDevice }) => {
     <>
       <ListItem key={device.MAC} bottomDivider topDivider>
         <ListItem.Content>
-          <ListItem.Title style={{ fontSize: 18, fontWeight: "bold" }}>{device.name}{device.states?.length}</ListItem.Title>
+          <ListItem.Title style={{ fontSize: 18, fontWeight: "bold" }}>{device.name}</ListItem.Title>
         </ListItem.Content>
         <Icon type={'material'} name={'wifi'} color={device.online ? theme.colors.connected : theme.colors.notconnected} />
       </ListItem>

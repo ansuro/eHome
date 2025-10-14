@@ -4,6 +4,7 @@ import { Button, Dialog, ListItem, Switch, Text, makeStyles, useTheme } from "@r
 import { IDevice, IStateOnOffOptions } from "../DeviceTypes";
 import { Icon } from "@rneui/base/dist/Icon";
 import OnOffOptionsDialog from "./OnOffOptionsDialog";
+import client from "../../../services/feathers-client";
 
 type TStateOnOffOptions = {
   state: IStateOnOffOptions;
@@ -18,13 +19,18 @@ const StateOnOffOptions = (props: TStateOnOffOptions) => {
 
   const changeValue = (index: number, value: string) => {
     console.log(value);
+    client.service('states').patch(state.id, { value: value, type: state.type }).then(res => {
+      console.log('Patched state successfully:', res);
+    }).catch(err => {
+      console.error('Error patching state:', err);
+    });
   };
 
   const onOffOptions = state.options.flatMap((o, i) => {
     return { index: i, value: o };
   });
 
-  
+  console.log(state);
 
   return (
     <ListItem bottomDivider>
@@ -35,7 +41,6 @@ const StateOnOffOptions = (props: TStateOnOffOptions) => {
         <Icon role="img" name="options" type="ionicon" iconStyle={styles.iconOptions} />
         <OnOffOptionsDialog options={onOffOptions} valueListener={changeValue} isDialogOpen={isDialogOpen} closeDialog={() => setIsDialogOpen(false)} />
       </Button>
-      <Switch  />
     </ListItem>
   );
 };

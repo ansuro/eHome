@@ -1,5 +1,3 @@
-import { Id } from "@feathersjs/feathers";
-
 export interface IDevice {
   name: string;
   MAC: string;
@@ -10,8 +8,9 @@ export interface IDevice {
 export type DeviceState = IStateOnOff | IStateOnOffOptions | IStateValueOnly;
 
 interface IState {
-  id: Id;
+  id: number;
   name: string;
+  MAC: string;
   type: number;
 }
 
