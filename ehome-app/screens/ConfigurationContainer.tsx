@@ -22,7 +22,7 @@ const ConfigurationContainer = () => {
 
   return (
     <Tabs.Navigator
-      initialRouteName={'User'}
+      initialRouteName={'TabGroups'}
       screenOptions={({ route }) => ({
         headerTitle: () => {
           switch (route.name) {

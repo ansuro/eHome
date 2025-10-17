@@ -1,16 +1,30 @@
-import { View } from "react-native";
-import { Icon, ListItem, useTheme, Text, Input, Button, Card } from "@rneui/themed";
-import { Group } from "ehome-backend";
+import { FlatList, View } from "react-native";
+import { useTheme, Input, Button, Card } from "@rneui/themed";
+import { Device, Group } from "ehome-backend";
 import useScreenContainerStyle from "../../../utils/ContainerStyle";
 import { Formik } from "formik";
 import client from "../../../services/feathers-client";
 import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { IDevice } from "../../../components/devices/DeviceTypes";
+
+import { useEffect, useState } from "react";
+import DeviceListComponent from "./DeviceListComponent";
 
 const GroupAddEdit = () => {
   const navigation = useNavigation();
   const { theme } = useTheme();
   const containerStyle = useScreenContainerStyle();
+
+  const [devices, setDevices] = useState<Device[]>([]);
+  const [selectedDevices, setSelectedDevices] = useState<Record<string, boolean>>({});
+
+  const handleCheckChange = (mac: string, checked: boolean) => {
+    setSelectedDevices((prev) => ({
+      ...prev,
+      [mac]: checked,
+    }));
+  };
+
 
   const validateForm = async (values: Group) => {
     const errors: any = {};
@@ -43,10 +57,13 @@ const GroupAddEdit = () => {
   };
 
   const doSave = async (values: Group, setSubmitting: (isSubmitting: boolean) => void) => {
+    setSubmitting(true);
+    const selected = JSON.stringify(Object.keys(selectedDevices).filter((mac) => selectedDevices[mac]));
+    console.log("Ausgewählte Geräte:", selected);
     try {
       const g = await client.service('groups').create({
         name: values.name,
-        devices: ""
+        devices: selected
       });
       console.log('saved');
       // TODO close screen, show notification
@@ -54,8 +71,21 @@ const GroupAddEdit = () => {
       navigation.goBack();
     } catch (e) {
       console.error('save failed: ' + e);
+    } finally {
+      setSubmitting(false);
     }
   }
+
+  useEffect(() => {
+    client.service('devices').find({
+      paginate: false,
+      query: { $paginate: false }
+    }).then(d => {
+      d.forEach((device: Device) => {
+        setDevices(prevDevices => [...prevDevices, device]);
+      });
+    });
+  }, []);
 
   return (
     <Formik
@@ -76,6 +106,11 @@ const GroupAddEdit = () => {
             />
             <Button disabled={!isValid || isSubmitting} loading={isSubmitting} onPress={handleSubmit as any} title={'save'} />
           </Card>
+          <FlatList
+            keyExtractor={(device: Device, index: number) => device.MAC}
+            data={devices}
+            renderItem={({ item }) => <DeviceListComponent key={item.MAC} device={item as IDevice} checked={!!selectedDevices[item.MAC]} onCheckedChange={handleCheckChange} />}
+          />
         </View>
       )}
     </Formik>
