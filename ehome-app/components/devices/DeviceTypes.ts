@@ -1,21 +1,23 @@
 export interface IDevice {
   name: string;
   MAC: string;
-  states?: Array<IStateOnOff | IStateOnOffOptions | IStateValueOnly>;
+  states: Array<IStateOnOff | IStateOnOffOptions | IStateValueOnly>;
   online: boolean;
 }
 
 export type DeviceState = IStateOnOff | IStateOnOffOptions | IStateValueOnly;
 
-interface IState {
-  id: number;
+export interface IState {
   name: string;
   MAC: string;
   type: number;
+  value: string | boolean;
+  options?: string[];
 }
 
 export interface IStateOnOff extends IState {
   value: boolean;
+  options?: never;
 }
 
 export interface IStateOnOffOptions extends IState {

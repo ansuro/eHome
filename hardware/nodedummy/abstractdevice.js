@@ -22,7 +22,7 @@ exports.createDevice = function (MAC) {
 
   let msg2send = '';
 
-  if (env.NODE_ENV === 'prod' || 'production') {
+  if (1 === 3) {
       mqttOptions = {
         clientId: MAC,
         key: fs.readFileSync('../../../cert/key_1024.pem'),
@@ -47,10 +47,12 @@ exports.createDevice = function (MAC) {
     client.subscribe(MAC, () => {
       console.log('Subscribed to: ' + MAC);
     });
-    pubStatus();
+    register();
+    // pubStatus();
   });
 
   client.on('message', (topic, message) => {
+    console.log('Message received on topic ' + topic + ': ' + message.toString());
     if (topic === MAC) {
       const s = JSON.parse(message.toString());
       console.log('Incoming msg: ');
@@ -82,6 +84,12 @@ exports.createDevice = function (MAC) {
     //   qos: 1
     // });
     client.publish('status/' + MAC, Buffer.from(JSON.stringify(msg2send)), {
+      qos: 1
+    });
+  }
+
+  const register = () => {
+    client.publish('register/' + MAC, Buffer.from(JSON.stringify(status)), {
       qos: 1
     });
   }

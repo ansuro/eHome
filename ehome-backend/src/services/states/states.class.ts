@@ -87,6 +87,7 @@ export class StateService<ServiceParams extends Params = StateParams> extends Kn
 
           result.forEach(s => {
             if (s.type === 0) {
+              // TODO wird immer zu true, falls false
               s.value = s.value === 'false' ? false : true;
             }
             if (s.options && typeof s.options === 'string') {
@@ -133,6 +134,8 @@ export class StateService<ServiceParams extends Params = StateParams> extends Kn
     logger.info('Current data before patch: %o', data);
     const result = await super.patch(id, data, params);
     logger.info('Patched state with id %s: %o', id, result);
+    const countListener = app.service('devices').emit('patched', result, params);
+    logger.info('Emitted patched event to devices service, listeners count: %d', countListener);
 
     if (Array.isArray(result)) {
       result.forEach(s => this.convertResult(s));
@@ -146,11 +149,29 @@ export class StateService<ServiceParams extends Params = StateParams> extends Kn
   }
 
   private convertResult(state: State) {
-    if (state.type === 0) {
-      state.value = state.value === '0' ? false : true;
-    }
-    if (state.options && typeof state.options === 'string') {
-      state.options = JSON.parse(state.options);
+    switch (state.value) {
+      case 'true':
+        state.value = true;
+        logger.info('Converted state value to true string for state id %s', state.id);
+        break;
+
+      case 'false':
+        state.value = false;
+        logger.info('Converted state value to false string for state id %s', state.id);
+        break;
+
+      case '0':
+        state.value = false;
+        logger.info('Converted state value to false 0 for state id %s', state.id);
+        break;
+
+      case '1':
+        state.value = true;
+        logger.info('Converted state value to true 1 for state id %s', state.id);
+        break;
+    
+      default:
+        break;
     }
   }
 }

@@ -47,6 +47,7 @@ export class DeviceManagerService<ServiceParams extends DeviceManagerParams = De
 
   private _send(state: State): void {
     const message = JSON.stringify(state);
+    logger.info('Sending MQTT message to topic %s: %s', state.MAC, message);
     this.mqtt.publish(state.MAC, message, { qos: 1 }, (err) => {
       if (err) {
         logger.error('Error publishing MQTT message: %o', err);
@@ -321,7 +322,7 @@ export class DeviceManagerService<ServiceParams extends DeviceManagerParams = De
   // cLient calls patch to send state changes to device
   async patch(id: NullableId, data: DeviceManagerPatch, _params?: ServiceParams): Promise<DeviceManager> {
     logger.info('DeviceManager patch called: %o', data);
-    logger.info('Params: %o', _params);
+    // logger.info('Params: %o', _params);
 
     const msg : State = {
       id: -1,

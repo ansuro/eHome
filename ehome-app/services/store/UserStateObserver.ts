@@ -1,13 +1,14 @@
 import { observable, makeObservable, action, computed } from 'mobx';
-import { IDevice } from '../../components/devices/DeviceTypes';
+import { DeviceState, IDevice, IState, IStateOnOff, IStateOnOffOptions, IStateValueOnly } from '../../components/devices/DeviceTypes';
 import client from '../feathers-client';
-import { Device, Group, User } from 'ehome-backend';
+import { Device, Group, State, User } from 'ehome-backend';
 import { AppRootStore } from './AppRootStore';
 
 export class UserStateObserver {
     appRootStore: AppRootStore;
     isLoaded: boolean = false;
     devices: IDevice[] = [];
+    states: DeviceState[] = [];
     groups: Group[] = [];
     selectedGroup?: Group;
     user?: User;
@@ -26,7 +27,9 @@ export class UserStateObserver {
             login: action,
             logout: action,
             isLoggedIn: observable,
-            isAdmin: computed
+            isAdmin: computed,
+            states: observable,
+            setStates: action
         });
 
         this.appRootStore = appRootStore;
@@ -34,14 +37,68 @@ export class UserStateObserver {
         this.init();
     }
 
-    private mapDeviceStates(states: any[] | undefined) {
-        return states?.map(state => {
-            const options = state.options ? JSON.parse(state.options) : undefined;
-            return {
-                ...state,
-                options: options
-            }
-        });
+    private isIOnOffOptions(state: any): state is IStateOnOffOptions {
+        return 'options' in state;
+    }
+
+    // Type-Guard für zusätzliche Sicherheit
+    private isValidDeviceState(state: any): state is DeviceState {
+        return (
+            typeof state.name === 'string' &&
+            typeof state.MAC === 'string' &&
+            typeof state.type === 'number' &&
+            'value' in state
+        );
+    }
+
+    private mapDeviceStates(states: any[]): DeviceState[] {
+        if (!states) return [];
+        
+        return states
+            .filter(state => {
+                if (!this.isValidDeviceState(state)) {
+                    console.warn('Ungültiger State ignoriert:', state);
+                    return false;
+                }
+                return true;
+            })
+            .map(state => {
+                const baseState: IState = {
+                    name: state.name,
+                    MAC: state.MAC,
+                    type: state.type,
+                    value: state.value,
+                    options: state.options
+                };
+
+                switch (state.type) {
+                    case 0: // OnOff
+                        return {
+                            ...baseState,
+                            value: typeof state.value === 'string' 
+                                ? state.value === 'true'
+                                : Boolean(state.value),
+                            options: undefined
+                        } as IStateOnOff;
+                    
+                    case 1: // OnOffOptions
+                        return {
+                            ...baseState,
+                            value: String(state.value),
+                            // TODO auf String prüfen und zum Array machen
+                            options: Array.isArray(state.options) 
+                                ? state.options 
+                                : state.options ? [state.options] : []
+                        } as IStateOnOffOptions;
+                    
+                    default: // ValueOnly
+                        return {
+                            ...baseState,
+                            value: String(state.value),
+                            options: undefined
+                        } as IStateValueOnly;
+                }
+            });
     }
 
     private init() {
@@ -62,12 +119,14 @@ export class UserStateObserver {
         // TODO new device event
         client.service('devices').on('created', action((device: Device) => {
             console.log('Device created:', device);
-            const newDevices = [...this.devices, {
+            const mappedStates = this.mapDeviceStates(device.states || []);
+            const newDevice: IDevice = {
                 name: device.name,
                 MAC: device.MAC,
-                states: this.mapDeviceStates(device.states),
+                states: mappedStates,
                 online: device.isOnline
-            }];
+            };
+            const newDevices = [...this.devices, newDevice];
             this.setDevices(newDevices);
         }));
 
@@ -76,9 +135,10 @@ export class UserStateObserver {
             console.log('Device updated:', device);
             const updatedDevices = this.devices.map(d => 
                 d.MAC === device.MAC 
-                    ? { ...d, name: device.name, online: device.isOnline }
+                    ? { ...d, name: device.name, online: device.isOnline, states: this.mapDeviceStates(device.states || []) }
                     : d
             );
+            // this.setStates(updatedDevices.flatMap(d => d.states? d.states : []));
             this.setDevices(updatedDevices);
         }));
 
@@ -92,6 +152,10 @@ export class UserStateObserver {
 
     setDevices(devices: IDevice[]) {
         this.devices = devices;
+    }
+
+    setStates(states: DeviceState[]) {
+        this.states = states;
     }
 
     private reloadGroups() {
@@ -119,7 +183,7 @@ export class UserStateObserver {
             const mappedDevices = devices.map((d: Device) => ({
                 name: d.name,
                 MAC: d.MAC,
-                states: this.mapDeviceStates(d.states),
+                states: this.mapDeviceStates(d.states || []),
                 online: d.isOnline
             }));
             this.setDevices(mappedDevices);
