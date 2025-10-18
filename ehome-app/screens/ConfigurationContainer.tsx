@@ -53,7 +53,7 @@ const ConfigurationContainer = () => {
         tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: theme.colors.disabled
       })}
-      // sceneContainerStyle={screenContainer.container}
+      sceneContainerStyle={screenContainer.container}
     >
       <Tabs.Screen name={'TabUsers'} component={TabUserManagement} />
       <Tabs.Screen name={'TabGroups'} component={TabGroupManagement} />
