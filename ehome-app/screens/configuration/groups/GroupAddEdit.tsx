@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import DeviceListComponent from "./DeviceListComponent";
 import { NavigationParams } from "../../AppContainer";
 import { DrawerScreenProps } from "@react-navigation/drawer";
+import { CardDivider } from "@rneui/base/dist/Card/Card.Divider";
 
 type Props = DrawerScreenProps<NavigationParams, "GroupAddEdit">;
 
@@ -100,6 +101,22 @@ const GroupAddEdit = ({ route }: Props) => {
     }
   }
 
+  const doDelete = async () => {
+    // TODO show confirmation dialog
+
+    if (existingGroup?.id) {
+      try {
+        await client.service('groups').remove(existingGroup.id);
+        console.log('deleted');
+        // TODO close screen, show notification
+
+        navigation.goBack();
+      } catch (e) {
+        console.error('delete failed: ' + e);
+      }
+    }
+  };
+
   useEffect(() => {
     client.service('devices').find({
       paginate: false,
@@ -143,8 +160,12 @@ const GroupAddEdit = ({ route }: Props) => {
               value={values.name}
               errorMessage={errors.name}
             />
-            <Button disabled={!isValid || isSubmitting} loading={isSubmitting} onPress={handleSubmit as any} title={'save'} />
+            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+              <Button disabled={!isValid || isSubmitting} loading={isSubmitting} onPress={handleSubmit as any} title={'save'} containerStyle={{ flex: 1, marginRight: 5 }} />
+              {existingGroup?.id && <Button type="outline" disabled={!isValid || isSubmitting} loading={isSubmitting} onPress={doDelete as any} title={'delete'} containerStyle={{ flex: 1, marginLeft: 5 }} />}
+            </View>
           </Card>
+          <CardDivider />
           <FlatList
             keyExtractor={(device: Device, index: number) => device.MAC}
             data={devices}

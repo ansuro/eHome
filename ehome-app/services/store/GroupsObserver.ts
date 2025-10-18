@@ -50,6 +50,12 @@ export class GroupsObserver {
             });
         }));
 
+        client.service('groups').on('removed', action((group: Group) => {
+            console.log('group removed: ' + JSON.stringify(group));
+            const filteredGroups = this.groups.filter(g => g.id !== group.id);
+            this.setGroups(filteredGroups);
+        }));
+
         client.service('groups').on('created', action((group: Group) => {
             console.log('group created: ' + JSON.stringify(group));
             // const g = [
