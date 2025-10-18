@@ -2,7 +2,7 @@ import { FlatList, Platform } from "react-native";
 import { makeStyles } from "@rneui/themed";
 import { IDevice } from "./DeviceTypes";
 
-import Device from './Device';
+import DeviceComponent from './DeviceComponent';
 import { observer } from "mobx-react";
 import useStore from "../../services/store/useStore";
 
@@ -25,7 +25,7 @@ const DeviceList = observer(() => {
     <FlatList
       keyExtractor={(device: IDevice, index: number) => device.MAC}
       data={devices}
-      renderItem={({ item }) => <Device key={item.MAC} device={item} />}
+      renderItem={({ item }) => <DeviceComponent key={item.MAC} device={item} />}
     />
   );
 });

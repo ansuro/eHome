@@ -1,7 +1,7 @@
 import { FlatList, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-import { Button, Text } from '@rneui/themed';
+import { Button, Divider, Text } from '@rneui/themed';
 
 import useScreenContainerStyle from "../../../utils/ContainerStyle";
 import GroupListItem from "../../../components/groups/GroupListItem";
@@ -21,8 +21,12 @@ const TabGroupManagement = observer(() => {
 
   return (
     <View style={containerStyle.container}>
-      <Text h3 h3Style={{ 'textAlign': 'center' }}>Gruppen</Text>
-      <Button onPress={() => { navigation.navigate("GroupAddEdit") }}>Neu</Button>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10 }}>
+        <Text h3 h3Style={{ 'textAlign': 'center' }}>Gruppen</Text>
+        <Button onPress={() => { navigation.navigate("GroupAddEdit") }} containerStyle={{width: 50}} >+</Button>
+      </View>
+      <Divider style={{ marginBottom: 10 }} />
+      <Divider style={{ marginBottom: 10, marginTop: 10 }} />
       <FlatList
         keyExtractor={(group: Group, index: number) => group.id + ""}
         data={groups.slice()}

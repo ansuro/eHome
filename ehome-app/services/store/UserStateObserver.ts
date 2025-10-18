@@ -124,7 +124,7 @@ export class UserStateObserver {
                 name: device.name,
                 MAC: device.MAC,
                 states: mappedStates,
-                online: device.isOnline
+                isOnline: device.isOnline
             };
             const newDevices = [...this.devices, newDevice];
             this.setDevices(newDevices);
@@ -135,7 +135,7 @@ export class UserStateObserver {
             console.log('Device updated:', device);
             const updatedDevices = this.devices.map(d => 
                 d.MAC === device.MAC 
-                    ? { ...d, name: device.name, online: device.isOnline, states: this.mapDeviceStates(device.states || []) }
+                    ? { ...d, name: device.name, isOnline: device.isOnline, states: this.mapDeviceStates(device.states || []) }
                     : d
             );
             // this.setStates(updatedDevices.flatMap(d => d.states? d.states : []));
@@ -184,7 +184,7 @@ export class UserStateObserver {
                 name: d.name,
                 MAC: d.MAC,
                 states: this.mapDeviceStates(d.states || []),
-                online: d.isOnline
+                isOnline: d.isOnline
             }));
             this.setDevices(mappedDevices);
             this.setIsLoaded(true);

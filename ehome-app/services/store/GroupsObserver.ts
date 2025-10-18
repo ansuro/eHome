@@ -27,17 +27,18 @@ export class GroupsObserver {
     async init() {
         console.log('init GroupsObserver');
 
-        try {
-            this.groups = await client.service('groups').find({
-                paginate: false,
-                query: {
-                    $paginate: false,
-                    findAll: true
-                }
-            });
-        } catch (e) {
-            console.log('fetch groups failed' + e);
-        }
+        client.service('groups').find({
+            paginate: false,
+            query: {
+                $paginate: false,
+                findAll: true
+            }
+        }).then(action('fetchSuccess', g => {
+            this.setGroups(g);
+            this.setIsLoaded(true);
+        })).catch(action('fetchError', e => {
+            console.log(e);
+        }));
 
         client.service('groups').on('patched', action((group: Group) => {
             console.log('group patched: ' + JSON.stringify(group));
@@ -47,6 +48,12 @@ export class GroupsObserver {
                     console.log('group patched: ' + JSON.stringify(group));
                 }
             });
+        }));
+
+        client.service('groups').on('removed', action((group: Group) => {
+            console.log('group removed: ' + JSON.stringify(group));
+            const filteredGroups = this.groups.filter(g => g.id !== group.id);
+            this.setGroups(filteredGroups);
         }));
 
         client.service('groups').on('created', action((group: Group) => {

@@ -2,7 +2,7 @@ export interface IDevice {
   name: string;
   MAC: string;
   states: Array<IStateOnOff | IStateOnOffOptions | IStateValueOnly>;
-  online: boolean;
+  isOnline: boolean;
 }
 
 export type DeviceState = IStateOnOff | IStateOnOffOptions | IStateValueOnly;

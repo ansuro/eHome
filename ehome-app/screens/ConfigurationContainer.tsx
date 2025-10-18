@@ -22,7 +22,7 @@ const ConfigurationContainer = () => {
 
   return (
     <Tabs.Navigator
-      initialRouteName={'User'}
+      initialRouteName={'TabGroups'}
       screenOptions={({ route }) => ({
         headerTitle: () => {
           switch (route.name) {
@@ -53,7 +53,7 @@ const ConfigurationContainer = () => {
         tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: theme.colors.disabled
       })}
-      // sceneContainerStyle={screenContainer.container}
+      sceneContainerStyle={screenContainer.container}
     >
       <Tabs.Screen name={'TabUsers'} component={TabUserManagement} />
       <Tabs.Screen name={'TabGroups'} component={TabGroupManagement} />
