@@ -11,18 +11,12 @@ import {
   groupExternalResolver,
   groupDataResolver,
   groupPatchResolver,
-  groupQueryResolver,
-  Group
-} from './groups.schema'
+  groupQueryResolver} from './groups.schema'
 
-import type { Application, HookContext } from '../../declarations'
+import type { Application } from '../../declarations'
 import { GroupService, getOptions } from './groups.class'
 import { groupPath, groupMethods } from './groups.shared'
-import { logger } from '../../logger'
-import { NotAuthenticated } from '@feathersjs/errors'
-import { Membership } from '../membership/membership.schema'
 import { paginate } from '../../hooks/paginate'
-import { findAll } from '../../hooks/findAll'
 import { queryParamsToParams } from '../../hooks/query-params-to-params'
 
 export * from './groups.class'
