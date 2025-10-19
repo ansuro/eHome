@@ -48,7 +48,6 @@ const GroupAddEdit = ({ route }: Props) => {
         // TODO do case insensitive query TEST
         const g = await client.service('groups').find({
           query: {
-            findAll: true,
             name: group.name,
             $limit: 0
           }
@@ -66,6 +65,7 @@ const GroupAddEdit = ({ route }: Props) => {
 
   const doSave = async (values: Group, setSubmitting: (isSubmitting: boolean) => void) => {
     setSubmitting(true);
+    // TODO check
     const selected = JSON.stringify(Object.keys(selectedDevices).filter((mac) => selectedDevices[mac]));
     console.log("Ausgewählte Geräte:", selected);
     if (existingGroup?.id) {
@@ -121,10 +121,8 @@ const GroupAddEdit = ({ route }: Props) => {
     client.service('devices').find({
       paginate: false,
       query: { $paginate: false }
-    }).then(d => {
-      d.forEach((device: Device) => {
-        setDevices(prevDevices => [...prevDevices, device]);
-      });
+    }).then(devices => {
+        setDevices(devices);
     });
 
     if (existingGroup?.id) {

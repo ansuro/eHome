@@ -19,8 +19,10 @@ const TabUserManagement = observer(() => {
 
   return (
     <View style={containerStyle.container}>
-      <Text h3 h3Style={{ 'textAlign': 'center' }}>User</Text>
-      <Button onPress={() => { navigation.navigate("UserAddEdit") }}>Neu</Button>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10 }}>
+        <Text h3 h3Style={{ 'textAlign': 'center' }}>User</Text>
+        <Button onPress={() => { navigation.navigate("UserAddEdit") }} containerStyle={{width: 50}}>+</Button>
+      </View>
       <FlatList
         keyExtractor={(user: User, index: number) => user.id + ""}
         data={users.slice()}

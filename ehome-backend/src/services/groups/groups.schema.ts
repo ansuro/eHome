@@ -50,7 +50,6 @@ export const groupQuerySchema = Type.Intersect(
     querySyntax(groupQueryProperties),
     // Add additional query properties here
     Type.Object({
-      findAll: Type.Optional(Type.Boolean()),
       $paginate: Type.Optional(Type.Boolean())
     }, { additionalProperties: true })
   ],

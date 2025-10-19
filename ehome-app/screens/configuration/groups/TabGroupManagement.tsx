@@ -23,7 +23,7 @@ const TabGroupManagement = observer(() => {
     <View style={containerStyle.container}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10 }}>
         <Text h3 h3Style={{ 'textAlign': 'center' }}>Gruppen</Text>
-        <Button onPress={() => { navigation.navigate("GroupAddEdit") }} containerStyle={{width: 50}} >+</Button>
+        <Button onPress={() => { navigation.navigate("GroupAddEdit") }} containerStyle={{width: 50}}>+</Button>
       </View>
       <Divider style={{ marginBottom: 10 }} />
       <Divider style={{ marginBottom: 10, marginTop: 10 }} />

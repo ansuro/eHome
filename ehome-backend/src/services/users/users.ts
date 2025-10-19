@@ -20,6 +20,7 @@ import { userPath, userMethods } from './users.shared'
 import { paginate } from '../../hooks/paginate'
 import { isAdmin } from '../../hooks/isAdmin'
 import { queryParamsToParams } from '../../hooks/query-params-to-params'
+import { populateUserGroups, removeUserGroupsFromData, restoreUserGroups, saveUserGroups } from './users.hooks'
 
 export * from './users.class'
 export * from './users.schema'
@@ -45,15 +46,18 @@ export const user = (app: Application) => {
       remove: [authenticate('jwt')]
     },
     before: {
-      all: [queryParamsToParams, schemaHooks.validateQuery(userQueryValidator), schemaHooks.resolveQuery(userQueryResolver)],
+      all: [schemaHooks.validateQuery(userQueryValidator), schemaHooks.resolveQuery(userQueryResolver)],
       find: [paginate, queryParamsToParams],
       get: [],
-      create: [schemaHooks.validateData(userDataValidator), schemaHooks.resolveData(userDataResolver)],
-      patch: [schemaHooks.validateData(userPatchValidator), schemaHooks.resolveData(userPatchResolver)],
+      create: [schemaHooks.validateData(userDataValidator), schemaHooks.resolveData(userDataResolver), removeUserGroupsFromData],
+      patch: [schemaHooks.validateData(userPatchValidator), schemaHooks.resolveData(userPatchResolver), removeUserGroupsFromData],
       remove: []
     },
     after: {
-      all: []
+      all: [],
+      get: [populateUserGroups],
+      create: [restoreUserGroups, saveUserGroups, populateUserGroups],
+      patch: [restoreUserGroups, saveUserGroups, populateUserGroups],
     },
     error: {
       all: []

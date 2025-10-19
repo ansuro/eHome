@@ -30,8 +30,7 @@ export class GroupsObserver {
         client.service('groups').find({
             paginate: false,
             query: {
-                $paginate: false,
-                findAll: true
+                $paginate: false
             }
         }).then(action('fetchSuccess', g => {
             this.setGroups(g);

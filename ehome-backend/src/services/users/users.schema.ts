@@ -25,35 +25,35 @@ export const userSchema = Type.Object(
 export type User = Static<typeof userSchema>
 export const userValidator = getValidator(userSchema, dataValidator)
 export const userResolver = resolve<User, HookContext<UserService>>({
-  userGroups: virtual(async (user, context) => {
-    logger.info('%o', context.params.query);
+  // userGroups: virtual(async (user, context) => {
+  //   logger.info('%o', context.params.query);
 
-    if (!context.params.$withGroups) {
-      // logger.info('$withGroups');
-      return;
-    }
+  //   if (!context.params.$withGroups) {
+  //     // logger.info('$withGroups');
+  //     return;
+  //   }
 
-    const gids = await context.app.service('membership').find({
-      user: user,
-      paginate: false,
-      query: {
-        uid: user.id,
-        $select: ['gid']
-      }
-    });
+  //   const gids = await context.app.service('membership').find({
+  //     user: user,
+  //     paginate: false,
+  //     query: {
+  //       uid: user.id,
+  //       $select: ['gid']
+  //     }
+  //   });
 
-    const groups = await context.app.service('groups').find({
-      user: user,
-      paginate: false,
-      query: {
-        id: {
-          $in: gids.flatMap(g => g.gid)
-        }
-      }
-    });
+  //   const groups = await context.app.service('groups').find({
+  //     user: user,
+  //     paginate: false,
+  //     query: {
+  //       id: {
+  //         $in: gids.flatMap(g => g.gid)
+  //       }
+  //     }
+  //   });
 
-    return groups;
-  })
+  //   return groups;
+  // })
 })
 
 export const userExternalResolver = resolve<User, HookContext<UserService>>({
@@ -62,7 +62,7 @@ export const userExternalResolver = resolve<User, HookContext<UserService>>({
 })
 
 // Schema for creating new entries
-export const userDataSchema = Type.Pick(userSchema, ['username', 'password', 'isAdmin'], {
+export const userDataSchema = Type.Pick(userSchema, ['id', 'username', 'password', 'isAdmin', 'userGroups'], {
   $id: 'UserData'
 })
 export type UserData = Static<typeof userDataSchema>

@@ -6,11 +6,12 @@ import { Formik, } from "formik";
 import client from "../../../services/feathers-client";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavigationParams } from "../../AppContainer";
 import { toJS } from "mobx";
 import GroupListItem from "../../../components/groups/GroupListItem";
 import useStore from "../../../services/store/useStore";
+import GroupListComponent from "./GroupListComponent";
 
 type Props = StackScreenProps<NavigationParams, 'UserAddEdit'>;
 
@@ -21,43 +22,48 @@ function UserAddEdit({ route, navigation }: Props) {
   const { theme } = useTheme();
   const containerStyle = useScreenContainerStyle();
 
-  const editMode = route.params?.user ? true : false;
-  const user = route.params?.user ? toJS<User>(route.params.user) : { username: '', id: 0, isAdmin: false, password: '' };
-  // 0 v 1 = false v true
-  user.isAdmin = user.isAdmin ? true : false;
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [selectedGroups, setSelectedGroups] = useState<Record<number, boolean>>({});
 
+  const handleCheckChange = (id: number, checked: boolean) => {
+    setSelectedGroups((prev) => ({
+      ...prev,
+      [id]: checked,
+    }));
+  };
+
+  const existingUser = route.params?.user;
+  
   console.log(route.params?.user?.username);
   console.log(route.params?.user?.isAdmin);
 
-  const groups = groupsObserver ? groupsObserver.groups : [];
-
-  const validateForm = async (values: User) => {
+  const validateForm = async (user: User) => {
     const errors: any = {};
 
-    values.username = values.username.trim();
-    values.password = values.password?.trim();
+    user.username = user.username.trim();
+    user.password = user.password?.trim();
 
-    if (!values.username) {
+    if (!user.username) {
       errors.username = 'Name required';
-    } else if (values.username.length < 3 || values.username.length > 25) {
+    } else if (user.username.length < 3 || user.username.length > 25) {
       errors.username = 'Name length must be between 3 and 25';
     }
-    console.log(values.isAdmin);
+    console.log(user.isAdmin);
 
-    if (!editMode) {
-      if (!values.password) {
+    if (!existingUser?.id) {
+      if (!user.password) {
         errors.password = 'Password required';
-      } else if (values.password.length < 6 || values.password.length > 25) {
+      } else if (user.password.length < 6 || user.password.length > 25) {
         errors.password = 'Password length must be between 6 and 25';
       }
     } else {
-      if (user.username !== values.username) {
+      if (existingUser.username !== user.username) {
         try {
           // TODO do case insensitive query TEST
           const g = await client.service('users').find({
             $withGroups: false,
             query: {
-              username: values.username,
+              username: user.username,
               $limit: 0
             }
           });
@@ -77,14 +83,50 @@ function UserAddEdit({ route, navigation }: Props) {
     console.log(values);
     setSubmitting(true);
 
-    if (editMode) {
+    const newGroups: Group[] = Object.keys(selectedGroups).filter(gidStr => selectedGroups[parseInt(gidStr)]).map(gidStr => {
+      console.log('selected group id: ' + gidStr);
+      const foundGroup = groups.filter(g => g.id === parseInt(gidStr));
+      console.log('found group: %o', foundGroup);
+      if (foundGroup.length === 1) {
+        console.log('group id ' + gidStr + ' found!');
+        return foundGroup[0];
+      } else {
+        console.log('group id ' + gidStr + ' not found! Length: ' + foundGroup.length);
+        return {} as Group;
+      }
+    });
+    console.log('selected groups: %o', selectedGroups);
+    console.log('newGroups: %o', newGroups);
+
+    if (existingUser?.id) {
       try {
         // patch existing
-        const g = await client.service('users').patch(values.id, {
+        console.log('patching user id ' + existingUser.id);
+        console.log(Boolean(values.isAdmin))
+        const g = await client.service('users').patch(existingUser.id, {
           username: values.username,
-          isAdmin: values.isAdmin
-        });
+          isAdmin: Boolean(values.isAdmin),
+          userGroups: newGroups != null ? newGroups : []
+        }) as User;
         console.log('patched');
+
+        // await client.service('membership').remove(null, {
+        //   query: {
+        //     uid: existingUser.id
+        //   }
+        // });
+
+        // // TODO CHECK
+        // for (const gidStr of Object.keys(selectedGroups)) {
+        //   const gid = parseInt(gidStr);
+        //   if (selectedGroups[gid]) {
+        //     await client.service('membership').create({
+        //       uid: existingUser.id,
+        //       gid: gid
+        //     });
+        //   }
+        // }
+
         // TODO close screen, show notification
 
         navigation.goBack();
@@ -101,6 +143,7 @@ function UserAddEdit({ route, navigation }: Props) {
           username: values.username,
           password: values.password,
           isAdmin: values.isAdmin
+          // TODO gruppen
         });
         console.log('saved');
         // TODO close screen, show notification
@@ -115,17 +158,64 @@ function UserAddEdit({ route, navigation }: Props) {
     }
   }
 
+  const doDelete = async () => {
+    // TODO show confirmation dialog
+
+    if (existingUser?.id) {
+      try {
+        await client.service('users').remove(existingUser.id);
+        console.log('deleted');
+        // TODO close screen, show notification
+
+        navigation.goBack();
+      } catch (e) {
+        console.error('delete failed: ' + e);
+      }
+    }
+  };
+
+  useEffect(() => {
+    console.log('loading groups');
+    client.service('groups').find({
+      paginate: false,
+      query: {
+        $paginate: false
+       }
+    }).then(groups => {
+      setGroups(groups);
+      console.log('loaded groups: %o', groups);
+    }).catch(e => {
+      console.log('error loading groups: ' + e);
+    });
+
+    if (existingUser?.id) {
+      client.service('users').get(existingUser.id).then(user => {
+        console.log('loaded user: %o', user);
+        const selected: Record<number, boolean> = {};
+        user.userGroups?.forEach((group: Group) => {
+          selected[group.id] = true;
+        });
+        setSelectedGroups(selected);
+
+      }).catch(e => {
+        console.log('error loading group: ' + e);
+      });
+    }
+
+  }, []);
+
   return (
     <Formik
-        initialValues={user}
+        initialValues={{ username: existingUser?.username, id: existingUser?.id, isAdmin: existingUser?.isAdmin || false, password: '' } as User}
         validate={validateForm}
         onSubmit={(values: User, { setSubmitting, setFieldError }) => doSave(values, setSubmitting, setFieldError)}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, isSubmitting, isValid, setFieldValue }) => (
-    <ScrollView style={containerStyle.container}>
+        <View style={containerStyle.container}>
           {/* <Card wrapperStyle={{ padding: 0 }} containerStyle={{ flex: 1 }}> */}
             {/* <View style={{  }}> */}
-              <Card.Title>{editMode ? 'Edit User' : 'Create User'}</Card.Title>
+            <Card>
+              <Card.Title>{existingUser?.id ? 'Edit User' : 'Create User'}</Card.Title>
               <Input
                 placeholder="Username"
                 onChangeText={handleChange('username')}
@@ -133,7 +223,7 @@ function UserAddEdit({ route, navigation }: Props) {
                 value={values.username}
                 errorMessage={errors.username}
               />
-              {!editMode && <Input
+              {!existingUser?.id && <Input
                 placeholder="Password"
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
@@ -145,18 +235,20 @@ function UserAddEdit({ route, navigation }: Props) {
                 checked={values.isAdmin}
                 onPress={() => setFieldValue('isAdmin', !values.isAdmin)}
               />
+              <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                <Button disabled={!isValid || isSubmitting} loading={isSubmitting} onPress={handleSubmit as any} title={'save'} containerStyle={{ flex: 1, marginRight: 5 }} />
+                {existingUser?.id && <Button type="outline" disabled={!isValid || isSubmitting} loading={isSubmitting} onPress={doDelete as any} title={'delete'} containerStyle={{ flex: 1, marginLeft: 5 }} />}
+              </View>
+              </Card>
             {/* </View> */}
             <Card.Divider />
-            <FlatList style={{ height: 300 }}
+            <FlatList
               keyExtractor={(group: Group, index: number) => group.id + ""}
-              data={groups.slice()}
-              renderItem={({ item }) => <GroupListItem key={item.id} group={item} />}
+              data={groups}
+              renderItem={({ item }) => <GroupListComponent key={item.id} group={item} checked={!!selectedGroups[item.id]} onCheckedChange={handleCheckChange} />}
             />
-            <View style={{ position: "absolute", bottom: 0 }}>
-              <Button disabled={!isValid || isSubmitting} loading={isSubmitting} onPress={handleSubmit as any} title={'save'} />
-            </View>
           {/* </Card> */}
-        </ScrollView>
+        </View>
         )}
       </Formik>
   );

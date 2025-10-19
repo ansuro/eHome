@@ -23,6 +23,7 @@ import { NotAuthenticated } from '@feathersjs/errors'
 import { Membership } from '../membership/membership.schema'
 import { paginate } from '../../hooks/paginate'
 import { findAll } from '../../hooks/findAll'
+import { queryParamsToParams } from '../../hooks/query-params-to-params'
 
 export * from './groups.class'
 export * from './groups.schema'
@@ -46,8 +47,8 @@ export const group = (app: Application) => {
       ]
     },
     before: {
-      all: [schemaHooks.validateQuery(groupQueryValidator), schemaHooks.resolveQuery(groupQueryResolver)],
-      find: [paginate, findAll],
+      all: [queryParamsToParams, schemaHooks.validateQuery(groupQueryValidator), schemaHooks.resolveQuery(groupQueryResolver)],
+      find: [paginate],
       get: [],
       create: [schemaHooks.validateData(groupDataValidator), schemaHooks.resolveData(groupDataResolver)],
       patch: [schemaHooks.validateData(groupPatchValidator), schemaHooks.resolveData(groupPatchResolver)],
