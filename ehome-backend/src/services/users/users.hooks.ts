@@ -17,10 +17,10 @@ export const saveUserGroups = async (context: HookContext) => {
   const knex = app.get('sqliteClient');
 
   try {
-    // Alte Zuordnungen löschen
-    await knex('user_groups').where('user_id', userId).del();
+    if (userId !== undefined) {
+      await knex('user_groups').where('user_id', userId).del();
+    }
 
-    // Neue Zuordnungen speichern
     if (Array.isArray(data.userGroups) && data.userGroups.length > 0) {
       const userGroupRecords = data.userGroups.map((group: any) => ({
         user_id: userId,

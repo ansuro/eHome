@@ -53,7 +53,7 @@ export class UserService<ServiceParams extends Params = UserParams> extends Knex
     return Promise.all(users).then(async us => {
       for (const u of us) {
         logger.info('Removing membership for user id %d', u.id);
-        await (this.options.Model as any)('user_groups').where({ uid: u.id }).del();
+        await (this.options.Model as any)('user_groups').where({ user_id: u.id }).del();
       }
       return Array.isArray(id) || id === null ? us : us[0];
     });

@@ -62,7 +62,7 @@ export const userExternalResolver = resolve<User, HookContext<UserService>>({
 })
 
 // Schema for creating new entries
-export const userDataSchema = Type.Pick(userSchema, ['id', 'username', 'password', 'isAdmin', 'userGroups'], {
+export const userDataSchema = Type.Pick(userSchema, ['username', 'password', 'isAdmin', 'userGroups'], {
   $id: 'UserData'
 })
 export type UserData = Static<typeof userDataSchema>

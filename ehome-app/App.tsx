@@ -10,7 +10,6 @@ import AppNavigationContainer from './screens/AppNavigationContainer';
 
 import { StoreProvider } from './services/store/useStore';
 import { AppRootStore } from './services/store/AppRootStore';
-import { StrictMode } from 'react';
 
 if (!new class { x: any }().hasOwnProperty('x')) throw new Error('Transpiler is not configured correctly');
 
@@ -26,9 +25,7 @@ const App = () => {
       <SafeAreaProvider>
         <ErrorBoundary onError={errorHandler}>
             <StoreProvider value={new AppRootStore()}>
-          <StrictMode>
               <AppNavigationContainer />
-          </StrictMode>
             </StoreProvider>
         </ErrorBoundary>
       </SafeAreaProvider>
