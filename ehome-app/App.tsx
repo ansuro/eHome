@@ -25,9 +25,11 @@ const App = () => {
     <ThemeProvider theme={myTheme}>
       <SafeAreaProvider>
         <ErrorBoundary onError={errorHandler}>
-          <StoreProvider value={new AppRootStore()}>
-            <AppNavigationContainer />
-          </StoreProvider>
+            <StoreProvider value={new AppRootStore()}>
+          <StrictMode>
+              <AppNavigationContainer />
+          </StrictMode>
+            </StoreProvider>
         </ErrorBoundary>
       </SafeAreaProvider>
     </ThemeProvider>

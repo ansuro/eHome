@@ -26,8 +26,8 @@ const ConfigurationContainer = () => {
       screenOptions={({ route }) => ({
         headerTitle: () => {
           switch (route.name) {
-            case 'TabUsers':
-              return <Text>"Users"</Text>
+            case 'Users':
+              return "Users";
 
             case 'TabGroups':
               return "Groups";
@@ -38,13 +38,13 @@ const ConfigurationContainer = () => {
         },
         tabBarIcon: ({ focused, color }) => {
           switch (route.name) {
-            case 'TabUsers':
+            case 'Users':
               return <Icon name={'people'} type={'material'} color={color} style={styles.tabIcon} />
 
-            case 'TabGroups':
+            case 'Groups':
               return <Icon name={'groups'} type={'material'} color={color} style={styles.tabIcon} />
 
-            case 'TabDevices':
+            case 'Devices':
               return <Icon name={'devices'} type={'material'} color={color} style={styles.tabIcon} />
           }
         },
@@ -55,9 +55,9 @@ const ConfigurationContainer = () => {
       })}
       sceneContainerStyle={screenContainer.container}
     >
-      <Tabs.Screen name={'TabUsers'} component={TabUserManagement} />
-      <Tabs.Screen name={'TabGroups'} component={TabGroupManagement} />
-      <Tabs.Screen name={'TabDevices'} component={TabDeviceManagement} />
+      <Tabs.Screen key={'TabUsers'} name={'Users'} component={TabUserManagement} />
+      <Tabs.Screen key={'TabGroups'} name={'Groups'} component={TabGroupManagement} />
+      <Tabs.Screen key={'TabGroups'} name={'Devices'} component={TabDeviceManagement} />
     </Tabs.Navigator>
   );
 }
