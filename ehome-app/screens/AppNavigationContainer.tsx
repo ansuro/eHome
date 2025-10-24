@@ -11,6 +11,7 @@ import StackHeader from "../components/header/StackHeader";
 import Login from "./Login";
 import { useEffect } from "react";
 import UserAddEdit from "./configuration/users/UserAddEdit";
+import DeviceEdit from "./configuration/devices/DeviceEdit";
 
 const Stack = createStackNavigator<NavigationParams>();
 
@@ -47,6 +48,7 @@ const AppNavigationContainer = observer(() => {
             <Stack.Screen name={'Root'} component={AppContainer} />
             <Stack.Screen name={'UserAddEdit'} component={UserAddEdit} options={{ headerShown: true, header: (props) => <StackHeader {...props} /> }} />
             <Stack.Screen name={'GroupAddEdit'} component={GroupAddEdit} options={{ headerShown: true, header: (props) => <StackHeader {...props} /> }} />
+            <Stack.Screen name={'DeviceEdit'} component={DeviceEdit} options={{ headerShown: true, header: (props) => <StackHeader {...props} /> }} />
           </Stack.Group>
           :
           <Stack.Group>

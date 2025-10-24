@@ -1,11 +1,6 @@
-import { useEffect, useState } from 'react';
 
 import { Icon, ListItem, useTheme } from "@rneui/themed";
-import { observer } from 'mobx-react';
-import StateOnOff from '../../../components/devices/states/StateOnOff';
-import StateOnOffOptions from '../../../components/devices/states/StateOnOffOptions';
-import StateValueOnly from '../../../components/devices/states/StateValueOnly';
-import { IDevice, IStateOnOff, IStateOnOffOptions, IStateValueOnly } from '../../../components/devices/DeviceTypes';
+import { IDevice } from '../../../components/devices/DeviceTypes';
 
 const DeviceListComponent = ({ device, checked, onCheckedChange }: { device: IDevice, checked: boolean, onCheckedChange: (mac: string, checked: boolean) => void }) => {
   const { theme } = useTheme();

@@ -1,5 +1,6 @@
 import client from "../feathers-client";
 import { AppStateObserver } from "./AppStateObserver";
+import { DevicesObserver } from "./DevicesObserver";
 import { GroupsObserver } from "./GroupsObserver";
 import { UserStateObserver } from "./UserStateObserver";
 import { UsersObserver } from "./UsersObserver";
@@ -11,6 +12,7 @@ export class AppRootStore {
 
   usersObserver?: UsersObserver;
   groupsObserver?: GroupsObserver;
+  devicesObserver?: DevicesObserver;
 
   constructor() {
     this.appState = new AppStateObserver(this);
@@ -23,6 +25,8 @@ export class AppRootStore {
         console.log('usersObserver created');
         this.groupsObserver = new GroupsObserver(this);
         console.log('groupsObserver created');
+        this.devicesObserver = new DevicesObserver(this);
+        console.log('devicesObserver created');
       }
     });
 
@@ -30,6 +34,7 @@ export class AppRootStore {
       console.log('Logged out event');
       delete this.usersObserver;
       delete this.groupsObserver;
+      delete this.devicesObserver;
     });
 
     client.io.on('connect', () => {

@@ -13,7 +13,7 @@ const DrawerContent = ({ navigation, state }: DrawerContentComponentProps) => {
 
   return (
     <View style={styles.drawerContent}>
-      <Text h3 style={{ textAlign: "center" }}>eHome</Text>
+      <Text h3 style={{ textAlign: "center", userSelect: 'none' }}>eHome</Text>
       <Divider color={theme.colors.divider} />
       {routes.map(r => (
         <ListItem key={r.key}

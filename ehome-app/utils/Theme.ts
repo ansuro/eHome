@@ -46,6 +46,11 @@ const theme = createTheme({
       containerStyle: {
         
       }
+    }),
+    CardFeaturedTitle: (props, theme) => ({
+      style: {
+        color: theme.colors.primary
+      }
     })
   }
 });

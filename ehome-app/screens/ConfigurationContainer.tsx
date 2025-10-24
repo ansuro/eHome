@@ -5,7 +5,7 @@ import useScreenContainerStyle, { useTabNavigationStyle } from "../utils/Contain
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import TabUserManagement from "./configuration/users/TabUserManagement";
-import TabDeviceManagement from "./configuration/TabDeviceManagement";
+import TabDeviceManagement from "./configuration/devices/TabDeviceManagement";
 import TabGroupManagement from "./configuration/groups/TabGroupManagement";
 
 

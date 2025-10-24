@@ -11,7 +11,8 @@ import Settings from './Settings';
 import Configuration from './ConfigurationContainer';
 import { observer } from 'mobx-react';
 import useStore from '../services/store/useStore';
-import { Group, User } from 'ehome-backend';
+import { Device, Group, User } from 'ehome-backend';
+import { IDevice } from '../components/devices/DeviceTypes';
 
 export type NavigationParams = {
   Root: undefined;
@@ -21,6 +22,7 @@ export type NavigationParams = {
   Configuration: undefined;
   UserAddEdit: { user: User } | undefined;
   GroupAddEdit: { group: Group } | undefined;
+  DeviceEdit: { device: Device } | undefined;
 };
 
 const { Navigator, Screen } = createDrawerNavigator<NavigationParams>();
